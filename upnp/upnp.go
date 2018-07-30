@@ -1,8 +1,6 @@
 package upnp
 
 import (
-	"log"
-
 	upnp "github.com/NebulousLabs/go-upnp"
 )
 
@@ -11,7 +9,7 @@ func GetGateway() (*upnp.IGD, error) { // Returns error if forward failed, retur
 	// Attempt to discover gateway device
 	d, err := upnp.Discover()
 	if err != nil {
-		log.Fatal(err)
+		return nil, err // Return error
 	}
 
 	return d, err
