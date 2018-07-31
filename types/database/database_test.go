@@ -12,8 +12,14 @@ func TestNewDatabase(t *testing.T) {
 	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
 
 	if err != nil { // Check for errors
-		t.Errorf(err.Error()) // Return found error
-		t.FailNow()
+		err = nil // Reset error
+
+		address, err = common.GetExtIPAddrWithoutUpNP() // Attempt to fetch address without UpNP
+
+		if err != nil { // Check second try for errors
+			t.Errorf(err.Error()) // Return found error
+			t.FailNow()
+		}
 	}
 
 	node, err := node.NewNode(address, true) // Attempt to create new node
