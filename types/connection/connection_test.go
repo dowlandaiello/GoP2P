@@ -19,7 +19,7 @@ func TestNewConnection(t *testing.T) {
 
 		if err != nil { // Check second try for errors
 			t.Errorf(err.Error()) // Return found error
-			t.FailNow()
+			t.FailNow()           // Panic
 		}
 	}
 
