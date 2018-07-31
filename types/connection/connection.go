@@ -49,7 +49,7 @@ type Event struct {
 }
 
 // NewConnection - creates new Connection{} instance with specified data, peers
-func NewConnection(destinationNode *node.Node, sourceNode *node.Node, data []byte, connectionType string, connectionStack []Event) (*Connection, error) {
+func NewConnection(sourceNode *node.Node, destinationNode *node.Node, data []byte, connectionType string, connectionStack []Event) (*Connection, error) {
 	if strings.ToLower(connectionType) != "relay" && strings.ToLower(connectionType) != "pointer" { // Check connection type is valid
 		return &Connection{}, errors.New("invalid connection type") // Error occurred, return nil
 	} else if reflect.ValueOf(destinationNode).IsNil() || reflect.ValueOf(sourceNode).IsNil() { // Check that peer values aren't nil
