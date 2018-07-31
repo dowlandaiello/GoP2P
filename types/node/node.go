@@ -1,7 +1,6 @@
 package node
 
 import (
-	"errors"
 	"time"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -26,7 +25,7 @@ func NewNode(address string, isBootstrap bool) (Node, error) {
 	err := common.CheckAddress(node.Address)
 
 	if err != nil { // If node address is invalid, return error
-		return Node{}, errors.New("invalid node address") // Returns nil node, error
+		return Node{}, err // Returns nil node, error
 	}
 
 	node.LastPingTime = common.GetCurrentTime() // Since node address is valid, add current time as last ping time

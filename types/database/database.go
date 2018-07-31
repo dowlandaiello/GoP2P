@@ -34,8 +34,9 @@ func NewDatabase(bootstrapNode *node.Node, acceptableTimeout uint) (NodeDatabase
 
 // AddNode - adds node to specified nodedatabase, after checking address of node
 func (db *NodeDatabase) AddNode(node *node.Node) error {
-	if !common.CheckAddress(node.Address) { // Check for invalid address
-		return errors.New("invalid address") // Return new error
+	err := common.CheckAddress(node.Address)
+	if err != nil { // Check for invalid address
+		return err // Return new error
 	}
 
 	*db.Nodes = append(*db.Nodes, *node) // Append node to node list
