@@ -1,6 +1,8 @@
 package node
 
 import (
+	"errors"
+	"reflect"
 	"time"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -20,9 +22,13 @@ type Node struct {
 
 // NewNode - create new instance of node struct, with address specified
 func NewNode(address string, isBootstrap bool) (Node, error) {
+	if reflect.ValueOf(address).IsNil() {
+		return Node{}, errors.New("invalid address")
+	}
+
 	node := Node{Address: address, Reputation: 0, IsBootstrap: isBootstrap} // Creates new node instance with specified address
 
-	err := common.CheckAddress(address)
+	err := common.CheckAddress(node.Address)
 
 	if err != nil { // If node address is invalid, return error
 		return Node{}, err // Returns nil node, error
