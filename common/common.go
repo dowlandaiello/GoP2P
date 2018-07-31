@@ -1,8 +1,11 @@
 package common
 
 import (
+	"errors"
+	"fmt"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 
 	upnp "github.com/NebulousLabs/go-upnp"
@@ -19,29 +22,33 @@ const (
 */
 
 // CheckAddress - check that specified IP address can be pinged, and is available on specified port
-func CheckAddress(address string) bool {
-	p := fastping.NewPinger()                          // Creates new instance of fastping pinger
-	ipAddress, err := net.ResolveIPAddr("ip", address) // Attempts to resolve IP
-	p.AddIPAddr(ipAddress)                             // Adds resolved ip to pinger
+func CheckAddress(address string) error {
+	p := fastping.NewPinger()
+	ipAddress, err := net.ResolveIPAddr("ip", address)
+	p.AddIPAddr(ipAddress)
 
-	returnVal := false // Sets return value to false
-
-	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) { // On received packets from specified address
-		returnVal = true // Sets return value
+	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) {
+		fmt.Printf("IP Addr: %s receive, RTT: %v\n", addr.String(), rtt)
+		fmt.Printf("IP %s tested successfully \n", addr.String())
+	}
+	p.OnIdle = func() {
+		err = errors.New("Timed out with IP " + ipAddress.String() + "\n")
 	}
 
-	p.OnIdle = func() { // Timed out on address
-		if returnVal != true { // Checks that address hasn't already been verified
-			returnVal = false // Sets return value
-		}
+	if err != nil {
+		return err
 	}
 
 	err = p.Run()
-	if err != nil { // Checks for error
-		returnVal = false // Sets return value
+	if err != nil {
+		if strings.Contains(err.Error(), "operation not permitted") {
+			return errors.New("operation requires root privileges")
+		}
+
+		return err
 	}
 
-	return returnVal // Return previously set return value
+	return nil
 }
 
 // GetExtIPAddrWithUpNP - retrieve the external IP address of the current machine via upnp

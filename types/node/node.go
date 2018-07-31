@@ -23,7 +23,9 @@ type Node struct {
 func NewNode(address string, isBootstrap bool) (Node, error) {
 	node := Node{Address: address, Reputation: 0, IsBootstrap: isBootstrap} // Creates new node instance with specified address
 
-	if !common.CheckAddress(node.Address) { // If node address is invalid, return error
+	err := common.CheckAddress(node.Address)
+
+	if err != nil { // If node address is invalid, return error
 		return Node{}, errors.New("invalid node address") // Returns nil node, error
 	}
 
