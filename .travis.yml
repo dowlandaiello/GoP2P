@@ -6,6 +6,8 @@ go:
 
 install: true
 
+sudo: true
+
 matrix:
   allow_failures:
     - go: master
@@ -21,5 +23,5 @@ before_script:
   - go get github.com/fzipp/gocyclo
 
 script:
-  - test -z $(gofmt -s -l $GO_FILES)         # Fail if a .go file hasn't been formatted with gofmt
+  - sudo test -z $(gofmt -s -l $GO_FILES)         # Fail if a .go file hasn't been formatted with gofmt
   - go vet ./...                             # go vet is the official Go static analyzer
