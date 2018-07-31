@@ -6,7 +6,7 @@ go:
 
 install: true
 
-sudo: true
+sudo: required
 
 matrix:
   allow_failures:
