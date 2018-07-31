@@ -23,32 +23,32 @@ const (
 
 // CheckAddress - check that specified IP address can be pinged, and is available on specified port
 func CheckAddress(address string) error {
-	p := fastping.NewPinger()
-	ipAddress, err := net.ResolveIPAddr("ip", address)
-	p.AddIPAddr(ipAddress)
+	p := fastping.NewPinger()                          // Create new pinger
+	ipAddress, err := net.ResolveIPAddr("ip", address) // Resolve address
+	p.AddIPAddr(ipAddress)                             // Add address to pinger
 
-	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) {
-		fmt.Printf("IP Addr: %s receive, RTT: %v\n", addr.String(), rtt)
-		fmt.Printf("IP %s tested successfully \n", addr.String())
+	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) { // On correct address
+		fmt.Printf("IP Addr: %s receive, RTT: %v\n", addr.String(), rtt) // Print address meta
+		fmt.Printf("IP %s tested successfully \n", addr.String())        // Print address meta
 	}
-	p.OnIdle = func() {
-		err = errors.New("Timed out with IP " + ipAddress.String() + "\n")
-	}
-
-	if err != nil {
-		return err
+	p.OnIdle = func() { // On address timeout
+		err = errors.New("Timed out with IP " + ipAddress.String() + "\n") // Assign meta to error
 	}
 
-	err = p.Run()
-	if err != nil {
-		if strings.Contains(err.Error(), "operation not permitted") {
-			return errors.New("operation requires root privileges")
+	if err != nil { // Check for error
+		return err // Return found error
+	}
+
+	err = p.Run()   // Assign to error
+	if err != nil { // Check for errors
+		if strings.Contains(err.Error(), "operation not permitted") { // Check for specific error
+			return errors.New("operation requires root privileges") // Return custom error
 		}
 
-		return err
+		return err // Return error
 	}
 
-	return nil
+	return nil // No error found, return nil
 }
 
 // GetExtIPAddrWithUpNP - retrieve the external IP address of the current machine via upnp
