@@ -29,7 +29,6 @@ var (
 
 // CheckAddress - check that specified IP address can be pinged, and is available on specified port
 func CheckAddress(address string) error {
-	fmt.Println("checking address: " + address)
 	p := fastping.NewPinger()                          // Create new pinger
 	ipAddress, err := net.ResolveIPAddr("ip", address) // Resolve address
 	p.AddIPAddr(ipAddress)                             // Add address to pinger
