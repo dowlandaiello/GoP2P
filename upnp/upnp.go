@@ -4,6 +4,10 @@ import (
 	upnp "github.com/NebulousLabs/go-upnp"
 )
 
+/*
+	BEGIN EXPORTED METHODS:
+*/
+
 // GetGateway - get reference to current network gateway device
 func GetGateway() (*upnp.IGD, error) { // Returns error if forward failed, returns gateway device is succeeded
 	// Attempt to discover gateway device
@@ -50,3 +54,7 @@ func RemovePortForward(portNumber uint) error { // Returns error if removal fail
 
 	return nil // No error occurred, return nil
 }
+
+/*
+	END EXPORTED METHODS
+*/

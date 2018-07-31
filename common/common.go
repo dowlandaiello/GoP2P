@@ -12,6 +12,10 @@ const (
 	NodeAvailableRep = 10
 )
 
+/*
+	BEGIN EXPORTED METHODS:
+*/
+
 // CheckAddress - check that specified IP address can be pinged, and is available on specified port
 func CheckAddress(address string) bool {
 	p := fastping.NewPinger()                          // Creates new instance of fastping pinger
@@ -42,3 +46,7 @@ func CheckAddress(address string) bool {
 func GetCurrentTime() time.Time {
 	return time.Now().UTC() // Returns current time in UTC
 }
+
+/*
+	END EXPORTED METHODS
+*/

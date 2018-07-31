@@ -1,4 +1,4 @@
-package types
+package node
 
 import (
 	"errors"
@@ -15,6 +15,10 @@ type Node struct {
 	IsBootstrap  bool      `json:"is boostrap"` // Value used for checking whether or not a specific node is a bootstrap node (again, used for node finding algorithm)
 }
 
+/*
+	BEGIN EXPORTED METHODS:
+*/
+
 // NewNode - create new instance of node struct, with address specified
 func NewNode(address string, isBootstrap bool) (Node, error) {
 	node := Node{Address: address, Reputation: 0, IsBootstrap: isBootstrap} // Creates new node instance with specified address
@@ -28,3 +32,7 @@ func NewNode(address string, isBootstrap bool) (Node, error) {
 
 	return node, nil // No error occurred, return nil
 }
+
+/*
+	END EXPORTED METHODS:
+*/
