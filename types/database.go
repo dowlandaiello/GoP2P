@@ -13,6 +13,20 @@ type NodeDatabase struct {
 	AcceptableTimeout uint // AcceptableTimeout - database-wide definition for operation timeout
 }
 
+// NewDatabase - attempts creates new instance of the NodeDatabase struct
+func NewDatabase(bootstrapNode *Node, timeout uint) (NodeDatabase, error) {
+
+	db := NodeDatabase{AcceptableTimeout: timeout}
+
+	err := db.AddNode(bootstrapNode)
+
+	if err != nil {
+		return NodeDatabase{}, err
+	}
+
+	return db, nil // No error occurred, return database
+}
+
 // AddNode - adds node to specified nodedatabase, after checking address of node
 func (db *NodeDatabase) AddNode(node *Node) error {
 	if !common.CheckAddress(node.Address) {
