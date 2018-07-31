@@ -9,9 +9,9 @@ import (
 
 // NodeDatabase - database containing list of node addresses, as well as bootstrap addresses
 type NodeDatabase struct {
-	Nodes *[]node.Node // Nodes - primary list of nodes
+	Nodes *[]node.Node `json:" nodes"` // Nodes - primary list of nodes
 
-	AcceptableTimeout uint // AcceptableTimeout - database-wide definition for operation timeout
+	AcceptableTimeout uint `json:"db-wide timeout"` // AcceptableTimeout - database-wide definition for operation timeout
 }
 
 /*

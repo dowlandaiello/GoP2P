@@ -83,7 +83,7 @@ func GetExtIPAddrWithoutUpNP() (string, error) {
 		return "", err // Return error
 	}
 
-	return string(ip[:len(ip)]), nil // Return ip
+	return string(ip[:]), nil // Return ip
 }
 
 // GetCurrentTime - get current time in the UTC format
