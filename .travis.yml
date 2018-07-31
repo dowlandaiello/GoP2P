@@ -23,5 +23,5 @@ before_script:
   - go get github.com/fzipp/gocyclo
 
 script:
-  - sudo - E env "PATH=$PATH" go test -z $(gofmt -s -l $GO_FILES) # Fail if a .go file hasn't been formatted with gofmt
+  sudo - E env "PATH=$PATH" go test ./...
   - go vet ./...                                                  # go vet is the official Go static analyzer
