@@ -9,7 +9,7 @@ import (
 	"time"
 
 	upnp "github.com/NebulousLabs/go-upnp"
-	"github.com/mitsukomegumi/GoP2P/fastping"
+	fastping "github.com/tatsushid/go-fastping"
 )
 
 const (
