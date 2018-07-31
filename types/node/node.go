@@ -2,7 +2,6 @@ package node
 
 import (
 	"errors"
-	"reflect"
 	"time"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -22,7 +21,7 @@ type Node struct {
 
 // NewNode - create new instance of node struct, with address specified
 func NewNode(address string, isBootstrap bool) (Node, error) {
-	if reflect.ValueOf(address).IsNil() {
+	if address == "" {
 		return Node{}, errors.New("invalid address")
 	}
 
