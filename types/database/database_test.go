@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -22,6 +23,8 @@ func TestNewDatabase(t *testing.T) {
 			t.FailNow()
 		}
 	}
+
+	fmt.Println("address: " + address)
 
 	node, err := node.NewNode(address, true) // Attempt to create new node
 
