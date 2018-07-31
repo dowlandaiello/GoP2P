@@ -6,6 +6,8 @@ go:
 
 install: true
 
+sudo: true
+
 matrix:
   allow_failures:
     - go: master
