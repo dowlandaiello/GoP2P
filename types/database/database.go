@@ -2,6 +2,7 @@ package database
 
 import (
 	"errors"
+	"reflect"
 
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
@@ -39,9 +40,9 @@ func (db *NodeDatabase) AddNode(destNode *node.Node) error {
 		return err // Return new error
 	}
 
-	if len(*db.Nodes) == 0 {
-		*db.Nodes = []node.Node{*destNode}
-	} else {
+	if reflect.ValueOf(db.Nodes).IsNil() { // Check if node array is nil
+		*db.Nodes = []node.Node{*destNode} // Initialize empty array with new array composed of destNode
+	} else { // Array is not nil
 		*db.Nodes = append(*db.Nodes, *destNode) // Append node to node list
 	}
 
