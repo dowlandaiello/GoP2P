@@ -41,7 +41,7 @@ func (db *NodeDatabase) AddNode(destNode *node.Node) error {
 	}
 
 	if reflect.ValueOf(db.Nodes).IsNil() { // Check if node array is nil
-		*db.Nodes = []node.Node{*destNode} // Initialize empty array with new array composed of destNode
+		db.Nodes = &[]node.Node{*destNode} // Initialize empty array with new array composed of destNode
 	} else { // Array is not nil
 		*db.Nodes = append(*db.Nodes, *destNode) // Append node to node list
 	}

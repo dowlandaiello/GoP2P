@@ -28,8 +28,8 @@ func TestNewDatabase(t *testing.T) {
 	if err != nil && !strings.Contains(err.Error(), "root") { // Check for errors
 		t.Errorf(err.Error()) // Return found error
 		t.FailNow()
-	} else if err != nil {
-		t.Logf(err.Error())
+	} else if err != nil { // Check that an error did indeed occur
+		t.Logf(err.Error()) // Log invalid error
 	}
 
 	if err == nil {
