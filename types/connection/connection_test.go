@@ -39,5 +39,5 @@ func TestNewConnection(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	t.Logf("create connection with source node %s", connection.InitializationNode.Address) // Log node
+	t.Logf("created connection with source node %s", connection.InitializationNode.Address) // Log node
 }
