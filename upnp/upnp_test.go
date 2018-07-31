@@ -8,6 +8,7 @@ func TestDiscoverGateway(t *testing.T) {
 
 	if err != nil {
 		t.Errorf(err.Error()) // If error occurs, print error to testing console
+		t.FailNow()
 	}
 }
 
@@ -17,6 +18,7 @@ func TestForwardPort(t *testing.T) {
 
 	if err != nil {
 		t.Errorf(err.Error()) // If error occurs, print error to testing console
+		t.FailNow()
 	}
 }
 
@@ -25,5 +27,6 @@ func TestRemovePortForward(t *testing.T) {
 
 	if err != nil {
 		t.Errorf(err.Error()) // If error occurs, print error to testing console
+		t.FailNow()
 	}
 }
