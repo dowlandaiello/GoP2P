@@ -2,8 +2,10 @@ package common
 
 import (
 	"net"
+	"net/http"
 	"time"
 
+	upnp "github.com/NebulousLabs/go-upnp"
 	"github.com/mitsukomegumi/GoP2P/fastping"
 )
 
@@ -40,6 +42,41 @@ func CheckAddress(address string) bool {
 	}
 
 	return returnVal // Return previously set return value
+}
+
+// GetExtIPAddrWithUpNP - retrieve the external IP address of the current machine via upnp
+func GetExtIPAddrWithUpNP() (string, error) {
+	// connect to router
+	d, err := upnp.Discover()
+	if err != nil { // Check for errors
+		return "", err // return error
+	}
+
+	// discover external IP
+	ip, err := d.ExternalIP()
+	if err != nil { // Check for errors
+		return "", err // return error
+	}
+	return ip, nil
+}
+
+// GetExtIPAddrWithoutUpNP - retrieve the external IP address of the current machine w/o upnp
+func GetExtIPAddrWithoutUpNP() (string, error) {
+	ip := make([]byte, 100) // Create IP buffer
+
+	resp, err := http.Get("http://checkip.amazonaws.com/") // Attempt to check IP via aws
+	if err != nil {                                        // Check for errors
+		return "", err // Return error
+	}
+
+	defer resp.Body.Close()     // Close connection
+	_, err = resp.Body.Read(ip) // Read IP
+
+	if err != nil { // Check for errors
+		return "", err // Return error
+	}
+
+	return string(ip[:len(ip)]), nil // Return ip
 }
 
 // GetCurrentTime - get current time in the UTC format
