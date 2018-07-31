@@ -10,7 +10,7 @@ import (
 
 // TestNewDatabase - test functionality of NewDatabase() function
 func TestNewDatabase(t *testing.T) {
-	address := ""
+	address := ""                                 // Initialize address value
 	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
 
 	if err != nil || address == "" { // Check for errors
