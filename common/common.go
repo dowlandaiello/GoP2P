@@ -3,6 +3,7 @@ package common
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"strings"
@@ -15,6 +16,11 @@ import (
 const (
 	// NodeAvailableRep - global definition for value of node availability
 	NodeAvailableRep = 10
+)
+
+var (
+	// ExtIPProviders - preset macro defining list of available external IP checking services
+	ExtIPProviders = []string{"http://checkip.amazonaws.com/"}
 )
 
 /*
@@ -69,15 +75,14 @@ func GetExtIPAddrWithUpNP() (string, error) {
 
 // GetExtIPAddrWithoutUpNP - retrieve the external IP address of the current machine w/o upnp
 func GetExtIPAddrWithoutUpNP() (string, error) {
-	ip := make([]byte, 100) // Create IP buffer
-
 	resp, err := http.Get("http://checkip.amazonaws.com/") // Attempt to check IP via aws
 	if err != nil {                                        // Check for errors
 		return "", err // Return error
 	}
 
-	defer resp.Body.Close()     // Close connection
-	_, err = resp.Body.Read(ip) // Read IP
+	defer resp.Body.Close() // Close connection
+
+	ip, err := ioutil.ReadAll(resp.Body) // Read address
 
 	if err != nil { // Check for errors
 		return "", err // Return error

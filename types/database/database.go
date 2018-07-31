@@ -2,6 +2,7 @@ package database
 
 import (
 	"errors"
+	"reflect"
 
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
@@ -9,9 +10,9 @@ import (
 
 // NodeDatabase - database containing list of node addresses, as well as bootstrap addresses
 type NodeDatabase struct {
-	Nodes *[]node.Node // Nodes - primary list of nodes
+	Nodes *[]node.Node `json:" nodes"` // Nodes - primary list of nodes
 
-	AcceptableTimeout uint // AcceptableTimeout - database-wide definition for operation timeout
+	AcceptableTimeout uint `json:"db-wide timeout"` // AcceptableTimeout - database-wide definition for operation timeout
 }
 
 /*
@@ -33,13 +34,17 @@ func NewDatabase(bootstrapNode *node.Node, acceptableTimeout uint) (NodeDatabase
 }
 
 // AddNode - adds node to specified nodedatabase, after checking address of node
-func (db *NodeDatabase) AddNode(node *node.Node) error {
-	err := common.CheckAddress(node.Address)
+func (db *NodeDatabase) AddNode(destNode *node.Node) error {
+	err := common.CheckAddress(destNode.Address)
 	if err != nil { // Check for invalid address
 		return err // Return new error
 	}
 
-	*db.Nodes = append(*db.Nodes, *node) // Append node to node list
+	if reflect.ValueOf(db.Nodes).IsNil() { // Check if node array is nil
+		db.Nodes = &[]node.Node{*destNode} // Initialize empty array with new array composed of destNode
+	} else { // Array is not nil
+		*db.Nodes = append(*db.Nodes, *destNode) // Append node to node list
+	}
 
 	return nil // No error occurred, return nil
 }

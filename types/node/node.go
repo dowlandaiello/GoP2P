@@ -1,6 +1,7 @@
 package node
 
 import (
+	"errors"
 	"time"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -20,6 +21,10 @@ type Node struct {
 
 // NewNode - create new instance of node struct, with address specified
 func NewNode(address string, isBootstrap bool) (Node, error) {
+	if address == "" {
+		return Node{}, errors.New("invalid address")
+	}
+
 	node := Node{Address: address, Reputation: 0, IsBootstrap: isBootstrap} // Creates new node instance with specified address
 
 	err := common.CheckAddress(node.Address)
