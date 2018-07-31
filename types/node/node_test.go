@@ -27,7 +27,7 @@ func TestNewNode(t *testing.T) {
 	if err != nil && !strings.Contains(err.Error(), "root") { // Check for errors
 		t.Errorf(err.Error()) // Return found error
 		t.FailNow()
-	} else if strings.Contains(err.Error(), "root") {
+	} else if err != nil { // Account for special case
 		t.Logf(err.Error())
 	}
 }
