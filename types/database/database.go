@@ -33,13 +33,17 @@ func NewDatabase(bootstrapNode *node.Node, acceptableTimeout uint) (NodeDatabase
 }
 
 // AddNode - adds node to specified nodedatabase, after checking address of node
-func (db *NodeDatabase) AddNode(node *node.Node) error {
-	err := common.CheckAddress(node.Address)
+func (db *NodeDatabase) AddNode(destNode *node.Node) error {
+	err := common.CheckAddress(destNode.Address)
 	if err != nil { // Check for invalid address
 		return err // Return new error
 	}
 
-	*db.Nodes = append(*db.Nodes, *node) // Append node to node list
+	if len(*db.Nodes) == 0 {
+		*db.Nodes = []node.Node{*destNode}
+	} else {
+		*db.Nodes = append(*db.Nodes, *destNode) // Append node to node list
+	}
 
 	return nil // No error occurred, return nil
 }
