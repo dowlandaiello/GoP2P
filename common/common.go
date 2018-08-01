@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	upnp "github.com/NebulousLabs/go-upnp"
@@ -50,10 +49,6 @@ func CheckAddress(address string) error {
 
 	err = p.Run()   // Assign to error
 	if err != nil { // Check for errors
-		if strings.Contains(err.Error(), "operation not permitted") { // Check for specific error
-			return errors.New("operation requires root privileges") // Return custom error
-		}
-
 		return err // Return error
 	}
 
