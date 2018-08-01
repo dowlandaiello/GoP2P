@@ -4,6 +4,7 @@ import (
 	"errors"
 	"reflect"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -39,7 +40,15 @@ func NewVariable(variableType string, variableData *interface{}) (*Variable, err
 		return &Variable{}, errors.New("invalid variable initialization values")
 	}
 
-	variable := Variable{VariableType: variableType, VariableData: variableData}
+	variable := Variable{VariableType: variableType, VariableIdentifier: "", VariableData: variableData}
+
+	serializedVariable, err := common.SerializeToBytes(variable)
+
+	if err != nil {
+		return &Variable{}, err
+	}
+
+	variable.VariableIdentifier = common.SHA256(serializedVariable)
 
 	return &variable, nil
 }
