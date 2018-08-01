@@ -20,6 +20,10 @@ type Variable struct {
 	VariableData       *interface{} `json:"data"`       // VariableData - pretty self-explanatory (usually a pointer to a struct)
 }
 
+/*
+	BEGIN EXPORTED FUNCTIONS:
+*/
+
 // NewEnvironment - creates new instance of environment struct with specified node value
 func NewEnvironment(node *node.Node) error {
 	if reflect.ValueOf(node).IsNil() { // Check that node is not nil
@@ -28,3 +32,7 @@ func NewEnvironment(node *node.Node) error {
 
 	return nil // No error occurred, return nil
 }
+
+/*
+	END EXPORTED FUNCTIONS
+*/
