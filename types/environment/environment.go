@@ -25,12 +25,12 @@ type Variable struct {
 */
 
 // NewEnvironment - creates new instance of environment struct with specified node value
-func NewEnvironment(node *node.Node) error {
+func NewEnvironment(node *node.Node) (*Environment, error) {
 	if reflect.ValueOf(node).IsNil() { // Check that node is not nil
-		return errors.New("invalid node") // Return error if true
+		return nil, errors.New("invalid node") // Return error if true
 	}
 
-	return nil // No error occurred, return nil
+	return &Environment{EnvironmentVariables: []*Variable{}, EnvironmentNode: node}, nil // No error occurred, return nil
 }
 
 /*
