@@ -47,6 +47,10 @@ type Event struct {
 	DestinationNode *node.Node `json:"destination"` // Node to contact
 }
 
+// Resolution - abstract type defining how to handle and deal with a connection or event's data
+type Resolution struct {
+}
+
 /*
 	BEGIN EXPORTED METHODS:
 */
