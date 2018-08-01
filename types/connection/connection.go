@@ -50,6 +50,10 @@ type Event struct {
 	DestinationNode *node.Node `json:"destination"` // Node to contact
 }
 
+/*
+	BEGIN EXPORTED METHODS:
+*/
+
 // NewConnection - creates new Connection{} instance with specified data, peers
 func NewConnection(sourceNode *node.Node, destinationNode *node.Node, data []byte, connectionType string, connectionStack []Event) (*Connection, error) {
 	if strings.ToLower(connectionType) != "relay" && strings.ToLower(connectionType) != "pointer" { // Check connection type is valid
@@ -84,3 +88,7 @@ func (event *Event) Attempt() {
 	eventByteValueBuffer := new(bytes.Buffer) // Create buffer to store encoded object
 	json.NewEncoder(eventByteValueBuffer).Encode(event)
 }
+
+/*
+	END EXPORTED METHODS
+*/
