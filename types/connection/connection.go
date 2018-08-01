@@ -81,6 +81,6 @@ func (connection *Connection) Attempt() {
 
 // Attempt - attempts to carry out event
 func (event *Event) Attempt() {
-	eventByteValueBuffer := new(bytes.Buffer)
+	eventByteValueBuffer := new(bytes.Buffer) // Create buffer to store encoded object
 	json.NewEncoder(eventByteValueBuffer).Encode(event)
 }
