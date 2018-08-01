@@ -1,12 +1,11 @@
 package connection
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"reflect"
 	"strings"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -84,9 +83,43 @@ func (connection *Connection) Attempt() {
 }
 
 // Attempt - attempts to carry out event
-func (event *Event) Attempt() {
-	eventByteValueBuffer := new(bytes.Buffer) // Create buffer to store encoded object
-	json.NewEncoder(eventByteValueBuffer).Encode(event)
+func (event *Event) Attempt() error {
+	isSelf, err := event.checkIsSelf()
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	if isSelf == true { // Handle different types of event
+		event.attemptIsSelf()
+	} else {
+		event.attemptExternal()
+	}
+
+	return nil
+}
+
+func (event *Event) attemptIsSelf() error {
+	return nil
+}
+
+func (event *Event) attemptExternal() error {
+	return nil
+}
+
+// CheckIsSelf - check whether or not an event is being passed to a node with the intention of receiving data from that node
+func (event *Event) checkIsSelf() (bool, error) {
+	selfAddr, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
+
+	if err != nil { // Check for errors
+		selfAddr, err = common.GetExtIPAddrWithoutUpNP() // Fetch IP in a safer manner
+
+		if err != nil { // Check for errors
+			return false, err // Return error
+		}
+	}
+
+	return event.SourceNode.Address == selfAddr, nil // No error occurred, return nil error
 }
 
 /*
