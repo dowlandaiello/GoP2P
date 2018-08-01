@@ -1,6 +1,8 @@
 package connection
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"reflect"
 	"strings"
@@ -79,5 +81,6 @@ func (connection *Connection) Attempt() {
 
 // Attempt - attempts to carry out event
 func (event *Event) Attempt() {
-
+	eventByteValueBuffer := new(bytes.Buffer)
+	json.NewEncoder(eventByteValueBuffer).Encode(event)
 }
