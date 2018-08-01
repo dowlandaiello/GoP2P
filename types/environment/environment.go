@@ -33,6 +33,17 @@ func NewEnvironment(node *node.Node) (*Environment, error) {
 	return &Environment{EnvironmentVariables: []*Variable{}, EnvironmentNode: node}, nil // No error occurred, return nil
 }
 
+// NewVariable - creates new instance of variable struct with specified types, data
+func NewVariable(variableType string, variableData *interface{}) (*Variable, error) {
+	if reflect.ValueOf(variableData).IsNil() || variableType == "" {
+		return &Variable{}, errors.New("invalid variable initialization values")
+	}
+
+	variable := Variable{VariableType: variableType, VariableData: variableData}
+
+	return &variable, nil
+}
+
 /*
 	END EXPORTED FUNCTIONS
 */

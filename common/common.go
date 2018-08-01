@@ -1,6 +1,8 @@
 package common
 
 import (
+	"crypto/sha256"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -101,6 +103,12 @@ func GetCurrentDir() (string, error) {
 		return "", err
 	}
 	return currentDir, nil
+}
+
+// SHA256 - hash specified byte array
+func SHA256(b []byte) string {
+	hash := sha256.Sum256(b)                          // Hash it
+	return base64.StdEncoding.EncodeToString(hash[:]) // Return it
 }
 
 /*
