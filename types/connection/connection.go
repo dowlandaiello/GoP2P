@@ -5,7 +5,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -45,7 +44,6 @@ type Event struct {
 
 	Data []byte `json:"data"` // Data being transmitted
 
-	SourceNode      *node.Node `json:"source"`      // Initialization node
 	DestinationNode *node.Node `json:"destination"` // Node to contact
 }
 
@@ -67,14 +65,14 @@ func NewConnection(sourceNode *node.Node, destinationNode *node.Node, data []byt
 }
 
 // NewEvent - creates new Event{} instance with specified data, peers
-func NewEvent(eventType string, data []byte, sourceNode *node.Node, destinationNode *node.Node) (*Event, error) {
+func NewEvent(eventType string, data []byte, destinationNode *node.Node) (*Event, error) {
 	if strings.ToLower(eventType) != "push" && strings.ToLower(eventType) != "fetch" { // Check for invalid types
 		return &Event{}, errors.New("invalid event") // Error occurred, return nil, error
-	} else if reflect.ValueOf(sourceNode).IsNil() || reflect.ValueOf(destinationNode).IsNil() { // Check for invalid peer values
+	} else if reflect.ValueOf(destinationNode).IsNil() { // Check for invalid peer values
 		return &Event{}, errors.New("invalid peer value") // Error occurred, return nil, error
 	}
 
-	return &Event{EventType: eventType, Data: data, SourceNode: sourceNode, DestinationNode: destinationNode}, nil // Return initialized event
+	return &Event{EventType: eventType, Data: data, DestinationNode: destinationNode}, nil // Return initialized event
 }
 
 // Attempt - attempts to carry out connection, if event stack is provided, begins to iterate through list
@@ -84,42 +82,18 @@ func (connection *Connection) Attempt() {
 
 // Attempt - attempts to carry out event
 func (event *Event) Attempt() error {
-	isSelf, err := event.checkIsSelf()
+	err := event.attempt() // attempt
 
 	if err != nil { // Check for errors
 		return err // Return error
 	}
 
-	if isSelf == true { // Handle different types of event
-		event.attemptIsSelf()
-	} else {
-		event.attemptExternal()
-	}
-
-	return nil
+	return nil // No error occurred, return nil
 }
 
-func (event *Event) attemptIsSelf() error {
-	return nil
-}
-
-func (event *Event) attemptExternal() error {
-	return nil
-}
-
-// CheckIsSelf - check whether or not an event is being passed to a node with the intention of receiving data from that node
-func (event *Event) checkIsSelf() (bool, error) {
-	selfAddr, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
-
-	if err != nil { // Check for errors
-		selfAddr, err = common.GetExtIPAddrWithoutUpNP() // Fetch IP in a safer manner
-
-		if err != nil { // Check for errors
-			return false, err // Return error
-		}
-	}
-
-	return event.SourceNode.Address == selfAddr, nil // No error occurred, return nil error
+// attempt - wrapper
+func (event *Event) attempt() error {
+	return nil // No error occurred, return nil
 }
 
 /*
