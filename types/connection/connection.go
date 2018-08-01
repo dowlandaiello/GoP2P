@@ -49,9 +49,9 @@ type Event struct {
 
 // Resolution - abstract type defining how to handle and deal with a connection or event's data
 type Resolution struct {
-	ResolutionData []byte `json:"data"`
+	ResolutionData []byte `json:"data"` // ResolutionData - data being passed via resolution
 
-	GuidingType interface{} `json:"guide"`
+	GuidingType interface{} `json:"guide"` // GuidingType - struct to map resolution to
 }
 
 /*
