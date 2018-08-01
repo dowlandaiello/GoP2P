@@ -1,5 +1,3 @@
-sudo: required
-
 language: go
 
 go:
@@ -7,6 +5,8 @@ go:
   - master 
 
 install: true
+
+sudo: false
 
 matrix:
   allow_failures:
@@ -27,4 +27,3 @@ before_script:
 script:
   - test -z $(gofmt -s -l $GO_FILES)  # Fail if a .go file hasn't been formatted with gofmt
   - go vet ./...                      # go vet is the official Go static analyzer
-  - sudo go test ./...
