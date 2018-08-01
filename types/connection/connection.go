@@ -42,13 +42,16 @@ type Connection struct {
 type Event struct {
 	EventType string `json:"type"`
 
-	Data []byte `json:"data"` // Data being transmitted
+	Resolution Resolution `json:"resolution"` // Data being transmitted
 
 	DestinationNode *node.Node `json:"destination"` // Node to contact
 }
 
 // Resolution - abstract type defining how to handle and deal with a connection or event's data
 type Resolution struct {
+	ResolutionData []byte `json:"data"`
+
+	GuidingType interface{} `json:"guide"`
 }
 
 /*
@@ -68,15 +71,15 @@ func NewConnection(sourceNode *node.Node, destinationNode *node.Node, data []byt
 	return &Connection{DestinationNode: destinationNode, InitializationNode: sourceNode, Data: data, ConnectionType: connectionType, ConnectionStack: connectionStack}, nil // No error occurred, return correctly initialized Connection
 }
 
-// NewEvent - creates new Event{} instance with specified data, peers
-func NewEvent(eventType string, data []byte, destinationNode *node.Node) (*Event, error) {
+// NewEvent - creates new Event{} instance with specified resolution, peers
+func NewEvent(eventType string, resolution Resolution, destinationNode *node.Node) (*Event, error) {
 	if strings.ToLower(eventType) != "push" && strings.ToLower(eventType) != "fetch" { // Check for invalid types
 		return &Event{}, errors.New("invalid event") // Error occurred, return nil, error
 	} else if reflect.ValueOf(destinationNode).IsNil() { // Check for invalid peer values
 		return &Event{}, errors.New("invalid peer value") // Error occurred, return nil, error
 	}
 
-	return &Event{EventType: eventType, Data: data, DestinationNode: destinationNode}, nil // Return initialized event
+	return &Event{EventType: eventType, Resolution: resolution, DestinationNode: destinationNode}, nil // Return initialized event
 }
 
 // Attempt - attempts to carry out connection, if event stack is provided, begins to iterate through list
