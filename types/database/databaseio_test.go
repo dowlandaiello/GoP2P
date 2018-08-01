@@ -8,6 +8,7 @@ import (
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
+// TestWriteToMemory - test functionality of WriteToMemory() function
 func TestWriteToMemory(t *testing.T) {
 	address := ""                                 // Initialize address value
 	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
@@ -42,20 +43,20 @@ func TestWriteToMemory(t *testing.T) {
 
 		t.Logf("node database created successfully with bootstrap node %s", (*db.Nodes)[0].Address) // Print success
 
-		dir, err := common.GetCurrentDir()
+		dir, err := common.GetCurrentDir() // Attempt to fetch working directory
 
-		if err != nil {
-			t.Errorf(err.Error())
-			t.FailNow()
+		if err != nil { // Check for errors
+			t.Errorf(err.Error()) // Log error
+			t.FailNow()           // Panic
 		}
 
-		err = db.WriteToMemory(dir)
+		err = db.WriteToMemory(dir) // Attempt to write database to memory
 
-		if err != nil {
-			t.Errorf(err.Error())
-			t.FailNow()
+		if err != nil { // Check for errors
+			t.Errorf(err.Error()) // Log error
+			t.FailNow()           // Panic
 		}
 
-		t.Logf("wrote database to memory")
+		t.Logf("wrote database to memory") // Log success
 	}
 }
