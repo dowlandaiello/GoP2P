@@ -56,6 +56,20 @@ func TestReadGob(t *testing.T) {
 	t.Logf("gob read '%s'", input) // Log read gob
 }
 
+// TestSerializeToBytes - check functionality of SerializeToBytes() function
+func TestSerializeToBytes(t *testing.T) {
+	obj := "test" // Create temporary testing object
+
+	byteVal, err := SerializeToBytes(obj) // Attempt to serialize
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("found serialized value %s", byteVal) // Log success
+}
+
 /*
 	END EXPORTED METHODS
 */
