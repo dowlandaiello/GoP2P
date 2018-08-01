@@ -77,7 +77,7 @@ func NewEvent(eventType string, data []byte, sourceNode *node.Node, destinationN
 	return &Event{EventType: eventType, Data: data, SourceNode: sourceNode, DestinationNode: destinationNode}, nil // Return initialized event
 }
 
-// Attempt - attempts to carry out connection, if connection stack is provided, begins to iterate through list
+// Attempt - attempts to carry out connection, if event stack is provided, begins to iterate through list
 func (connection *Connection) Attempt() {
 
 }
