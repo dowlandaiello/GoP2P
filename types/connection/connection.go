@@ -76,3 +76,8 @@ func NewEvent(eventType string, data []byte, sourceNode *node.Node, destinationN
 func (connection *Connection) Attempt() {
 
 }
+
+// Attempt - attempts to carry out event
+func (event *Event) Attempt() {
+
+}
