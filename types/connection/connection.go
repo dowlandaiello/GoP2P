@@ -28,7 +28,7 @@ var (
 	*/
 )
 
-// Connection - abstract container for Golang connection type, contains metadata, routing parameteres
+// Connection - abstract container for Golang connection type, contains metadata, routing parameters
 type Connection struct {
 	DestinationNode    *node.Node `json:"destination node"`  // Node to contact
 	InitializationNode *node.Node `json:"initializing node"` // Node initializing connection
