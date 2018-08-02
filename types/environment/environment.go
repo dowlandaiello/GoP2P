@@ -34,6 +34,17 @@ func NewEnvironment(node *node.Node) (*Environment, error) {
 	return &Environment{EnvironmentVariables: []*Variable{}, EnvironmentNode: node}, nil // No error occurred, return nil
 }
 
+// QueryType - Fetches latest entry into environment with matching type
+func (environment *Environment) QueryType(variableType string) (*Variable, error) {
+	x := 0 // Initialize iterator
+
+	for x != len(environment.EnvironmentVariables) {
+		x++ // Increment
+	}
+
+	return &Variable{}, errors.New("no matching variable found") // No results found, return error
+}
+
 // NewVariable - creates new instance of variable struct with specified types, data
 func NewVariable(variableType string, variableData interface{}) (*Variable, error) {
 	if variableType == "" { // Check for invalid initialization parameters
