@@ -22,7 +22,7 @@ type Variable struct {
 }
 
 /*
-	BEGIN EXPORTED FUNCTIONS:
+	BEGIN EXPORTED METHODS:
 */
 
 // NewEnvironment - creates new instance of environment struct with specified node value
@@ -54,5 +54,5 @@ func NewVariable(variableType string, variableData *interface{}) (*Variable, err
 }
 
 /*
-	END EXPORTED FUNCTIONS
+	END EXPORTED METHODS
 */
