@@ -36,10 +36,18 @@ func NewEnvironment(node *node.Node) (*Environment, error) {
 
 // QueryType - Fetches latest entry into environment with matching type
 func (environment *Environment) QueryType(variableType string) (*Variable, error) {
-	x := 0 // Initialize iterator
+	if len(environment.EnvironmentVariables) == 0 { // Checksafe
+		return &Variable{}, errors.New("found nil environment variables") // Return error
+	}
 
-	for x != len(environment.EnvironmentVariables) {
-		x++ // Increment
+	x := len(environment.EnvironmentVariables) - 1 // Initialize iterator
+
+	for x != -1 { // Check not out of bounds
+		if environment.EnvironmentVariables[x].VariableType == variableType { // Check for matching type
+			return environment.EnvironmentVariables[x], nil // Return found variable
+		}
+
+		x-- // Decrement
 	}
 
 	return &Variable{}, errors.New("no matching variable found") // No results found, return error
