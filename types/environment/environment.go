@@ -36,21 +36,21 @@ func NewEnvironment(node *node.Node) (*Environment, error) {
 
 // NewVariable - creates new instance of variable struct with specified types, data
 func NewVariable(variableType string, variableData interface{}) (*Variable, error) {
-	if variableType == "" {
-		return &Variable{}, errors.New("invalid variable initialization values")
+	if variableType == "" { // Check for invalid initialization parameters
+		return &Variable{}, errors.New("invalid variable initialization values") // Return error
 	}
 
-	variable := Variable{VariableType: variableType, VariableIdentifier: "", VariableData: variableData}
+	variable := Variable{VariableType: variableType, VariableIdentifier: "", VariableData: variableData} // Initialize variable
 
-	serializedVariable, err := common.SerializeToBytes(variable)
+	serializedVariable, err := common.SerializeToBytes(variable) // Serialize variable to generate hash
 
-	if err != nil {
-		return &Variable{}, err
+	if err != nil { // Check for errors
+		return &Variable{}, err // Return error
 	}
 
-	variable.VariableIdentifier = common.SHA256(serializedVariable)
+	variable.VariableIdentifier = common.SHA256(serializedVariable) // Add hash to variable contents
 
-	return &variable, nil
+	return &variable, nil // Return variable
 }
 
 /*
