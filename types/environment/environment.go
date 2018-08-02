@@ -16,13 +16,13 @@ type Environment struct {
 
 // Variable - container holding a variable's data (pointer), and identification properties (id, type)
 type Variable struct {
-	VariableType       string       `json:"type"`       // VariableType - type of variable (e.g. string, block, etc...)
-	VariableIdentifier string       `json:"identifier"` // VariableIdentifier - id of variable (used for querying)
-	VariableData       *interface{} `json:"data"`       // VariableData - pretty self-explanatory (usually a pointer to a struct)
+	VariableType       string      `json:"type"`       // VariableType - type of variable (e.g. string, block, etc...)
+	VariableIdentifier string      `json:"identifier"` // VariableIdentifier - id of variable (used for querying)
+	VariableData       interface{} `json:"data"`       // VariableData - pretty self-explanatory (usually a pointer to a struct)
 }
 
 /*
-	BEGIN EXPORTED FUNCTIONS:
+	BEGIN EXPORTED METHODS:
 */
 
 // NewEnvironment - creates new instance of environment struct with specified node value
@@ -34,23 +34,34 @@ func NewEnvironment(node *node.Node) (*Environment, error) {
 	return &Environment{EnvironmentVariables: []*Variable{}, EnvironmentNode: node}, nil // No error occurred, return nil
 }
 
+// QueryType - Fetches latest entry into environment with matching type
+func (environment *Environment) QueryType(variableType string) (*Variable, error) {
+	x := 0 // Initialize iterator
+
+	for x != len(environment.EnvironmentVariables) {
+		x++ // Increment
+	}
+
+	return &Variable{}, errors.New("no matching variable found") // No results found, return error
+}
+
 // NewVariable - creates new instance of variable struct with specified types, data
-func NewVariable(variableType string, variableData *interface{}) (*Variable, error) {
-	if reflect.ValueOf(variableData).IsNil() || variableType == "" {
-		return &Variable{}, errors.New("invalid variable initialization values")
+func NewVariable(variableType string, variableData interface{}) (*Variable, error) {
+	if variableType == "" { // Check for invalid initialization parameters
+		return &Variable{}, errors.New("invalid variable initialization values") // Return error
 	}
 
-	variable := Variable{VariableType: variableType, VariableIdentifier: "", VariableData: variableData}
+	variable := Variable{VariableType: variableType, VariableIdentifier: "", VariableData: variableData} // Initialize variable
 
-	serializedVariable, err := common.SerializeToBytes(variable)
+	serializedVariable, err := common.SerializeToBytes(variable) // Serialize variable to generate hash
 
-	if err != nil {
-		return &Variable{}, err
+	if err != nil { // Check for errors
+		return &Variable{}, err // Return error
 	}
 
-	variable.VariableIdentifier = common.SHA256(serializedVariable)
+	variable.VariableIdentifier = common.SHA256(serializedVariable) // Add hash to variable contents
 
-	return &variable, nil
+	return &variable, nil // Return variable
 }
 
 // AddVariable - attempt to append specified variable to environment variables list
@@ -65,5 +76,5 @@ func (environment *Environment) AddVariable(variable *Variable) error {
 }
 
 /*
-	END EXPORTED FUNCTIONS
+	END EXPORTED METHODS
 */
