@@ -8,6 +8,7 @@ import (
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
+// TestNewEnvironment - test functionality of NewEnvironment() function
 func TestNewEnvironment(t *testing.T) {
 	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
 

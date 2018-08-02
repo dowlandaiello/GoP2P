@@ -53,6 +53,17 @@ func NewVariable(variableType string, variableData *interface{}) (*Variable, err
 	return &variable, nil
 }
 
+// AddVariable - attempt to append specified variable to environment variables list
+func (environment *Environment) AddVariable(variable *Variable) error {
+	if reflect.ValueOf(variable).IsNil() {
+		return errors.New("invalid variable")
+	}
+
+	environment.EnvironmentVariables = append(environment.EnvironmentVariables, variable)
+
+	return nil
+}
+
 /*
 	END EXPORTED FUNCTIONS
 */
