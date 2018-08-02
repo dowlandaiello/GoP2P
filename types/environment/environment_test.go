@@ -47,5 +47,5 @@ func TestNewEnvironment(t *testing.T) {
 
 	envID := common.SHA256(serializedEnv) // Get hash value of environment
 
-	t.Logf("create environment with ID %s", envID) // Log success
+	t.Logf("created environment with ID %s", envID) // Log success
 }
