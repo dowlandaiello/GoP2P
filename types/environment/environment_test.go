@@ -49,3 +49,15 @@ func TestNewEnvironment(t *testing.T) {
 
 	t.Logf("created environment with ID %s", envID) // Log success
 }
+
+// TestNewVariable - test functionality of variable initialization function
+func TestNewVariable(t *testing.T) {
+	variable, err := NewVariable("string", "test") // Create new string variable
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("created variable %s", variable) // Log success
+}
