@@ -5,14 +5,16 @@ import (
 	"time"
 
 	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/types/environment"
 )
 
 // Node - abstract struct containing metadata for a node
 type Node struct {
-	Address      string    `json:"IP address"`  // Node's IP address
-	Reputation   uint      `json:"reputation"`  // Node's reputation (used for node finding algorithm)
-	LastPingTime time.Time `json:"ping"`        // Last time that the node was pinged successfully (also used for node finding algorithm)
-	IsBootstrap  bool      `json:"is boostrap"` // Value used for checking whether or not a specific node is a bootstrap node (again, used for node finding algorithm)
+	Address      string                   `json:"IP address"`  // Node's IP address
+	Reputation   uint                     `json:"reputation"`  // Node's reputation (used for node finding algorithm)
+	LastPingTime time.Time                `json:"ping"`        // Last time that the node was pinged successfully (also used for node finding algorithm)
+	IsBootstrap  bool                     `json:"is boostrap"` // Value used for checking whether or not a specific node is a bootstrap node (again, used for node finding algorithm)
+	Environment  *environment.Environment `json:"environment"` // Used for variable storage and referencing
 }
 
 /*
@@ -21,13 +23,19 @@ type Node struct {
 
 // NewNode - create new instance of node struct, with address specified
 func NewNode(address string, isBootstrap bool) (Node, error) {
-	if address == "" {
-		return Node{}, errors.New("invalid address")
+	environment, err := environment.NewEnvironment()
+
+	if err != nil {
+		return Node{}, err
 	}
 
-	node := Node{Address: address, Reputation: 0, IsBootstrap: isBootstrap} // Creates new node instance with specified address
+	if address == "" {
+		return Node{}, errors.New("invalid init values")
+	}
 
-	err := common.CheckAddress(node.Address)
+	node := Node{Address: address, Reputation: 0, IsBootstrap: isBootstrap, Environment: environment} // Creates new node instance with specified address
+
+	err = common.CheckAddress(node.Address)
 
 	if err != nil { // If node address is invalid, return error
 		return Node{}, err // Returns nil node, error
