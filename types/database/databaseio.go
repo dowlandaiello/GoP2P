@@ -3,7 +3,7 @@ package database
 import (
 	"path/filepath"
 
-	"github.com/mitsukomegumi/go-indigo/src/common"
+	"github.com/mitsukomegumi/GoP2P/common"
 )
 
 // WriteToMemory - create serialized instance of specified NodeDatabase in specified path (string)
