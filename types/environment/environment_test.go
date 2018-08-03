@@ -51,6 +51,10 @@ func TestNewEnvironment(t *testing.T) {
 	t.Logf("created environment with ID %s", envID) // Log success
 }
 
+func TestQueryType(t *testing.T) {
+
+}
+
 // TestNewVariable - test functionality of variable initialization function
 func TestNewVariable(t *testing.T) {
 	variable, err := NewVariable("string", "test") // Create new string variable
