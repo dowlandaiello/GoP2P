@@ -49,6 +49,17 @@ func SerializeToBytes(object interface{}) ([]byte, error) {
 	return serializedBuffer.Bytes(), nil // Return serialized object
 }
 
+// SerializeToString - attempt to get string representation of specified object
+func SerializeToString(object interface{}) (string, error) {
+	out, err := json.Marshal(object) // Attempt to marshal object
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	return string(out), nil // Return serialized value
+}
+
 /*
 	END EXPORTED METHODS
 */
