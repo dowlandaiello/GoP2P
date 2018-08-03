@@ -23,19 +23,19 @@ type Node struct {
 
 // NewNode - create new instance of node struct, with address specified
 func NewNode(address string, isBootstrap bool) (Node, error) {
-	environment, err := environment.NewEnvironment()
+	environment, err := environment.NewEnvironment() // Create new environment
 
-	if err != nil {
-		return Node{}, err
+	if err != nil { // Check for errors
+		return Node{}, err // Return error
 	}
 
-	if address == "" {
-		return Node{}, errors.New("invalid init values")
+	if address == "" { // Check for invalid address
+		return Node{}, errors.New("invalid init values") // Return error
 	}
 
 	node := Node{Address: address, Reputation: 0, IsBootstrap: isBootstrap, Environment: environment} // Creates new node instance with specified address
 
-	err = common.CheckAddress(node.Address)
+	err = common.CheckAddress(node.Address) // Verify address
 
 	if err != nil { // If node address is invalid, return error
 		return Node{}, err // Returns nil node, error
