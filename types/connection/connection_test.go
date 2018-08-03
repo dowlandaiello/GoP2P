@@ -41,3 +41,16 @@ func TestNewConnection(t *testing.T) {
 
 	t.Logf("created connection with source node %s", connection.InitializationNode.Address) // Log node
 }
+
+// TestNewResolution - test functionality of resolution initializer
+func TestNewResolution(t *testing.T) {
+	val := []byte("test")                      // Create temporary testing value
+	resolution, err := NewResolution(val, val) // Attempt to create new resolution
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("found resolution with data %s", string(resolution.ResolutionData)) // Log success
+}
