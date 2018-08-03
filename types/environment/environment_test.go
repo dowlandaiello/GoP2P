@@ -151,7 +151,7 @@ func TestQueryValue(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	foundVariable, err := env.QueryValue("test") // Query variable type
+	foundVariable, err := env.QueryValue("test") // Query variable value
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
