@@ -54,6 +54,15 @@ func NewConnection(sourceNode *node.Node, destinationNode *node.Node, data []byt
 	return &Connection{DestinationNode: destinationNode, InitializationNode: sourceNode, Data: data, ConnectionType: connectionType, ConnectionStack: connectionStack}, nil // No error occurred, return correctly initialized Connection
 }
 
+// NewResolution - attempt to create new instance of the Resolution struct with specified initializers
+func NewResolution(data []byte, guidingType interface{}) (*Resolution, error) {
+	if len(data) == 0 { // Check for invalid data
+		return &Resolution{}, errors.New("nil value found") // Return found error
+	}
+
+	return &Resolution{ResolutionData: data, GuidingType: guidingType}, nil // No error occurred, return initialized Resolution
+}
+
 // Attempt - attempts to carry out connection, if event stack is provided, begins to iterate through list
 func (connection *Connection) Attempt() {
 
