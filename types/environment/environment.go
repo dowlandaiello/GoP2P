@@ -12,7 +12,6 @@ import (
 // Environment - abstract container holding variables, configurations of a certain node
 type Environment struct {
 	EnvironmentVariables []*Variable `json:"variables"`
-	EnvironmentNode      *node.Node  `json:"node"`
 }
 
 // Variable - container holding a variable's data (pointer), and identification properties (id, type)
@@ -33,7 +32,7 @@ func NewEnvironment(node *node.Node) (*Environment, error) {
 		return nil, errors.New("invalid node") // Return error if true
 	}
 
-	return &Environment{EnvironmentVariables: []*Variable{}, EnvironmentNode: node}, nil // No error occurred, return nil
+	return &Environment{EnvironmentVariables: []*Variable{}}, nil // No error occurred, return nil
 }
 
 // QueryType - Fetches latest entry into environment with matching type
