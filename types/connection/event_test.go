@@ -26,7 +26,7 @@ func TestNewEvent(t *testing.T) {
 
 	if err != nil && !strings.Contains(err.Error(), "root") { // Check for errors
 		t.Errorf(err.Error()) // Return found error
-		t.FailNow()
+		t.FailNow()           // Panic
 	} else if err != nil { // Account for special case
 		t.Logf(err.Error())
 	}
