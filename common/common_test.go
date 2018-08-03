@@ -38,3 +38,15 @@ func TestGetExtIPAddrWithoutUpNP(t *testing.T) {
 
 	t.Logf("found address %s", ip) // Log found address
 }
+
+// TestSHA256 - test functionality of SHA256() function
+func TestSHA256(t *testing.T) {
+	shaVal := SHA256([]byte("test")) // Create hashed value
+
+	if string(shaVal) == "test" { // Check for errors
+		t.Errorf("SHA failed with value %s", shaVal) // Log error
+		t.FailNow()                                  // Panic
+	}
+
+	t.Logf("hashed value %s", shaVal) // Log success
+}

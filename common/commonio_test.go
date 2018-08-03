@@ -70,6 +70,19 @@ func TestSerializeToBytes(t *testing.T) {
 	t.Logf("found serialized value %s", byteVal) // Log success
 }
 
+func TestSerializeToString(t *testing.T) {
+	obj := []string{"test", "test", "test"} // Create temporary testing object
+
+	stringVal, err := SerializeToString(obj) // Attempt to serialize
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("found serialized value %s", stringVal) // Log success
+}
+
 /*
 	END EXPORTED METHODS
 */
