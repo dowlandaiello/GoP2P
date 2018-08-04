@@ -37,3 +37,20 @@ func SendBytesWithConnection(connection *net.Conn, b []byte) error {
 
 	return nil // No error occurred, return nil
 }
+
+// SendBytesReusable - attempt to send specified bytes to given address and return created connection
+func SendBytesReusable(b []byte, address string) (*net.Conn, error) {
+	connection, err := net.Dial("tcp", address) // Connect to given address
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	_, err = connection.Write(b) // Write data to connection
+
+	if err != nil { // Check for errors
+		return nil, err // Return found errors
+	}
+
+	return &connection, nil // No error occurred, return nil
+}
