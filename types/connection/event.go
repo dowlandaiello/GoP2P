@@ -24,6 +24,8 @@ type Event struct {
 
 	Resolution Resolution `json:"resolution"` // Data being transmitted
 
+	Command string `json:"command"` // Action for destination node to carry out
+
 	DestinationNode *node.Node `json:"destination"` // Node to contact
 }
 
