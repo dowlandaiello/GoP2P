@@ -39,7 +39,7 @@ func TestNewEvent(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	event, err := NewEvent("push", *resolution, &node) // Attempt to create new event
+	event, err := NewEvent("push", *resolution, "", &node) // Attempt to create new event
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error

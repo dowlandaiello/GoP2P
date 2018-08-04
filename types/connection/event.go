@@ -34,14 +34,14 @@ type Event struct {
 */
 
 // NewEvent - creates new Event{} instance with specified resolution, peers
-func NewEvent(eventType string, resolution Resolution, destinationNode *node.Node) (*Event, error) {
+func NewEvent(eventType string, resolution Resolution, command string, destinationNode *node.Node) (*Event, error) {
 	if strings.ToLower(eventType) != "push" && strings.ToLower(eventType) != "fetch" { // Check for invalid types
 		return &Event{}, errors.New("invalid event") // Error occurred, return nil, error
 	} else if reflect.ValueOf(destinationNode).IsNil() { // Check for invalid peer values
 		return &Event{}, errors.New("invalid peer value") // Error occurred, return nil, error
 	}
 
-	return &Event{EventType: eventType, Resolution: resolution, DestinationNode: destinationNode}, nil // Return initialized event
+	return &Event{EventType: eventType, Resolution: resolution, Command: command, DestinationNode: destinationNode}, nil // Return initialized event
 }
 
 // Attempt - attempts to carry out event
