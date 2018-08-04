@@ -33,7 +33,7 @@ type Event struct {
 	BEGIN EXPORTED METHODS:
 */
 
-// NewEvent - creates new Event{} instance with specified resolution, peers
+// NewEvent - creates new Event{} instance with specified resolution, peers, command
 func NewEvent(eventType string, resolution Resolution, command string, destinationNode *node.Node) (*Event, error) {
 	if strings.ToLower(eventType) != "push" && strings.ToLower(eventType) != "fetch" { // Check for invalid types
 		return &Event{}, errors.New("invalid event type") // Error occurred, return nil, error
