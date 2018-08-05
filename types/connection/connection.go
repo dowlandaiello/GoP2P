@@ -3,8 +3,10 @@ package connection
 import (
 	"errors"
 	"reflect"
+	"strconv"
 	"strings"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -26,6 +28,8 @@ type Connection struct {
 
 	Data []byte `json:"data"` // Actual data being transmitted
 
+	Port int `json:"port"`
+
 	ConnectionType  string  `json:"type"` // Type of connection
 	ConnectionStack []Event `json:"stack"`
 }
@@ -42,7 +46,7 @@ type Resolution struct {
 */
 
 // NewConnection - creates new Connection{} instance with specified data, peers
-func NewConnection(sourceNode *node.Node, destinationNode *node.Node, data []byte, connectionType string, connectionStack []Event) (*Connection, error) {
+func NewConnection(sourceNode *node.Node, destinationNode *node.Node, port int, data []byte, connectionType string, connectionStack []Event) (*Connection, error) {
 	if strings.ToLower(connectionType) != "relay" && strings.ToLower(connectionType) != "pointer" { // Check connection type is valid
 		return &Connection{}, errors.New("invalid connection type") // Error occurred, return nil
 	} else if reflect.ValueOf(destinationNode).IsNil() || reflect.ValueOf(sourceNode).IsNil() { // Check that peer values aren't nil
@@ -51,7 +55,7 @@ func NewConnection(sourceNode *node.Node, destinationNode *node.Node, data []byt
 		return &Connection{}, errors.New("invalid data") // Return error
 	}
 
-	return &Connection{DestinationNode: destinationNode, InitializationNode: sourceNode, Data: data, ConnectionType: connectionType, ConnectionStack: connectionStack}, nil // No error occurred, return correctly initialized Connection
+	return &Connection{DestinationNode: destinationNode, Port: port, InitializationNode: sourceNode, Data: data, ConnectionType: connectionType, ConnectionStack: connectionStack}, nil // No error occurred, return correctly initialized Connection
 }
 
 // NewResolution - attempt to create new instance of the Resolution struct with specified initializers
@@ -64,8 +68,44 @@ func NewResolution(data []byte, guidingType interface{}) (*Resolution, error) {
 }
 
 // Attempt - attempts to carry out connection, if event stack is provided, begins to iterate through list
-func (connection *Connection) Attempt() {
+func (connection *Connection) Attempt() error {
+	if len(connection.ConnectionStack) == 0 { // No connection stack, attempt connection
+		return connection.attempt()
+	}
 
+	return connection.attemptStack() // Found connection stack, handle respectively
+}
+
+func (connection *Connection) attempt() error {
+	serializedConnection, err := common.SerializeToBytes(connection) // Serialize connection
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = common.SendBytes(serializedConnection, connection.DestinationNode.Address+":"+strconv.Itoa(connection.Port)) // Attempt to send event
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
+}
+
+func (connection *Connection) attemptStack() error {
+	x := 0 // Init iterator
+
+	for x != len(connection.ConnectionStack) { // Iterate through connection stack
+		err := connection.ConnectionStack[x].Attempt() // Attempt event
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		x++ // Increment iterator
+	}
+
+	return nil // No error occurred, return nil
 }
 
 /*

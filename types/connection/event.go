@@ -30,7 +30,7 @@ type Event struct {
 
 	DestinationNode *node.Node `json:"destination"` // Node to contact
 
-	Port int
+	Port int `json:"port"`
 }
 
 /*
@@ -52,13 +52,7 @@ func NewEvent(eventType string, resolution Resolution, command string, destinati
 
 // Attempt - attempts to carry out event
 func (event *Event) Attempt() error {
-	err := event.attempt() // attempt
-
-	if err != nil { // Check for errors
-		return err // Return error
-	}
-
-	return nil // No error occurred, return nil
+	return event.attempt() // attempt
 }
 
 // attempt - wrapper

@@ -32,7 +32,7 @@ func TestNewConnection(t *testing.T) {
 		t.Logf(err.Error()) // Log error
 	}
 
-	connection, err := NewConnection(&node, &node, []byte("test"), "relay", []Event{}) // Attempt to initialize new connection
+	connection, err := NewConnection(&node, &node, 53, []byte("test"), "relay", []Event{}) // Attempt to initialize new connection
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log error
