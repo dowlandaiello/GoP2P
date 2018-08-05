@@ -50,19 +50,6 @@ func SerializeToBytes(object interface{}) ([]byte, error) {
 	return serializedBuffer.Bytes(), nil // Return serialized object
 }
 
-// MarshalBytes - attempt to convert specified byte array to interface
-func MarshalBytes(b []byte, object interface{}) (*interface{}, error) {
-	buf := bytes.NewBuffer(b)
-
-	err := binary.Read(buf, binary.BigEndian, &object)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &object, nil
-}
-
 // SerializeToString - attempt to get string representation of specified object
 func SerializeToString(object interface{}) (string, error) {
 	out, err := json.Marshal(object) // Attempt to marshal object
@@ -72,6 +59,19 @@ func SerializeToString(object interface{}) (string, error) {
 	}
 
 	return string(out), nil // Return serialized value
+}
+
+// MarshalBytes - attempt to convert specified byte array to interface
+func MarshalBytes(b []byte, object interface{}) (*interface{}, error) {
+	buf := bytes.NewBuffer(b) // Init buffer
+
+	err := binary.Read(buf, binary.BigEndian, &object) // Attempt to read
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return &object, nil // No error occurred, return read value
 }
 
 /*

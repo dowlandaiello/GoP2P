@@ -5,6 +5,10 @@ import (
 	"testing"
 )
 
+type T struct {
+	Val string `json:"val"`
+}
+
 /*
 	BEGIN EXPORTED METHODS:
 */
@@ -81,6 +85,28 @@ func TestSerializeToString(t *testing.T) {
 	}
 
 	t.Logf("found serialized value %s", stringVal) // Log success
+}
+
+func TestMarshalBytes(t *testing.T) {
+	empty := T{}
+
+	obj := T{Val: "test"} // Create temporary testing object
+
+	byteVal, err := SerializeToBytes(obj) // Attempt to serialize
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	marshaled, err := MarshalBytes(byteVal, empty)
+
+	if err != nil {
+		t.Errorf(err.Error())
+		t.FailNow()
+	}
+
+	t.Logf("found marshaled value %s", (*marshaled).(string))
 }
 
 /*
