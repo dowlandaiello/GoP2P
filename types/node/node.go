@@ -60,6 +60,21 @@ func (node *Node) StartListener(port int) (*net.Listener, error) {
 	return &ln, nil // No error occurred, return listener
 }
 
+// StartHandler - attempt to accept and handle requests on given listener
+func (node *Node) StartHandler(ln *net.Listener) {
+	for {
+		conn, err := (*ln).Accept()
+
+		if err == nil {
+			go node.handleConnection(conn)
+		}
+	}
+}
+
+func (node *Node) handleConnection(connection net.Conn) {
+
+}
+
 /*
 	END EXPORTED METHODS:
 */

@@ -2,6 +2,7 @@ package common
 
 import (
 	"bytes"
+	"encoding/binary"
 	"encoding/gob"
 	"encoding/json"
 	"os"
@@ -47,6 +48,19 @@ func SerializeToBytes(object interface{}) ([]byte, error) {
 	}
 
 	return serializedBuffer.Bytes(), nil // Return serialized object
+}
+
+// MarshalBytes - attempt to convert specified byte array to interface
+func MarshalBytes(b []byte, object interface{}) (*interface{}, error) {
+	buf := bytes.NewBuffer(b)
+
+	err := binary.Read(buf, binary.BigEndian, &object)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &object, nil
 }
 
 // SerializeToString - attempt to get string representation of specified object
