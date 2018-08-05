@@ -76,6 +76,7 @@ func (connection *Connection) Attempt() error {
 	return connection.attemptStack() // Found connection stack, handle respectively
 }
 
+// attempt - attempt singular connection
 func (connection *Connection) attempt() error {
 	serializedConnection, err := common.SerializeToBytes(connection) // Serialize connection
 
@@ -92,6 +93,7 @@ func (connection *Connection) attempt() error {
 	return nil // No error occurred, return nil
 }
 
+// attemptStack - iterate through connection stack, attempt each event
 func (connection *Connection) attemptStack() error {
 	x := 0 // Init iterator
 
