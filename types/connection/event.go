@@ -3,8 +3,10 @@ package connection
 import (
 	"errors"
 	"reflect"
+	"strconv"
 	"strings"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -24,37 +26,49 @@ type Event struct {
 
 	Resolution Resolution `json:"resolution"` // Data being transmitted
 
+	Command string `json:"command"` // Action for destination node to carry out
+
 	DestinationNode *node.Node `json:"destination"` // Node to contact
+
+	Port int `json:"port"`
 }
 
 /*
 	BEGIN EXPORTED METHODS:
 */
 
-// NewEvent - creates new Event{} instance with specified resolution, peers
-func NewEvent(eventType string, resolution Resolution, destinationNode *node.Node) (*Event, error) {
+// NewEvent - creates new Event{} instance with specified resolution, peers, command
+func NewEvent(eventType string, resolution Resolution, command string, destinationNode *node.Node, port int) (*Event, error) {
 	if strings.ToLower(eventType) != "push" && strings.ToLower(eventType) != "fetch" { // Check for invalid types
-		return &Event{}, errors.New("invalid event") // Error occurred, return nil, error
+		return &Event{}, errors.New("invalid event type") // Error occurred, return nil, error
 	} else if reflect.ValueOf(destinationNode).IsNil() { // Check for invalid peer values
 		return &Event{}, errors.New("invalid peer value") // Error occurred, return nil, error
+	} else if command == "" { // Check for nil command
+		return &Event{}, errors.New("invalid command") // Error occurred, return nil, error
 	}
 
-	return &Event{EventType: eventType, Resolution: resolution, DestinationNode: destinationNode}, nil // Return initialized event
+	return &Event{EventType: eventType, Resolution: resolution, Command: command, DestinationNode: destinationNode, Port: port}, nil // Return initialized event
 }
 
 // Attempt - attempts to carry out event
 func (event *Event) Attempt() error {
-	err := event.attempt() // attempt
-
-	if err != nil { // Check for errors
-		return err // Return error
-	}
-
-	return nil // No error occurred, return nil
+	return event.attempt() // attempt
 }
 
 // attempt - wrapper
 func (event *Event) attempt() error {
+	serializedEvent, err := common.SerializeToBytes(event) // Serialize event
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = common.SendBytes(serializedEvent, event.DestinationNode.Address+":"+strconv.Itoa(event.Port)) // Attempt to send event
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	return nil // No error occurred, return nil
 }
 

@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	// NodeAvailableRep - global definition for value of node availability
+	// NodeAvailableRep - global definition for reputation value of node availability
 	NodeAvailableRep = 10
 )
 

@@ -6,13 +6,11 @@ import (
 	"strings"
 
 	"github.com/mitsukomegumi/GoP2P/common"
-	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
 // Environment - abstract container holding variables, configurations of a certain node
 type Environment struct {
 	EnvironmentVariables []*Variable `json:"variables"`
-	EnvironmentNode      *node.Node  `json:"node"`
 }
 
 // Variable - container holding a variable's data (pointer), and identification properties (id, type)
@@ -28,12 +26,8 @@ type Variable struct {
 */
 
 // NewEnvironment - creates new instance of environment struct with specified node value
-func NewEnvironment(node *node.Node) (*Environment, error) {
-	if reflect.ValueOf(node).IsNil() { // Check that node is not nil
-		return nil, errors.New("invalid node") // Return error if true
-	}
-
-	return &Environment{EnvironmentVariables: []*Variable{}, EnvironmentNode: node}, nil // No error occurred, return nil
+func NewEnvironment() (*Environment, error) {
+	return &Environment{EnvironmentVariables: []*Variable{}}, nil // No error occurred, return nil
 }
 
 // QueryType - Fetches latest entry into environment with matching type
