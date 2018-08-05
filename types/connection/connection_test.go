@@ -10,32 +10,10 @@ import (
 
 // TestNewConnection - test functionality of connection initialization function
 func TestNewConnection(t *testing.T) {
-	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
+	connection, err := generateConnection() // Create connection
 
 	if err != nil { // Check for errors
-		err = nil // Reset error
-
-		address, err = common.GetExtIPAddrWithoutUpNP() // Attempt to fetch address without UpNP
-
-		if err != nil { // Check second try for errors
-			t.Errorf(err.Error()) // Return found error
-			t.FailNow()           // Panic
-		}
-	}
-
-	node, err := node.NewNode(address, true) // Attempt to create new node
-
-	if err != nil && !strings.Contains(err.Error(), "root") { // Check for errors
-		t.Errorf(err.Error()) // Return found error
-		t.FailNow()
-	} else if err != nil { // Account for special case
-		t.Logf(err.Error()) // Log error
-	}
-
-	connection, err := NewConnection(&node, &node, 53, []byte("test"), "relay", []Event{}) // Attempt to initialize new connection
-
-	if err != nil { // Check for errors
-		t.Errorf(err.Error()) // Log error
+		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	}
 
@@ -43,32 +21,10 @@ func TestNewConnection(t *testing.T) {
 }
 
 func TestAttemptConnection(t *testing.T) {
-	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
+	connection, err := generateConnection() // Create connection
 
 	if err != nil { // Check for errors
-		err = nil // Reset error
-
-		address, err = common.GetExtIPAddrWithoutUpNP() // Attempt to fetch address without UpNP
-
-		if err != nil { // Check second try for errors
-			t.Errorf(err.Error()) // Return found error
-			t.FailNow()           // Panic
-		}
-	}
-
-	node, err := node.NewNode(address, true) // Attempt to create new node
-
-	if err != nil && !strings.Contains(err.Error(), "root") { // Check for errors
-		t.Errorf(err.Error()) // Return found error
-		t.FailNow()
-	} else if err != nil { // Account for special case
-		t.Logf(err.Error()) // Log error
-	}
-
-	connection, err := NewConnection(&node, &node, 53, []byte("test"), "relay", *generateEvents()) // Attempt to initialize new connection
-
-	if err != nil { // Check for errors
-		t.Errorf(err.Error()) // Log error
+		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	}
 
@@ -91,6 +47,34 @@ func TestNewResolution(t *testing.T) {
 	}
 
 	t.Logf("found resolution with data %s", string(resolution.ResolutionData)) // Log success
+}
+
+func generateConnection() (*Connection, error) {
+	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
+
+	if err != nil { // Check for errors
+		err = nil // Reset error
+
+		address, err = common.GetExtIPAddrWithoutUpNP() // Attempt to fetch address without UpNP
+
+		if err != nil { // Check second try for errors
+			return nil, err // Return found error
+		}
+	}
+
+	node, err := node.NewNode(address, true) // Attempt to create new node
+
+	if err != nil && !strings.Contains(err.Error(), "root") { // Check for errors
+		return nil, err // Return found error
+	}
+
+	connection, err := NewConnection(&node, &node, 53, []byte("test"), "relay", []Event{}) // Attempt to initialize new connection
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return connection, nil
 }
 
 func generateEvents() *[]Event {
