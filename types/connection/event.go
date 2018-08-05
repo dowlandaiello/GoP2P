@@ -3,8 +3,10 @@ package connection
 import (
 	"errors"
 	"reflect"
+	"strconv"
 	"strings"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -27,6 +29,8 @@ type Event struct {
 	Command string `json:"command"` // Action for destination node to carry out
 
 	DestinationNode *node.Node `json:"destination"` // Node to contact
+
+	Port int
 }
 
 /*
@@ -34,7 +38,7 @@ type Event struct {
 */
 
 // NewEvent - creates new Event{} instance with specified resolution, peers, command
-func NewEvent(eventType string, resolution Resolution, command string, destinationNode *node.Node) (*Event, error) {
+func NewEvent(eventType string, resolution Resolution, command string, destinationNode *node.Node, port int) (*Event, error) {
 	if strings.ToLower(eventType) != "push" && strings.ToLower(eventType) != "fetch" { // Check for invalid types
 		return &Event{}, errors.New("invalid event type") // Error occurred, return nil, error
 	} else if reflect.ValueOf(destinationNode).IsNil() { // Check for invalid peer values
@@ -43,7 +47,7 @@ func NewEvent(eventType string, resolution Resolution, command string, destinati
 		return &Event{}, errors.New("invalid command") // Error occurred, return nil, error
 	}
 
-	return &Event{EventType: eventType, Resolution: resolution, Command: command, DestinationNode: destinationNode}, nil // Return initialized event
+	return &Event{EventType: eventType, Resolution: resolution, Command: command, DestinationNode: destinationNode, Port: port}, nil // Return initialized event
 }
 
 // Attempt - attempts to carry out event
@@ -59,6 +63,18 @@ func (event *Event) Attempt() error {
 
 // attempt - wrapper
 func (event *Event) attempt() error {
+	serializedEvent, err := common.SerializeToBytes(event) // Serialize event
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = common.SendBytes(serializedEvent, event.DestinationNode.Address+":"+strconv.Itoa(event.Port)) // Attempt to send event
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	return nil // No error occurred, return nil
 }
 
