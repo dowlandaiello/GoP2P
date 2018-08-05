@@ -2,6 +2,8 @@ package node
 
 import (
 	"errors"
+	"net"
+	"strconv"
 	"time"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -45,6 +47,32 @@ func NewNode(address string, isBootstrap bool) (Node, error) {
 	node.Reputation += common.NodeAvailableRep
 
 	return node, nil // No error occurred, return nil
+}
+
+// StartListener - attempt to listen on specified port, return new listener
+func (node *Node) StartListener(port int) (*net.Listener, error) {
+	ln, err := net.Listen("tcp", ":"+strconv.Itoa(port)) // Listen on port
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return &ln, nil // No error occurred, return listener
+}
+
+// StartHandler - attempt to accept and handle requests on given listener
+func (node *Node) StartHandler(ln *net.Listener) {
+	for {
+		conn, err := (*ln).Accept()
+
+		if err == nil {
+			go node.handleConnection(conn)
+		}
+	}
+}
+
+func (node *Node) handleConnection(connection net.Conn) {
+
 }
 
 /*
