@@ -2,6 +2,7 @@ package node
 
 import (
 	"errors"
+	"io/ioutil"
 	"net"
 	"strconv"
 	"time"
@@ -63,16 +64,22 @@ func (node *Node) StartListener(port int) (*net.Listener, error) {
 // StartHandler - attempt to accept and handle requests on given listener
 func (node *Node) StartHandler(ln *net.Listener) {
 	for {
-		conn, err := (*ln).Accept()
+		conn, err := (*ln).Accept() // Accept connection
 
-		if err == nil {
-			go node.handleConnection(conn)
+		if err == nil { // Check for errors
+			go node.handleConnection(conn) // Handle connection
 		}
 	}
 }
 
-func (node *Node) handleConnection(connection net.Conn) {
+func (node *Node) handleConnection(conn net.Conn) error {
+	data, err := ioutil.ReadAll(conn)
 
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 /*
