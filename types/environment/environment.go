@@ -95,11 +95,11 @@ func NewVariable(variableType string, variableData interface{}) (*Variable, erro
 
 // AddVariable - attempt to append specified variable to environment variables list
 func (environment *Environment) AddVariable(variable *Variable) error {
-	if reflect.ValueOf(variable).IsNil() {
-		return errors.New("invalid variable")
+	if reflect.ValueOf(variable).IsNil() { // Check for invalid parameters
+		return errors.New("invalid variable") // Return error
 	}
 
-	environment.EnvironmentVariables = append(environment.EnvironmentVariables, variable)
+	environment.EnvironmentVariables = append(environment.EnvironmentVariables, variable) // Append value
 
 	return nil
 }
