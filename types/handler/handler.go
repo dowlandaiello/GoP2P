@@ -5,8 +5,11 @@ import (
 	"io/ioutil"
 	"net"
 	"reflect"
+	"strings"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/connection"
+	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -26,18 +29,77 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 	}
 }
 
-func handleConnection(node *node.Node, conn net.Conn) error {
+func handleConnection(node *node.Node, conn net.Conn) ([][]byte, error) {
 	data, err := ioutil.ReadAll(conn) // Attempt to read from connection
 
 	if err != nil { // Check for errors
-		return err // Return found error
+		return nil, err // Return found error
 	}
 
-	_, err = connection.FromBytes(data) // Attempt to decode data
+	connection, err := connection.FromBytes(data) // Attempt to decode data
 
 	if err != nil { // Check for errors
-		return err // Return found error
+		return nil, err // Return found error
 	}
 
-	return nil // No error occurred, return nil
+	if len(connection.ConnectionStack) == 0 { // Check if event stack exists
+		return handleSingular(node, connection) // Handle singular event
+	}
+
+	return handleStack(node, connection) // Attempt to handle stack
+}
+
+func handleSingular(node *node.Node, connection *connection.Connection) ([][]byte, error) {
+	variable, err := environment.NewVariable("byte[]", connection) // Init variable to hold connection data
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	varByteVal, err := common.SerializeToBytes(variable) // Serialize
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return [][]byte{varByteVal}, node.Environment.AddVariable(variable) // Attempt to add variable to environment, return variable value as byte
+}
+
+func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, error) {
+	for x := 0; x != len(connection.ConnectionStack); x++ { // Iterate through stack
+		handleCommand(node, &connection.ConnectionStack[x]) // Attempt to handle command
+	}
+
+	return nil, nil // No error occurred, return nil
+}
+
+func handleCommand(node *node.Node, event *connection.Event) ([]byte, error) {
+	switch {
+	case strings.Contains(event.Command, "NewVariable("):
+		return handleNewVariable(node, event)
+	case strings.Contains(event.Command, "QueryValue("):
+		return handleQueryValue(node, event)
+	case strings.Contains(event.Command, "QueryType("):
+		return handleQueryType(node, event)
+	case strings.Contains(event.Command, "AddVariable("):
+		return handleAddVariable(node, event)
+	default:
+		return nil, nil
+	}
+}
+
+func handleNewVariable(node *node.Node, event *connection.Event) ([]byte, error) {
+	return nil, nil
+}
+
+func handleQueryValue(node *node.Node, event *connection.Event) ([]byte, error) {
+	return nil, nil
+}
+
+func handleQueryType(node *node.Node, event *connection.Event) ([]byte, error) {
+	return nil, nil
+}
+
+func handleAddVariable(node *node.Node, event *connection.Event) ([]byte, error) {
+	return nil, nil
 }
