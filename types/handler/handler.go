@@ -36,14 +36,14 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
-	connection, err := connection.FromBytes(data) // Attempt to decode data
+	readConnection, err := connection.FromBytes(data) // Attempt to decode data
 
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
 
-	if len(connection.ConnectionStack) == 0 { // Check if event stack exists
-		val, err := handleSingular(node, connection) // Handle singular event
+	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
+		val, err := handleSingular(node, readConnection) // Handle singular event
 
 		if err != nil { // Check for errors
 			return err // Return found error
@@ -54,13 +54,21 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return nil // No error occurred, return nil
 	}
 
-	_, err = handleStack(node, connection) // Attempt to handle stack
+	val, err := handleStack(node, readConnection) // Attempt to handle stack
 
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
 
-	//conn.Write(val) // Write success
+	instancedResponse := connection.Response{Val: val} // Create response instance for byte serialization
+
+	serializedResponse, err := common.SerializeToBytes(instancedResponse) // Serialize
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	conn.Write(serializedResponse) // Write success
 
 	return nil // Attempt to handle stack
 }
