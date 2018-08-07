@@ -29,27 +29,43 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 	}
 }
 
-func handleConnection(node *node.Node, conn net.Conn) ([][]byte, error) {
+func handleConnection(node *node.Node, conn net.Conn) error {
 	data, err := ioutil.ReadAll(conn) // Attempt to read from connection
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return err // Return found error
 	}
 
 	connection, err := connection.FromBytes(data) // Attempt to decode data
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return err // Return found error
 	}
 
 	if len(connection.ConnectionStack) == 0 { // Check if event stack exists
-		return handleSingular(node, connection) // Handle singular event
+		val, err := handleSingular(node, connection) // Handle singular event
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		conn.Write(val) // Write success
+
+		return nil // No error occurred, return nil
 	}
 
-	return handleStack(node, connection) // Attempt to handle stack
+	_, err = handleStack(node, connection) // Attempt to handle stack
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	//conn.Write(val) // Write success
+
+	return nil // Attempt to handle stack
 }
 
-func handleSingular(node *node.Node, connection *connection.Connection) ([][]byte, error) {
+func handleSingular(node *node.Node, connection *connection.Connection) ([]byte, error) {
 	variable, err := environment.NewVariable("byte[]", connection) // Init variable to hold connection data
 
 	if err != nil { // Check for errors
@@ -62,7 +78,7 @@ func handleSingular(node *node.Node, connection *connection.Connection) ([][]byt
 		return nil, err // Return found error
 	}
 
-	return [][]byte{varByteVal}, node.Environment.AddVariable(variable) // Attempt to add variable to environment, return variable value as byte
+	return varByteVal, node.Environment.AddVariable(variable) // Attempt to add variable to environment, return variable value as byte
 }
 
 func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, error) {
