@@ -2,9 +2,11 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -30,6 +32,8 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 }
 
 func handleConnection(node *node.Node, conn net.Conn) error {
+	fmt.Printf("CONNECTION address: %s", conn.RemoteAddr().String())
+
 	data, err := ioutil.ReadAll(conn) // Attempt to read from connection
 
 	if err != nil { // Check for errors
@@ -41,6 +45,8 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
+
+	fmt.Println("-- CONNECTION " + conn.RemoteAddr().String() + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.")
 
 	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
 		val, err := handleSingular(node, readConnection) // Handle singular event
