@@ -10,6 +10,7 @@ import (
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
+// TestNewEvent - test functionality of event initializer
 func TestNewEvent(t *testing.T) {
 	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
 
@@ -51,6 +52,7 @@ func TestNewEvent(t *testing.T) {
 	t.Logf("found event with type %s", event.EventType) // Log success
 }
 
+// TestAttemptEvent - test functionality of event initializer method
 func TestAttemptEvent(t *testing.T) {
 	node, err := node.NewNode("1.1.1.1", true) // Attempt to create new node
 
