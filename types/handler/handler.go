@@ -17,7 +17,6 @@ import (
 
 // StartHandler - attempt to accept and handle requests on given listener
 func StartHandler(node *node.Node, ln *net.Listener) error {
-
 	if reflect.ValueOf(node).IsNil() || node.Address == "" || reflect.ValueOf(ln).IsNil() { // Check for nil parameters
 		return errors.New("invalid parameters") // Return error
 	}
@@ -32,7 +31,7 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 }
 
 func handleConnection(node *node.Node, conn net.Conn) error {
-	fmt.Printf("CONNECTION address: %s", conn.RemoteAddr().String())
+	fmt.Printf("-- CONNECTION -- address: %s", conn.RemoteAddr().String())
 
 	data, err := ioutil.ReadAll(conn) // Attempt to read from connection
 
@@ -105,13 +104,13 @@ func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, 
 
 func handleCommand(node *node.Node, event *connection.Event) ([]byte, error) {
 	switch {
-	case strings.Contains(event.Command, "NewVariable("):
+	case strings.Contains(event.Command.Command, "NewVariable"):
 		return handleNewVariable(node, event) // Attempt command
-	case strings.Contains(event.Command, "QueryValue("):
+	case strings.Contains(event.Command.Command, "QueryValue"):
 		return handleQueryValue(node, event) // Attempt command
-	case strings.Contains(event.Command, "QueryType("):
+	case strings.Contains(event.Command.Command, "QueryType"):
 		return handleQueryType(node, event) // Attempt command
-	case strings.Contains(event.Command, "AddVariable("):
+	case strings.Contains(event.Command.Command, "AddVariable"):
 		return handleAddVariable(node, event) // Attempt command
 	default:
 		return nil, nil // Return nil value
@@ -119,9 +118,9 @@ func handleCommand(node *node.Node, event *connection.Event) ([]byte, error) {
 }
 
 func handleNewVariable(node *node.Node, event *connection.Event) ([]byte, error) {
-	variableType := strings.Split(strings.Split(event.Command, "NewVariable(")[1], ",")[0] // Attempt to fetch variable type from command
+	variableType := event.Command.ModifierSet.Type // Attempt to fetch variable type from command
 
-	variable, err := environment.NewVariable(variableType, []byte("test")) // Attempt to create new variable
+	variable, err := environment.NewVariable(variableType, event.Command.ModifierSet.Value) // Attempt to create new variable
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -137,13 +136,55 @@ func handleNewVariable(node *node.Node, event *connection.Event) ([]byte, error)
 }
 
 func handleQueryValue(node *node.Node, event *connection.Event) ([]byte, error) {
-	return nil, nil // Return result
+	variable, err := node.Environment.QueryValue(event.Command.ModifierSet.Value.(string)) // Attempt to query for value
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	serializedValue, err := common.SerializeToBytes(variable) // Attempt to serialize new variable
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return serializedValue, nil // Return serialized value
 }
 
 func handleQueryType(node *node.Node, event *connection.Event) ([]byte, error) {
-	return nil, nil // Return result
+	variable, err := node.Environment.QueryType(event.Command.ModifierSet.Type) // Attempt to query for value
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	serializedValue, err := common.SerializeToBytes(variable) // Attempt to serialize new variable
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return serializedValue, nil // Return serialized value
 }
 
 func handleAddVariable(node *node.Node, event *connection.Event) ([]byte, error) {
-	return nil, nil // Return result
+	variable := event.Command.ModifierSet.Variable // Attempt to fetch variable from command
+
+	if reflect.ValueOf(variable).IsNil() { // Check for errors
+		return nil, errors.New("nil variable") // Return found nil variable
+	}
+
+	err := node.Environment.AddVariable(variable) // Attempt to add found variable to environment
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	serializedValue, err := common.SerializeToBytes(variable) // Attempt to serialize variable
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return serializedValue, nil // Return serialized value
 }
