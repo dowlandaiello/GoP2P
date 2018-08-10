@@ -4,6 +4,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/mitsukomegumi/GoP2P/types/command"
+
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
@@ -86,7 +88,7 @@ func generateEvents() *[]Event {
 		resolutionValue := []byte("test")                                // Initialize resolution value
 		resolution, _ := NewResolution(resolutionValue, resolutionValue) // Create resolution
 
-		event, _ := NewEvent("push", *resolution, "test", &node, 53) // Attempt to create new event
+		event, _ := NewEvent("push", *resolution, &command.Command{}, &node, 53) // Attempt to create new event
 
 		events = append(events, *event) // Append event to array
 	}
