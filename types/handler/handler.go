@@ -32,7 +32,7 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 }
 
 func handleConnection(node *node.Node, conn net.Conn) error {
-	fmt.Printf("CONNECTION address: %s", conn.RemoteAddr().String())
+	fmt.Printf("-- CONNECTION -- address: %s", conn.RemoteAddr().String())
 
 	data, err := ioutil.ReadAll(conn) // Attempt to read from connection
 
@@ -105,13 +105,13 @@ func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, 
 
 func handleCommand(node *node.Node, event *connection.Event) ([]byte, error) {
 	switch {
-	case strings.Contains(event.Command, "NewVariable("):
+	case strings.Contains(event.Command.Command, "NewVariable"):
 		return handleNewVariable(node, event) // Attempt command
-	case strings.Contains(event.Command, "QueryValue("):
+	case strings.Contains(event.Command.Command, "QueryValue"):
 		return handleQueryValue(node, event) // Attempt command
-	case strings.Contains(event.Command, "QueryType("):
+	case strings.Contains(event.Command.Command, "QueryType"):
 		return handleQueryType(node, event) // Attempt command
-	case strings.Contains(event.Command, "AddVariable("):
+	case strings.Contains(event.Command.Command, "AddVariable"):
 		return handleAddVariable(node, event) // Attempt command
 	default:
 		return nil, nil // Return nil value
@@ -119,9 +119,9 @@ func handleCommand(node *node.Node, event *connection.Event) ([]byte, error) {
 }
 
 func handleNewVariable(node *node.Node, event *connection.Event) ([]byte, error) {
-	variableType := strings.Split(strings.Split(event.Command, "NewVariable(")[1], ",")[0] // Attempt to fetch variable type from command
+	variableType := event.Command.ModifierSet.Type // Attempt to fetch variable type from command
 
-	variable, err := environment.NewVariable(variableType, []byte("test")) // Attempt to create new variable
+	variable, err := environment.NewVariable(variableType, event.Command.ModifierSet.Value) // Attempt to create new variable
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error

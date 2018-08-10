@@ -2,6 +2,7 @@ package connection
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -76,6 +77,8 @@ func (connection *Connection) Attempt() error {
 
 // attempt - attempt singular connection
 func (connection *Connection) attempt() error {
+	fmt.Println("-- CONNECTION -- attempting connection")
+
 	serializedConnection, err := common.SerializeToBytes(connection) // Serialize connection
 
 	if err != nil { // Check for errors
@@ -93,6 +96,7 @@ func (connection *Connection) attempt() error {
 
 // attemptStack - iterate through connection stack, attempt each event
 func (connection *Connection) attemptStack() error {
+	fmt.Println("-- CONNECTION -- attempting stack")
 	x := 0 // Init iterator
 
 	for x != len(connection.ConnectionStack) { // Iterate through connection stack
