@@ -25,6 +25,11 @@ type ModifierSet struct {
 	BEGIN EXPORTED METHODS:
 */
 
+// NewModifierSet - initialize new instance of modifierset struct with modifiers
+func NewModifierSet(modifierType string, modifierValue interface{}, modifierVariable *environment.Variable) *ModifierSet {
+	return &ModifierSet{Type: modifierType, Value: modifierValue, Variable: modifierVariable}
+}
+
 // NewCommand - attempt to initialize new instance of command struct with specified command, modifiers.
 func NewCommand(command string, modifierSet *ModifierSet) (*Command, error) {
 	if command == "" { // Check for nil command
