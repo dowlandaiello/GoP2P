@@ -56,7 +56,7 @@ func TestReadGob(t *testing.T) {
 	t.Logf("gob read '%s'", input) // Log read gob
 }
 
-// TestSerializeToBytes - check functionality of SerializeToBytes() function
+// TestSerializeToBytes - test functionality of SerializeToBytes() function
 func TestSerializeToBytes(t *testing.T) {
 	obj := "test" // Create temporary testing object
 

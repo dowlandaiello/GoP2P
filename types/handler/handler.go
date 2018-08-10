@@ -2,11 +2,16 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"reflect"
+	"strconv"
+	"strings"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/connection"
+	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -27,17 +32,118 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 }
 
 func handleConnection(node *node.Node, conn net.Conn) error {
+	fmt.Printf("CONNECTION address: %s", conn.RemoteAddr().String())
+
 	data, err := ioutil.ReadAll(conn) // Attempt to read from connection
 
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
 
-	_, err = connection.FromBytes(data) // Attempt to decode data
+	readConnection, err := connection.FromBytes(data) // Attempt to decode data
 
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
 
-	return nil // No error occurred, return nil
+	fmt.Println("-- CONNECTION " + conn.RemoteAddr().String() + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.")
+
+	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
+		val, err := handleSingular(node, readConnection) // Handle singular event
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		conn.Write(val) // Write success
+
+		return nil // No error occurred, return nil
+	}
+
+	val, err := handleStack(node, readConnection) // Attempt to handle stack
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	instancedResponse := connection.Response{Val: val} // Create response instance for byte serialization
+
+	serializedResponse, err := common.SerializeToBytes(instancedResponse) // Serialize
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	conn.Write(serializedResponse) // Write success
+
+	return nil // Attempt to handle stack
+}
+
+func handleSingular(node *node.Node, connection *connection.Connection) ([]byte, error) {
+	variable, err := environment.NewVariable("byte[]", connection) // Init variable to hold connection data
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	varByteVal, err := common.SerializeToBytes(variable) // Serialize
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return varByteVal, node.Environment.AddVariable(variable) // Attempt to add variable to environment, return variable value as byte
+}
+
+func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, error) {
+	for x := 0; x != len(connection.ConnectionStack); x++ { // Iterate through stack
+		handleCommand(node, &connection.ConnectionStack[x]) // Attempt to handle command
+	}
+
+	return nil, nil // No error occurred, return nil
+}
+
+func handleCommand(node *node.Node, event *connection.Event) ([]byte, error) {
+	switch {
+	case strings.Contains(event.Command, "NewVariable("):
+		return handleNewVariable(node, event) // Attempt command
+	case strings.Contains(event.Command, "QueryValue("):
+		return handleQueryValue(node, event) // Attempt command
+	case strings.Contains(event.Command, "QueryType("):
+		return handleQueryType(node, event) // Attempt command
+	case strings.Contains(event.Command, "AddVariable("):
+		return handleAddVariable(node, event) // Attempt command
+	default:
+		return nil, nil // Return nil value
+	}
+}
+
+func handleNewVariable(node *node.Node, event *connection.Event) ([]byte, error) {
+	variableType := strings.Split(strings.Split(event.Command, "NewVariable(")[1], ",")[0] // Attempt to fetch variable type from command
+
+	variable, err := environment.NewVariable(variableType, []byte("test")) // Attempt to create new variable
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	serializedValue, err := common.SerializeToBytes(variable) // Attempt to serialize new variable
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return serializedValue, nil // Return serialized value
+}
+
+func handleQueryValue(node *node.Node, event *connection.Event) ([]byte, error) {
+	return nil, nil // Return result
+}
+
+func handleQueryType(node *node.Node, event *connection.Event) ([]byte, error) {
+	return nil, nil // Return result
+}
+
+func handleAddVariable(node *node.Node, event *connection.Event) ([]byte, error) {
+	return nil, nil // Return result
 }

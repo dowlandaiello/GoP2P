@@ -12,12 +12,10 @@ import (
 
 var (
 	// AvailableConnectionTypes - global preset list of types connections that can be made
-	AvailableConnectionTypes = []string{"relay", "pointer"}
+	AvailableConnectionTypes = []string{"relay"}
 
 	/*
 		Relay - sending information from one peer to another
-		Pointer - sending metadata from one peer to another requesting for the peer to fetch information from another peer
-			Example: peer one contacts peer two and asks for a block, peer two points peer one to peer three
 	*/
 )
 
