@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/types/command"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -26,7 +27,7 @@ type Event struct {
 
 	Resolution Resolution `json:"resolution"` // Data being transmitted
 
-	Command string `json:"command"` // Action for destination node to carry out
+	Command *command.Command `json:"command"` // Action for destination node to carry out
 
 	DestinationNode *node.Node `json:"destination"` // Node to contact
 
@@ -38,12 +39,12 @@ type Event struct {
 */
 
 // NewEvent - creates new Event{} instance with specified resolution, peers, command
-func NewEvent(eventType string, resolution Resolution, command string, destinationNode *node.Node, port int) (*Event, error) {
+func NewEvent(eventType string, resolution Resolution, command *command.Command, destinationNode *node.Node, port int) (*Event, error) {
 	if strings.ToLower(eventType) != "push" && strings.ToLower(eventType) != "fetch" { // Check for invalid types
 		return &Event{}, errors.New("invalid event type") // Error occurred, return nil, error
 	} else if reflect.ValueOf(destinationNode).IsNil() { // Check for invalid peer values
 		return &Event{}, errors.New("invalid peer value") // Error occurred, return nil, error
-	} else if command == "" { // Check for nil command
+	} else if reflect.ValueOf(command).IsNil() { // Check for nil command
 		return &Event{}, errors.New("invalid command") // Error occurred, return nil, error
 	}
 
