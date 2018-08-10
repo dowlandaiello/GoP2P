@@ -4,6 +4,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/mitsukomegumi/GoP2P/types/command"
+
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
@@ -39,7 +41,7 @@ func TestNewEvent(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	event, err := NewEvent("push", *resolution, "", &node, 53) // Attempt to create new event
+	event, err := NewEvent("push", *resolution, &command.Command{}, &node, 53) // Attempt to create new event
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -67,7 +69,7 @@ func TestAttemptEvent(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	event, err := NewEvent("push", *resolution, "test", &node, 53) // Attempt to create new event
+	event, err := NewEvent("push", *resolution, &command.Command{}, &node, 53) // Attempt to create new event
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
