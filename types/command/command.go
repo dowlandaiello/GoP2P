@@ -3,6 +3,8 @@ package command
 import (
 	"errors"
 	"reflect"
+
+	"github.com/mitsukomegumi/GoP2P/types/environment"
 )
 
 // Command - absctract container holding command values
@@ -14,8 +16,9 @@ type Command struct {
 
 // Modifiers - abstract containers holding specific parameters for a command
 type Modifiers struct {
-	Type  string      `json:"type"`
-	Value interface{} `json:"value"`
+	Type     string                `json:"type"`
+	Value    interface{}           `json:"value"`
+	Variable *environment.Variable `json:"variable"`
 }
 
 /*
