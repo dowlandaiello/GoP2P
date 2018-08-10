@@ -79,16 +79,37 @@ func generateConnection() (*Connection, error) {
 	return connection, nil
 }
 
+// generateEvents - generates array of empty events (testing only)
 func generateEvents() *[]Event {
 	events := []Event{} // Initialize container array
 
+	node, _ := node.NewNode("1.1.1.1", true) // Attempt to create new node
+
+	resolutionValue := []byte("test")                                // Initialize resolution value
+	resolution, _ := NewResolution(resolutionValue, resolutionValue) // Create resolution
+
 	for x := 0; x < 15; x++ {
-		node, _ := node.NewNode("1.1.1.1", true) // Attempt to create new node
-
-		resolutionValue := []byte("test")                                // Initialize resolution value
-		resolution, _ := NewResolution(resolutionValue, resolutionValue) // Create resolution
-
 		event, _ := NewEvent("push", *resolution, &command.Command{}, &node, 53) // Attempt to create new event
+
+		events = append(events, *event) // Append event to array
+	}
+
+	return &events // Return value
+}
+
+func generateEventsWithCommand() *[]Event {
+	events := []Event{} // Initialize container array
+
+	node, _ := node.NewNode("1.1.1.1", true) // Attempt to create new node
+
+	modifierValue := "test"                                                                               // Set value for command
+	command, _ := command.NewCommand("NewVariable", command.NewModifierSet("string", modifierValue, nil)) // Attempt to initialize new command
+
+	resolutionValue := []byte("test")                                // Initialize resolution value
+	resolution, _ := NewResolution(resolutionValue, resolutionValue) // Create resolution
+
+	for x := 0; x < 15; x++ {
+		event, _ := NewEvent("push", *resolution, command, &node, 53) // Attempt to create new event
 
 		events = append(events, *event) // Append event to array
 	}
