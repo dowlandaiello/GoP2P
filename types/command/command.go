@@ -27,7 +27,7 @@ type ModifierSet struct {
 
 // NewModifierSet - initialize new instance of modifierset struct with modifiers
 func NewModifierSet(modifierType string, modifierValue interface{}, modifierVariable *environment.Variable) *ModifierSet {
-	return &ModifierSet{Type: modifierType, Value: modifierValue, Variable: modifierVariable}
+	return &ModifierSet{Type: modifierType, Value: modifierValue, Variable: modifierVariable} // Initialize modifier set
 }
 
 // NewCommand - attempt to initialize new instance of command struct with specified command, modifiers.
