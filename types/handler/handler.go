@@ -17,7 +17,6 @@ import (
 
 // StartHandler - attempt to accept and handle requests on given listener
 func StartHandler(node *node.Node, ln *net.Listener) error {
-
 	if reflect.ValueOf(node).IsNil() || node.Address == "" || reflect.ValueOf(ln).IsNil() { // Check for nil parameters
 		return errors.New("invalid parameters") // Return error
 	}
