@@ -137,7 +137,19 @@ func handleNewVariable(node *node.Node, event *connection.Event) ([]byte, error)
 }
 
 func handleQueryValue(node *node.Node, event *connection.Event) ([]byte, error) {
-	return nil, nil // Return result
+	variable, err := node.Environment.QueryValue(event.Command.ModifierSet.Value.(string)) // Attempt to query for value
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	serializedValue, err := common.SerializeToBytes(variable) // Attempt to serialize new variable
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return serializedValue, nil // Return serialized value
 }
 
 func handleQueryType(node *node.Node, event *connection.Event) ([]byte, error) {
