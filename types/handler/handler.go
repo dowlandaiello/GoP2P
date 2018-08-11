@@ -80,14 +80,16 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 }
 
 func handleSingular(node *node.Node, connection *connection.Connection) ([]byte, error) {
-	db, err := database.FromBytes(connection.Data)
+	db, err := database.FromBytes(connection.Data) // Attempt to read db
 
-	if err == nil {
-		err = db.WriteToMemory(node.Environment)
+	if err == nil { // Check for success
+		err = db.WriteToMemory(node.Environment) // Write db to memory
 
-		if err != nil {
-			return nil, err
+		if err != nil { // Check for errors
+			return nil, err // Return found error
 		}
+
+		return common.SerializeToBytes(*db) // Attempt to serialize
 	}
 
 	variable, err := environment.NewVariable("Connection", connection) // Init variable to hold connection data
