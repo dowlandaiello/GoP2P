@@ -11,6 +11,7 @@ import (
 
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/connection"
+	"github.com/mitsukomegumi/GoP2P/types/database"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
@@ -78,8 +79,18 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 	return nil // Attempt to handle stack
 }
 
-func handleSingular(node *node.Node, connection *connection.Connection) ([]byte, error) { // TODO: before you forget, move the db io from writing to mem to writing to the environment's mem
-	variable, err := environment.NewVariable("byte[]", connection) // Init variable to hold connection data
+func handleSingular(node *node.Node, connection *connection.Connection) ([]byte, error) {
+	db, err := database.FromBytes(connection.Data)
+
+	if err == nil {
+		err = db.WriteToMemory(node.Environment)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	variable, err := environment.NewVariable("Connection", connection) // Init variable to hold connection data
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -91,10 +102,10 @@ func handleSingular(node *node.Node, connection *connection.Connection) ([]byte,
 		return nil, err // Return found error
 	}
 
-	return varByteVal, node.Environment.AddVariable(variable) // Attempt to add variable to environment, return variable value as byte
+	return varByteVal, node.Environment.AddVariable(variable, false) // Attempt to add variable to environment, return variable value as byte
 }
 
-func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, error) {
+func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, error) { // TODO: fix handleStack returns
 	for x := 0; x != len(connection.ConnectionStack); x++ { // Iterate through stack
 		handleCommand(node, &connection.ConnectionStack[x]) // Attempt to handle command
 	}
@@ -174,7 +185,7 @@ func handleAddVariable(node *node.Node, event *connection.Event) ([]byte, error)
 		return nil, errors.New("nil variable") // Return found nil variable
 	}
 
-	err := node.Environment.AddVariable(variable) // Attempt to add found variable to environment
+	err := node.Environment.AddVariable(variable, false) // Attempt to add found variable to environment
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error

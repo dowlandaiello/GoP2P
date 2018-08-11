@@ -45,18 +45,6 @@ func (db *NodeDatabase) AddNode(destNode *node.Node) error {
 		*db.Nodes = append(*db.Nodes, *destNode) // Append node to node list
 	}
 
-	currentDir, err := common.GetCurrentDir() // Attempt to fetch current dir
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	err = db.WriteToMemory(currentDir) // Attempt to write db to memory
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
 	return nil // No error occurred, return nil
 }
 
@@ -69,18 +57,6 @@ func (db *NodeDatabase) RemoveNode(address string) error {
 	}
 
 	db.remove(int(nodeIndex)) // Removes value at index
-
-	currentDir, err := common.GetCurrentDir() // Attempt to fetch current dir
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	err = db.WriteToMemory(currentDir) // Attempt to write db to memory
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
 
 	return nil // Returns nil, no error
 }

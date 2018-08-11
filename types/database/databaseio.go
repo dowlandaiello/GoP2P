@@ -1,29 +1,51 @@
 package database
 
 import (
-	"path/filepath"
+	"bytes"
+	"encoding/json"
 
-	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/types/environment"
 )
 
 // WriteToMemory - create serialized instance of specified NodeDatabase in specified path (string)
-func (db *NodeDatabase) WriteToMemory(path string) error {
-	err := common.WriteGob(path+filepath.FromSlash("/nodeDb.gob"), db) // Attempt to write db to path
+func (db *NodeDatabase) WriteToMemory(env *environment.Environment) error {
+	variable, err := environment.NewVariable("NodeDatabase", *db)
 
 	if err != nil { // Check for errors
 		return err // Return error
+	}
+
+	err = env.AddVariable(variable, true) // Attempt to add specified variable
+
+	if err != nil { // Check for errors
+		return err // Return found error
 	}
 
 	return nil // No error occurred, return nil.
 }
 
 // ReadDatabaseFromMemory - read serialized object of specified node database from specified path
-func ReadDatabaseFromMemory(path string) (*NodeDatabase, error) {
-	tempDb := new(NodeDatabase)
+func ReadDatabaseFromMemory(env *environment.Environment) (*NodeDatabase, error) {
+	variable, err := env.QueryType("NodeDatabase") // Attempt to fetch db
 
-	err := common.ReadGob(path+filepath.FromSlash("/nodeDb.gob"), tempDb)
 	if err != nil { // Check for errors
-		return nil, err // Return error
+		return &NodeDatabase{}, err // Return found error
 	}
-	return tempDb, nil // No error occurred, return nil error, db
+
+	db := variable.VariableData.(NodeDatabase) // Fetch value
+
+	return &db, nil // No error occurred, return nil error, db
+}
+
+// FromBytes - attempt to convert specified byte array to db
+func FromBytes(b []byte) (*NodeDatabase, error) {
+	object := NodeDatabase{} // Create empty instance
+
+	err := json.NewDecoder(bytes.NewReader(b)).Decode(&object) // Attempt to read
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return &object, nil // No error occurred, return read value
 }

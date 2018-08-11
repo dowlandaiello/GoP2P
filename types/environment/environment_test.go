@@ -43,7 +43,7 @@ func TestQueryType(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	err = env.AddVariable(variable) // Add variable to environment
+	err = env.AddVariable(variable, false) // Add variable to environment
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -76,7 +76,7 @@ func TestQueryValue(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	err = env.AddVariable(variable) // Add variable to environment
+	err = env.AddVariable(variable, false) // Add variable to environment
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error

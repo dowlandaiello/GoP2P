@@ -94,7 +94,37 @@ func NewVariable(variableType string, variableData interface{}) (*Variable, erro
 }
 
 // AddVariable - attempt to append specified variable to environment variables list
-func (environment *Environment) AddVariable(variable *Variable) error {
+func (environment *Environment) AddVariable(variable *Variable, replaceExisting bool) error {
+	if replaceExisting {
+		err := environment.replaceVariable(variable)
+
+		if err == nil {
+			return nil
+		}
+	}
+
+	return environment.addVariable(variable)
+}
+
+func (environment *Environment) replaceVariable(variable *Variable) error {
+	foundVariable, err := environment.QueryType(variable.VariableType) // Query type
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	(*foundVariable).VariableData = (*variable).VariableData // Set existing data to given data
+
+	currentDir, err := common.GetCurrentDir() // Attempt to fetch current dir
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	return environment.WriteToMemory(currentDir) // No error occurred, return nil
+}
+
+func (environment *Environment) addVariable(variable *Variable) error {
 	if reflect.ValueOf(variable).IsNil() { // Check for invalid parameters
 		return errors.New("invalid variable") // Return error
 	}
@@ -107,13 +137,7 @@ func (environment *Environment) AddVariable(variable *Variable) error {
 		return err // Return found error
 	}
 
-	err = environment.WriteToMemory(currentDir) // Attempt to write to memory
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	return nil
+	return environment.WriteToMemory(currentDir) // Attempt to write to memory
 }
 
 /*
