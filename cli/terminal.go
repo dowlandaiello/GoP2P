@@ -45,16 +45,3 @@ func (term *Terminal) AddVariable(variable interface{}) error {
 
 	return nil // No error occurred, return nil
 }
-
-// Attach - attempt to fetch current node configuration and save as variable
-func (term *Terminal) Attach() error {
-	node, err := ReadNode()
-
-	if err != nil {
-		return err
-	}
-
-	term.AddVariable(*node)
-
-	return nil
-}

@@ -17,8 +17,8 @@ func handleCommand(term *Terminal, command string) {
 		} else {
 			fmt.Println(output) // Log success
 		}
-	case strings.Contains(strings.ToLower(command), "readnode"): // Account for readnode command
-		fmt.Println("attempting to read node") // Log begin
+	case strings.Contains(strings.ToLower(command), "attach"): // Account for readnode command
+		fmt.Println("attempting to attach") // Log begin
 
 		output, err := handleNewNode(term) // Attempt to read node
 
@@ -38,20 +38,20 @@ func handleNewNode(term *Terminal) (string, error) {
 		return "", err // Return found error
 	}
 
-	term.AddVariable(*node)
+	term.AddVariable(*node) // Add new node
 
 	return "-- SUCCESS -- created node with address " + node.Address, nil // No error occurred, return success
 }
 
 // handleReadNode - handle execution of ReadNode() command
-func handleReadNode(term *Terminal) (string, error) {
-	node, err := ReadNode() // Attempt to read node
+func handleAttachNode(term *Terminal) (string, error) {
+	node, err := AttachNode() // Attempt to read node
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
 	}
 
-	term.AddVariable(*node)
+	term.AddVariable(*node) // Add new node
 
-	return "-- SUCCESS -- read node with address " + node.Address, nil // Log success
+	return "-- SUCCESS -- attached to node with address " + node.Address, nil // Log success
 }

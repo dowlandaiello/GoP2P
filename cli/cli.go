@@ -40,8 +40,8 @@ func NewNode() (*node.Node, error) {
 	return &node, nil // No error occurred, return node
 }
 
-// ReadNode - attempt to read saved node in current working directory
-func ReadNode() (*node.Node, error) {
+// AttachNode - attempt to attach to saved node in current working directory
+func AttachNode() (*node.Node, error) {
 	currentDir, err := common.GetCurrentDir() // Fetch current dir
 
 	if err != nil { // Check for errors
