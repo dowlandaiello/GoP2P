@@ -10,12 +10,12 @@ func NewNode() (*node.Node, error) {
 	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
 
 	if err != nil { // Check for errors
-		err = nil // Reset error
+		var gErr error // Init err
 
-		address, err = common.GetExtIPAddrWithoutUpNP() // Attempt to fetch address without UpNP
+		address, gErr = common.GetExtIPAddrWithoutUpNP() // Attempt to fetch address without UpNP
 
-		if err != nil { // Check second try for errors
-			return nil, err
+		if gErr != nil { // Check second try for errors
+			return nil, gErr
 		}
 	}
 
