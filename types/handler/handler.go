@@ -78,7 +78,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 	return nil // Attempt to handle stack
 }
 
-func handleSingular(node *node.Node, connection *connection.Connection) ([]byte, error) {
+func handleSingular(node *node.Node, connection *connection.Connection) ([]byte, error) { // TODO: before you forget, move the db io from writing to mem to writing to the environment's mem
 	variable, err := environment.NewVariable("byte[]", connection) // Init variable to hold connection data
 
 	if err != nil { // Check for errors
