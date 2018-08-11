@@ -32,9 +32,18 @@ var (
 
 // CheckAddress - check that specified IP address can be pinged, and is available on specified port
 func CheckAddress(address string) error {
+	if address == "" { // Check for nil address
+		return errors.New("nil address") // Return error
+	}
+
 	p := fastping.NewPinger()                          // Create new pinger
 	ipAddress, err := net.ResolveIPAddr("ip", address) // Resolve address
-	p.AddIPAddr(ipAddress)                             // Add address to pinger
+
+	if err != nil {
+		return err
+	}
+
+	p.AddIPAddr(ipAddress) // Add address to pinger
 
 	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) { // On correct address
 		fmt.Printf("IP Addr: %s receive, RTT: %v\n", addr.String(), rtt) // Print address meta
