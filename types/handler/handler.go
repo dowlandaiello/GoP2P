@@ -79,6 +79,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 	return nil // Attempt to handle stack
 }
 
+// handleSingular - no stack present in found connection, write variable with connection data
 func handleSingular(node *node.Node, connection *connection.Connection) ([]byte, error) {
 	db, err := database.FromBytes(connection.Data) // Attempt to read db
 
@@ -107,8 +108,9 @@ func handleSingular(node *node.Node, connection *connection.Connection) ([]byte,
 	return varByteVal, node.Environment.AddVariable(variable, false) // Attempt to add variable to environment, return variable value as byte
 }
 
+// handleStack - found connection with stack, iterate through and handle each command
 func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, error) {
-	responses := [][]byte{}
+	responses := [][]byte{} // Create placeholder
 
 	for x := 0; x != len(connection.ConnectionStack); x++ { // Iterate through stack
 		val, _ := handleCommand(node, &connection.ConnectionStack[x]) // Attempt to handle command
