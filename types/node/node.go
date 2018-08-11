@@ -3,6 +3,7 @@ package node
 import (
 	"errors"
 	"net"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -58,6 +59,17 @@ func (node *Node) StartListener(port int) (*net.Listener, error) {
 	}
 
 	return &ln, nil // No error occurred, return listener
+}
+
+// WriteToMemory - create serialized instance of specified environment in specified path (string)
+func (node *Node) WriteToMemory(path string) error {
+	err := common.WriteGob(path+filepath.FromSlash("/node.gob"), node) // Attempt to write env to path
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	return nil // No error occurred, return nil.
 }
 
 /*
