@@ -107,12 +107,20 @@ func handleSingular(node *node.Node, connection *connection.Connection) ([]byte,
 	return varByteVal, node.Environment.AddVariable(variable, false) // Attempt to add variable to environment, return variable value as byte
 }
 
-func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, error) { // TODO: fix handleStack returns
+func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, error) {
+	responses := [][]byte{}
+
 	for x := 0; x != len(connection.ConnectionStack); x++ { // Iterate through stack
-		handleCommand(node, &connection.ConnectionStack[x]) // Attempt to handle command
+		val, _ := handleCommand(node, &connection.ConnectionStack[x]) // Attempt to handle command
+
+		responses = append(responses, val)
 	}
 
-	return nil, nil // No error occurred, return nil
+	if len(responses) == 0 {
+		return nil, errors.New("nil response")
+	}
+
+	return responses, nil // No error occurred, return nil
 }
 
 func handleCommand(node *node.Node, event *connection.Event) ([]byte, error) {
