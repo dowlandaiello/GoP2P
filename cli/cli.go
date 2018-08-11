@@ -39,3 +39,20 @@ func NewNode() (*node.Node, error) {
 
 	return &node, nil // No error occurred, return node
 }
+
+// ReadNode - attempt to read saved node in current working directory
+func ReadNode() (*node.Node, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch current dir
+
+	if err != nil { // Check for errors
+		return &node.Node{}, err // Return found error
+	}
+
+	readNode, err := node.ReadNodeFromMemory(currentDir) // Attempt to read serialized node
+
+	if err != nil { // Check for errors
+		return &node.Node{}, err // Return found error
+	}
+
+	return readNode, nil // Return read node
+}

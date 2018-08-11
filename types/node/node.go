@@ -72,6 +72,18 @@ func (node *Node) WriteToMemory(path string) error {
 	return nil // No error occurred, return nil.
 }
 
+// ReadNodeFromMemory - read serialized object of specified node from specified path
+func ReadNodeFromMemory(path string) (*Node, error) {
+	tempNode := new(Node)
+
+	err := common.ReadGob(path+filepath.FromSlash("/node.gob"), tempNode)
+
+	if err != nil { // Check for errors
+		return nil, err // Return error
+	}
+	return tempNode, nil // No error occurred, return nil error, env
+}
+
 /*
 	END EXPORTED METHODS:
 */
