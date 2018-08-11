@@ -43,14 +43,7 @@ func TestWriteToMemory(t *testing.T) {
 
 		t.Logf("node database created successfully with bootstrap node %s", (*db.Nodes)[0].Address) // Print success
 
-		dir, err := common.GetCurrentDir() // Attempt to fetch working directory
-
-		if err != nil { // Check for errors
-			t.Errorf(err.Error()) // Log error
-			t.FailNow()           // Panic
-		}
-
-		err = db.WriteToMemory(dir) // Attempt to write database to memory
+		err = db.WriteToMemory(node.Environment) // Attempt to write database to memory
 
 		if err != nil { // Check for errors
 			t.Errorf(err.Error()) // Log error
@@ -96,14 +89,7 @@ func TestReadFromMemory(t *testing.T) {
 
 		t.Logf("node database created successfully with bootstrap node %s", (*db.Nodes)[0].Address) // Print success
 
-		dir, err := common.GetCurrentDir() // Attempt to fetch working directory
-
-		if err != nil { // Check for errors
-			t.Errorf(err.Error()) // Log error
-			t.FailNow()           // Panic
-		}
-
-		err = db.WriteToMemory(dir) // Attempt to write database to memory
+		err = db.WriteToMemory(node.Environment) // Attempt to write database to memory
 
 		if err != nil { // Check for errors
 			t.Errorf(err.Error()) // Log error
@@ -112,7 +98,7 @@ func TestReadFromMemory(t *testing.T) {
 
 		t.Logf("wrote database to memory") // Log success
 
-		readDb, err := ReadDatabaseFromMemory(dir) // Attempt to read database from memory
+		readDb, err := ReadDatabaseFromMemory(node.Environment) // Attempt to read database from memory
 
 		if err != nil { // Check for errors
 			t.Errorf(err.Error()) // Log error

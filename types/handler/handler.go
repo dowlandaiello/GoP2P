@@ -11,6 +11,7 @@ import (
 
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/connection"
+	"github.com/mitsukomegumi/GoP2P/types/database"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
@@ -30,6 +31,7 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 	}
 }
 
+// handleConnection - attempt to fetch connection metadata, handle it respectively (stack or singular)
 func handleConnection(node *node.Node, conn net.Conn) error {
 	fmt.Printf("-- CONNECTION -- address: %s", conn.RemoteAddr().String())
 
@@ -54,7 +56,15 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 			return err // Return found error
 		}
 
-		conn.Write(val) // Write success
+		response := connection.Response{Val: [][]byte{val}} // Initialize response
+
+		serializedResponse, err := common.SerializeToBytes(response) // Attempt to serialize response
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		conn.Write(serializedResponse) // Write success
 
 		return nil // No error occurred, return nil
 	}
@@ -78,8 +88,21 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 	return nil // Attempt to handle stack
 }
 
+// handleSingular - no stack present in found connection, write variable with connection data
 func handleSingular(node *node.Node, connection *connection.Connection) ([]byte, error) {
-	variable, err := environment.NewVariable("byte[]", connection) // Init variable to hold connection data
+	db, err := database.FromBytes(connection.Data) // Attempt to read db
+
+	if err == nil { // Check for success
+		err = db.WriteToMemory(node.Environment) // Write db to memory
+
+		if err != nil { // Check for errors
+			return nil, err // Return found error
+		}
+
+		return common.SerializeToBytes(*db) // Attempt to serialize
+	}
+
+	variable, err := environment.NewVariable("Connection", connection) // Init variable to hold connection data
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -91,15 +114,24 @@ func handleSingular(node *node.Node, connection *connection.Connection) ([]byte,
 		return nil, err // Return found error
 	}
 
-	return varByteVal, node.Environment.AddVariable(variable) // Attempt to add variable to environment, return variable value as byte
+	return varByteVal, node.Environment.AddVariable(variable, false) // Attempt to add variable to environment, return variable value as byte
 }
 
+// handleStack - found connection with stack, iterate through and handle each command
 func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, error) {
+	responses := [][]byte{} // Create placeholder
+
 	for x := 0; x != len(connection.ConnectionStack); x++ { // Iterate through stack
-		handleCommand(node, &connection.ConnectionStack[x]) // Attempt to handle command
+		val, _ := handleCommand(node, &connection.ConnectionStack[x]) // Attempt to handle command
+
+		responses = append(responses, val)
 	}
 
-	return nil, nil // No error occurred, return nil
+	if len(responses) == 0 {
+		return nil, errors.New("nil response")
+	}
+
+	return responses, nil // No error occurred, return nil
 }
 
 func handleCommand(node *node.Node, event *connection.Event) ([]byte, error) {
@@ -174,7 +206,7 @@ func handleAddVariable(node *node.Node, event *connection.Event) ([]byte, error)
 		return nil, errors.New("nil variable") // Return found nil variable
 	}
 
-	err := node.Environment.AddVariable(variable) // Attempt to add found variable to environment
+	err := node.Environment.AddVariable(variable, false) // Attempt to add found variable to environment
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error

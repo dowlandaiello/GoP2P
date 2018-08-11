@@ -57,7 +57,8 @@ func (db *NodeDatabase) RemoveNode(address string) error {
 	}
 
 	db.remove(int(nodeIndex)) // Removes value at index
-	return nil                // Returns nil, no error
+
+	return nil // Returns nil, no error
 }
 
 // QueryForAddress - attempts to search specified node database for specified address, returns index of node
