@@ -43,7 +43,7 @@ func handleNewNode(term *Terminal) (string, error) {
 	return "-- SUCCESS -- created node with address " + node.Address, nil // No error occurred, return success
 }
 
-// handleReadNode - handle execution of ReadNode() command
+// handleAttachNode - handle execution of ReadNode() command
 func handleAttachNode(term *Terminal) (string, error) {
 	node, err := AttachNode() // Attempt to read node
 
