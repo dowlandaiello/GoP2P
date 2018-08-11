@@ -31,6 +31,7 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 	}
 }
 
+// handleConnection - attempt to fetch connection metadata, handle it respectively (stack or singular)
 func handleConnection(node *node.Node, conn net.Conn) error {
 	fmt.Printf("-- CONNECTION -- address: %s", conn.RemoteAddr().String())
 
