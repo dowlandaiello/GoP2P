@@ -56,7 +56,15 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 			return err // Return found error
 		}
 
-		conn.Write(val) // Write success
+		response := connection.Response{Val: [][]byte{val}} // Initialize response
+
+		serializedResponse, err := common.SerializeToBytes(response) // Attempt to serialize response
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		conn.Write(serializedResponse) // Write success
 
 		return nil // No error occurred, return nil
 	}
