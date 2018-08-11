@@ -101,6 +101,18 @@ func (environment *Environment) AddVariable(variable *Variable) error {
 
 	environment.EnvironmentVariables = append(environment.EnvironmentVariables, variable) // Append value
 
+	currentDir, err := common.GetCurrentDir() // Attempt to fetch current dir
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = environment.WriteToMemory(currentDir) // Attempt to write to memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	return nil
 }
 
