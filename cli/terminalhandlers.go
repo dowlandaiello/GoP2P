@@ -8,30 +8,38 @@ import (
 func handleCommand(term *Terminal, command string) {
 	switch { // Iterate through possible commands
 	case strings.Contains(strings.ToLower(command), "newnode"): // Account for newnode command
-		fmt.Println("attempting to create new node") // Log begin
-
-		output, err := handleNewNode(term) // Attempt to initialize new node
-
-		if err != nil { // Check for errors
-			fmt.Println("-- ERROR -- " + err.Error()) // Log error
-		} else {
-			fmt.Println(output) // Log success
-		}
+		term.handleNewNodeCommand()
 	case strings.Contains(strings.ToLower(command), "attach"): // Account for readnode command
-		fmt.Println("attempting to attach") // Log begin
+		term.handleAttachNodeCommand()
+	}
+}
 
-		output, err := handleAttachNode(term) // Attempt to read node
+func (term *Terminal) handleNewNodeCommand() {
+	fmt.Println("attempting to create new node") // Log begin
 
-		if err != nil { // Check for errors
-			fmt.Println("-- ERROR -- " + err.Error()) // Log error
-		} else {
-			fmt.Println(output) // Log success
-		}
+	output, err := term.handleNewNode() // Attempt to initialize new node
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
+	}
+}
+
+func (term *Terminal) handleAttachNodeCommand() {
+	fmt.Println("attempting to attach") // Log begin
+
+	output, err := term.handleAttachNode() // Attempt to read node
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
 	}
 }
 
 // handleNewNode - handle execution of NewNode() command
-func handleNewNode(term *Terminal) (string, error) {
+func (term *Terminal) handleNewNode() (string, error) {
 	node, err := NewNode() // Attempt to create new node
 
 	if err != nil { // Check for errors
@@ -44,7 +52,7 @@ func handleNewNode(term *Terminal) (string, error) {
 }
 
 // handleAttachNode - handle execution of ReadNode() command
-func handleAttachNode(term *Terminal) (string, error) {
+func (term *Terminal) handleAttachNode() (string, error) {
 	node, err := AttachNode() // Attempt to read node
 
 	if err != nil { // Check for errors
