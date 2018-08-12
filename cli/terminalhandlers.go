@@ -268,7 +268,7 @@ func (term *Terminal) handleStartHandler(port int) (string, error) {
 func (term *Terminal) handleNewEnvironmentCommand() {
 	fmt.Println("attempting to initialize new environment") // Log begin
 
-	output, err := term.handleNewEnvironment() // Attempt to read node
+	output, err := term.handleNewEnvironment() // Attempt to init new environment
 
 	if err != nil { // Check for errors
 		fmt.Println("-- ERROR -- " + err.Error()) // Log error
@@ -281,7 +281,7 @@ func (term *Terminal) handleNewEnvironmentCommand() {
 func (term *Terminal) handleQueryTypeCommand(queryType string) {
 	fmt.Println("querying type " + queryType) // Log begin
 
-	output, err := term.handleQueryType(queryType) // Attempt to read node
+	output, err := term.handleQueryType(queryType) // Attempt to query for type
 
 	if err != nil { // Check for errors
 		fmt.Println("-- ERROR -- " + err.Error()) // Log error
