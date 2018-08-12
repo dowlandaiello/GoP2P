@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/mitsukomegumi/GoP2P/types/environment"
+
+	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/types/database"
 	"github.com/mitsukomegumi/GoP2P/types/handler"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
@@ -60,7 +64,35 @@ func (term *Terminal) handleNewNode() (string, error) {
 		return "", err // Return found error
 	}
 
+	db, err := database.NewDatabase(node, 5) // Attempt to create new database
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = db.WriteToMemory(node.Environment) // Attempt to write to memory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	term.AddVariable(db, "NodeDatabase") // Add new database
+
 	term.AddVariable(*node, "Node") // Add new node
+
+	term.AddVariable(*node.Environment, "Environment") // Add new environment
+
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = node.Environment.WriteToMemory(currentDir) // Attempt to write to memory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
 
 	return "-- SUCCESS -- created node with address " + node.Address, nil // No error occurred, return success
 }
@@ -73,7 +105,27 @@ func (term *Terminal) handleAttachNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	term.AddVariable(*node, "Node") // Add new node
+	currentDir, err := common.GetCurrentDir() // Fetch current dir
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment from memory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	db, err := database.ReadDatabaseFromMemory(env) // Attempt to read database from memory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	term.AddVariable(*node, "Node")       // Add node
+	term.AddVariable(*env, "Environment") // Add environment
+	term.AddVariable(*db, "NodeDatabase") // Add db
 
 	return "-- SUCCESS -- attached to node with address " + node.Address, nil // No error occurred, return success
 }
