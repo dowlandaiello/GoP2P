@@ -73,6 +73,8 @@ func (term *Terminal) handleNewNode() (string, error) {
 		return "", err // Return found error
 	}
 
+	fmt.Println("\nsuccessfully wrote nodedatabase to environment memory")
+
 	term.AddVariable(db, "NodeDatabase") // Add new database
 
 	term.AddVariable(*node, "Node") // Add new node
