@@ -88,6 +88,8 @@ func (term *Terminal) handleDatabase(command string) {
 		term.handleWriteDatabaseToMemoryCommand() // Execute command
 	case strings.Contains(strings.ToLower(command), "attach"): // Account for attach method
 		term.handleAttachDatabaseCommand() // Execute command
+	case strings.Contains(strings.ToLower(command), "AddNode"): // Account for AddNode method
+		term.handleAddNodeCommand() // Execute command
 	}
 }
 
