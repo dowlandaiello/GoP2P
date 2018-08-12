@@ -2,6 +2,7 @@ package cli
 
 import (
 	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -49,6 +50,12 @@ func AttachNode() (*node.Node, error) {
 	}
 
 	readNode, err := node.ReadNodeFromMemory(currentDir) // Attempt to read serialized node
+
+	if err != nil { // Check for errors
+		return &node.Node{}, err // Return found error
+	}
+
+	readNode.Environment, err = environment.ReadEnvironmentFromMemory(currentDir) // Read node environment from memory
 
 	if err != nil { // Check for errors
 		return &node.Node{}, err // Return found error
