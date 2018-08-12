@@ -1,10 +1,13 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
 
+	"github.com/mitsukomegumi/GoP2P/types/handler"
+	"github.com/mitsukomegumi/GoP2P/types/node"
 	"github.com/mitsukomegumi/GoP2P/upnp"
 )
 
@@ -26,9 +29,17 @@ func (term *Terminal) handleUpNP(command string) {
 	case strings.Contains(strings.ToLower(command), "forwardport"): // Account for forwardport command
 		intVal, _ := strconv.Atoi(strings.Split(strings.Split(command, "(")[1], ")")[0]) // Attempt to fetch port from command
 
+		if intVal == 0 {
+			intVal = handleZeroPort() // Fetch port
+		}
+
 		term.handleForwardPortCommand(intVal) // Forward port
 	case strings.Contains(strings.ToLower(command), "removeportforward"): // Account for removeportforward command
 		intVal, _ := strconv.Atoi(strings.Split(strings.Split(command, "(")[1], ")")[0]) // Attempt to fetch port from command
+
+		if intVal == 0 {
+			intVal = handleZeroPort() // Fetch port
+		}
 
 		term.handleRemoveForwardPortCommand(intVal) // Remove port forwarding
 	}
@@ -40,6 +51,14 @@ func (term *Terminal) handleNode(command string) {
 		term.handleNewNodeCommand()
 	case strings.Contains(strings.ToLower(command), "attach"): // Account for readnode command
 		term.handleAttachNodeCommand()
+	case strings.Contains(strings.ToLower(command), "starthandler"):
+		intVal, _ := strconv.Atoi(strings.Split(strings.Split(command, "(")[1], ")")[0]) // Attempt to fetch port from command
+
+		if intVal == 0 {
+			intVal = handleZeroPort() // Fetch port
+		}
+
+		term.handleStartHandlerCommand(intVal) // Start handler command execution
 	}
 }
 
@@ -48,10 +67,32 @@ func (term *Terminal) handleNode(command string) {
 */
 
 /*
+	BEGIN GENERAL METHODS
+*/
+
+// handleZeroPort - handle circumstance in which user has not specified a port
+func handleZeroPort() int {
+	var input string // Init buffer
+
+	fmt.Print("\nport: ")
+	fmt.Scanln(&input)
+
+	intVal, _ := strconv.Atoi(input) // Convert to int
+
+	return intVal // Return result
+}
+
+/*
+	END GENERAL METHODS
+*/
+
+/*
 	BEGIN UpNP METHODS
 */
 
 func (term *Terminal) handleForwardPortCommand(portNumber int) {
+	fmt.Println("attempting to forward port") // Log begin
+
 	output, err := term.handleForwardPort(portNumber) // Attempt to forward port
 
 	if err != nil { // Check for errors
@@ -63,6 +104,8 @@ func (term *Terminal) handleForwardPortCommand(portNumber int) {
 
 // handleForwardPort - handle execution of forwardport method
 func (term *Terminal) handleForwardPort(portNumber int) (string, error) {
+	fmt.Println("attempting to remove port forwarding") // Log begin
+
 	err := upnp.ForwardPort(uint(portNumber)) // Attempt to forward port
 
 	if err != nil { // Check for errors
@@ -127,6 +170,19 @@ func (term *Terminal) handleAttachNodeCommand() {
 	}
 }
 
+// handleStartHandlerCommand - attempt to start handler on attached node
+func (term *Terminal) handleStartHandlerCommand(port int) {
+	fmt.Println("attempting to start handler") // Log begin
+
+	output, err := term.handleStartHandler(port) // Attempt to read node
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
+	}
+}
+
 // handleNewNode - handle execution of NewNode() command
 func (term *Terminal) handleNewNode() (string, error) {
 	node, err := NewNode() // Attempt to create new node
@@ -135,7 +191,7 @@ func (term *Terminal) handleNewNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	term.AddVariable(*node) // Add new node
+	term.AddVariable(*node, "Node") // Add new node
 
 	return "-- SUCCESS -- created node with address " + node.Address, nil // No error occurred, return success
 }
@@ -148,9 +204,39 @@ func (term *Terminal) handleAttachNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	term.AddVariable(*node) // Add new node
+	term.AddVariable(*node, "Node") // Add new node
 
 	return "-- SUCCESS -- attached to node with address " + node.Address, nil // Log success
+}
+
+func (term *Terminal) handleStartHandler(port int) (string, error) {
+	foundNode := node.Node{} // Create placeholder
+
+	for x := 0; x != len(term.Variables); x++ { // Iterate through array
+		if term.VariableTypes[x] == "Node" { // Verify element is node
+			foundNode = term.Variables[x].(node.Node) // Set to value
+		}
+	}
+
+	if foundNode.Address == "" { // Check for errors
+		return "", errors.New("node not attached") // Log found error
+	}
+
+	ln, err := foundNode.StartListener(port) // Attempt to start handler
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = term.AddVariable(*ln, "Handler") // Attempt to save
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	go handler.StartHandler(&foundNode, ln)
+
+	return "-- SUCCESS -- started handler on port " + strconv.Itoa(port) + " with address " + foundNode.Address, nil
 }
 
 /*
