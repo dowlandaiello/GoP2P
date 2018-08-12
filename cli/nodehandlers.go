@@ -76,12 +76,6 @@ func (term *Terminal) handleNewNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	term.AddVariable(db, "NodeDatabase") // Add new database
-
-	term.AddVariable(*node, "Node") // Add new node
-
-	term.AddVariable(*node.Environment, "Environment") // Add new environment
-
 	currentDir, err := common.GetCurrentDir() // Fetch working directory
 
 	if err != nil { // Check for errors
@@ -93,6 +87,12 @@ func (term *Terminal) handleNewNode() (string, error) {
 	if err != nil { // Check for errors
 		return "", err // Return found error
 	}
+
+	term.AddVariable(db, "NodeDatabase") // Add new database
+
+	term.AddVariable(*node, "Node") // Add new node
+
+	term.AddVariable(*node.Environment, "Environment") // Add new environment
 
 	return "-- SUCCESS -- created node with address " + node.Address, nil // No error occurred, return success
 }
