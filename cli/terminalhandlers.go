@@ -14,6 +14,8 @@ func (term *Terminal) handleCommand(command string) {
 		term.handleNode(command)
 	case strings.Contains(strings.ToLower(command), "environment."): // Account for environment methods
 		term.handleEnvironment(command)
+	case strings.Contains(strings.ToLower(command), "database."): // Account for nodedatabase methods
+		term.handleDatabase(command)
 	}
 }
 
@@ -67,14 +69,23 @@ func (term *Terminal) handleEnvironment(command string) {
 		queryType := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch value from command
 
 		term.handleQueryTypeCommand(queryType) // Execute command
-	case strings.Contains(strings.ToLower(command), "queryvalue"):
+	case strings.Contains(strings.ToLower(command), "queryvalue"): // Account for queryvalue method
 		queryValue := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch value from command
 
 		term.handleQueryValueCommand(queryValue) // Execute command
-	case strings.Contains(strings.ToLower(command), "attach"):
+	case strings.Contains(strings.ToLower(command), "attach"): // Account for attach method
 		term.handleAttachEnvironmentCommand() // Execute command
-	case strings.Contains(strings.ToLower(command), "writetomemory"):
+	case strings.Contains(strings.ToLower(command), "writetomemory"): // Account for i/o methods
 		term.handleWriteToMemoryCommand() // Execute command
+	}
+}
+
+func (term *Terminal) handleDatabase(command string) {
+	switch {
+	case strings.Contains(strings.ToLower(command), "newdatabase"): // Account for init method
+		term.handleNewDatabaseCommand()
+	case strings.Contains(strings.ToLower(command), "writetomemory"): // Account for i/o methods
+		term.handleWriteDatabaseToMemoryCommand()
 	}
 }
 
