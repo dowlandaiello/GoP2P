@@ -2,7 +2,6 @@ package cli
 
 import (
 	"github.com/mitsukomegumi/GoP2P/common"
-	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -54,8 +53,6 @@ func AttachNode() (*node.Node, error) {
 	if err != nil { // Check for errors
 		return &node.Node{}, err // Return found error
 	}
-
-	readNode.Environment, _ = environment.ReadEnvironmentFromMemory(currentDir) // Read node environment from memory
 
 	return readNode, nil // Return read node
 }
