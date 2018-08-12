@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"fmt"
+
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
@@ -25,18 +27,6 @@ func NewNode() (*node.Node, error) {
 		return nil, err
 	}
 
-	currentDir, err := common.GetCurrentDir() // Fetch current directory
-
-	if err != nil { // Check for errors
-		return nil, err // Return found error
-	}
-
-	err = node.WriteToMemory(currentDir) // Attempt to write node to memory
-
-	if err != nil { // Check for errors
-		return nil, err // Return found error
-	}
-
 	return &node, nil // No error occurred, return node
 }
 
@@ -53,6 +43,8 @@ func AttachNode() (*node.Node, error) {
 	if err != nil { // Check for errors
 		return &node.Node{}, err // Return found error
 	}
+
+	fmt.Printf("%#v", readNode.Environment)
 
 	return readNode, nil // Return read node
 }

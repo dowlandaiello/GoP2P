@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/database"
 	"github.com/mitsukomegumi/GoP2P/types/handler"
 	"github.com/mitsukomegumi/GoP2P/types/node"
@@ -73,12 +74,22 @@ func (term *Terminal) handleNewNode() (string, error) {
 		return "", err // Return found error
 	}
 
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = node.WriteToMemory(currentDir) // Write to mem
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
 	fmt.Println("\nsuccessfully wrote nodedatabase to environment memory")
 
-	term.AddVariable(db, "NodeDatabase") // Add new database
-
-	term.AddVariable(*node, "Node") // Add new node
-
+	term.AddVariable(db, "NodeDatabase")               // Add new database
+	term.AddVariable(*node, "Node")                    // Add new node
 	term.AddVariable(*node.Environment, "Environment") // Add new environment
 
 	return "-- SUCCESS -- created node with address " + node.Address, nil // No error occurred, return success
