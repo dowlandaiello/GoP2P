@@ -298,6 +298,18 @@ func (term *Terminal) handleNewEnvironmentCommand() {
 	}
 }
 
+func (term *Terminal) handleWriteToMemoryCommmand() {
+	fmt.Println("attempting to environment to memory") // Log begin
+
+	output, err := term.handleWriteToMemory() // Attempt to write env
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
+	}
+}
+
 // handleQueryTypeCommand - handle execution of handleQueryType method (wrapper)
 func (term *Terminal) handleQueryTypeCommand(queryType string) {
 	fmt.Println("querying type " + queryType) // Log begin
