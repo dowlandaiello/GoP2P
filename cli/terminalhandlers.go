@@ -71,6 +71,10 @@ func (term *Terminal) handleEnvironment(command string) {
 	switch {
 	case strings.Contains(strings.ToLower(command), "newenvironment"): // Account for environment initializer
 		term.handleNewEnvironmentCommand() // Execute command
+	case strings.Contains(strings.ToLower(command), "querytype"): // Account for querytype method
+		queryType := strings.Split(strings.Split(command, "(")[1], ")")[0]
+
+		term.handleQueryTypeCommand(queryType) // Execute command
 	}
 }
 
@@ -273,6 +277,19 @@ func (term *Terminal) handleNewEnvironmentCommand() {
 	}
 }
 
+// handleQueryTypeCommand - handle execution of handleQueryType method (wrapper)
+func (term *Terminal) handleQueryTypeCommand(queryType string) {
+	fmt.Println("querying type " + queryType) // Log begin
+
+	output, err := term.handleQueryType(queryType) // Attempt to read node
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
+	}
+}
+
 // handleNewEnvironment - attempt to initialize new environment
 func (term *Terminal) handleNewEnvironment() (string, error) {
 	env, err := environment.NewEnvironment() // Attempt to create new environment
@@ -296,6 +313,31 @@ func (term *Terminal) handleNewEnvironment() (string, error) {
 	}
 
 	return "-- SUCCESS -- created new environment", nil // No error occurred, return success
+}
+
+// handleQueryType - attempt to query for specified type in environment
+func (term *Terminal) handleQueryType(queryType string) (string, error) {
+	foundEnvironment := environment.Environment{} // Create placeholder
+
+	for x := 0; x != len(term.Variables); x++ { // Iterate through array
+		if term.VariableTypes[x] == "Environment" { // Verify element is environment
+			foundEnvironment = term.Variables[x].(environment.Environment) // Set to value
+		}
+	}
+
+	value, err := foundEnvironment.QueryType(queryType) // Attempt to query for type
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	strVal, err := common.SerializeToString(*value) // Serialize response
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	return strVal, nil // Return response
 }
 
 /*
