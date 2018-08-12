@@ -129,7 +129,7 @@ func (environment *Environment) addVariable(variable *Variable) error {
 		return errors.New("invalid variable") // Return error
 	}
 
-	environment.EnvironmentVariables = append(environment.EnvironmentVariables, variable) // Append value
+	(*environment).EnvironmentVariables = append((*environment).EnvironmentVariables, variable) // Append value
 
 	currentDir, err := common.GetCurrentDir() // Attempt to fetch current dir
 
