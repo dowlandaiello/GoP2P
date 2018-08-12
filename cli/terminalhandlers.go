@@ -83,11 +83,11 @@ func (term *Terminal) handleEnvironment(command string) {
 func (term *Terminal) handleDatabase(command string) {
 	switch {
 	case strings.Contains(strings.ToLower(command), "newdatabase"): // Account for init method
-		term.handleNewDatabaseCommand()
+		term.handleNewDatabaseCommand() // Execute command
 	case strings.Contains(strings.ToLower(command), "writetomemory"): // Account for i/o methods
-		term.handleWriteDatabaseToMemoryCommand()
+		term.handleWriteDatabaseToMemoryCommand() // Execute command
 	case strings.Contains(strings.ToLower(command), "attach"): // Account for attach method
-		term.handleAttachDatabaseCommand()
+		term.handleAttachDatabaseCommand() // Execute command
 	}
 }
 
