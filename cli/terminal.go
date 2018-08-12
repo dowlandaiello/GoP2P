@@ -14,19 +14,19 @@ type Terminal struct {
 
 // NewTerminal - attempts to start io handler for term commands
 func NewTerminal() error {
-	term := Terminal{Variables: []interface{}{}}
+	term := Terminal{Variables: []interface{}{}, VariableTypes: []string{}}
 
 	for {
-		var input string
+		var input string // Init buffer
 
 		fmt.Print("\n> ")
-		_, err := fmt.Scanln(&input)
+		_, err := fmt.Scanln(&input) // Search for user input
 
 		if err != nil {
 			return err
 		}
 
-		term.handleCommand(string(input))
+		term.handleCommand(string(input)) // Handle specified command
 	}
 }
 

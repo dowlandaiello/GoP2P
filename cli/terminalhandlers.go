@@ -45,12 +45,36 @@ func (term *Terminal) handleNode(command string) {
 	case strings.Contains(strings.ToLower(command), "startlistener"):
 		intVal, _ := strconv.Atoi(strings.Split(strings.Split(command, "(")[1], ")")[0]) // Attempt to fetch port from command
 
+		if intVal == 0 {
+			intVal = handleZeroPort() // Fetch port
+		}
+
 		term.handleStartListenerCommand(intVal) // Start listener command execution
 	}
 }
 
 /*
 	END METHOD ROUTING
+*/
+
+/*
+	BEGIN GENERAL METHODS
+*/
+
+// handleZeroPort - handle circumstance in which user has not specified a port
+func handleZeroPort() int {
+	var input string // Init buffer
+
+	fmt.Print("\nport: ")
+	fmt.Scanln(&input)
+
+	intVal, _ := strconv.Atoi(input) // Convert to int
+
+	return intVal // Return result
+}
+
+/*
+	END GENERAL METHODS
 */
 
 /*
