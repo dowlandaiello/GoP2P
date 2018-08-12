@@ -422,6 +422,33 @@ func (term *Terminal) handleAttachEnvironment() (string, error) {
 	return "-- SUCCESS -- attached to environment", nil // No error occurred, return success
 }
 
+// handleWriteToMemory - handle execution of WriteToMemory() method
+func (term *Terminal) handleWriteToMemory() (string, error) {
+	foundEnvironment := environment.Environment{} // Create placeholder
+
+	for x := 0; x != len(term.Variables); x++ { // Iterate through array
+		if term.VariableTypes[x] == "Environment" { // Verify element is environment
+			foundEnvironment = term.Variables[x].(environment.Environment) // Set to value
+
+			break
+		}
+	}
+
+	currentDir, err := common.GetCurrentDir() // Attempt to fetch working directory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = foundEnvironment.WriteToMemory(currentDir) // Attempt to write to memory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	return "-- SUCCESS -- wrote environment to memory", nil // Return success
+}
+
 /*
 	END ENVIRONMENT METHODS
 */
