@@ -5,9 +5,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/mitsukomegumi/GoP2P/types/environment"
-
-	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/database"
 	"github.com/mitsukomegumi/GoP2P/types/handler"
 	"github.com/mitsukomegumi/GoP2P/types/node"
@@ -93,13 +90,7 @@ func (term *Terminal) handleAttachNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	currentDir, err := common.GetCurrentDir() // Fetch current dir
-
-	if err != nil { // Check for errors
-		return "", err // Return found error
-	}
-
-	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment from memory
+	env := node.Environment // Attempt to read environment from memory
 
 	if err != nil { // Check for errors
 		return "", err // Return found error

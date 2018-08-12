@@ -5,6 +5,7 @@ import (
 
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
+	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
 /*
@@ -162,13 +163,13 @@ func (term *Terminal) handleAttachEnvironment() (string, error) {
 		return "", err // Return found error
 	}
 
-	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment
+	node, err := node.ReadNodeFromMemory(currentDir) // Attempt to read environment
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
 	}
 
-	term.AddVariable(*env, "Environment") // Add env to variables
+	term.AddVariable(*node.Environment, "Environment") // Add env to variables
 
 	return "-- SUCCESS -- attached to environment", nil // No error occurred, return success
 }
