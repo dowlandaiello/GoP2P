@@ -5,8 +5,15 @@ import (
 	"strings"
 )
 
-func handleCommand(term *Terminal, command string) {
+func (term *Terminal) handleCommand(command string) {
 	switch { // Iterate through possible commands
+	case strings.Contains(strings.ToLower(command), "node."):
+		term.handleNode(command)
+	}
+}
+
+func (term *Terminal) handleNode(command string) {
+	switch {
 	case strings.Contains(strings.ToLower(command), "newnode"): // Account for newnode command
 		term.handleNewNodeCommand()
 	case strings.Contains(strings.ToLower(command), "attach"): // Account for readnode command

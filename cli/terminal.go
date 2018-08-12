@@ -25,7 +25,7 @@ func NewTerminal() error {
 			return err
 		}
 
-		handleCommand(&term, string(input))
+		term.handleCommand(string(input))
 	}
 }
 
