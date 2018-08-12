@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -78,6 +79,20 @@ func (term *Terminal) handleQueryValueCommand(queryValue string) {
 
 // handleNewEnvironment - attempt to initialize new environment
 func (term *Terminal) handleNewEnvironment() (string, error) {
+	foundNode := node.Node{}
+
+	for x := 0; x != len(term.Variables); x++ { // Iterate through array
+		if term.VariableTypes[x] == "Node" { // Verify element is node
+			foundNode = term.Variables[x].(node.Node) // Set to value
+
+			break
+		}
+	}
+
+	if foundNode.Address == "" { // Check for errors
+		return "", errors.New("node not attached") // Log found error
+	}
+
 	env, err := environment.NewEnvironment() // Attempt to create new environment
 
 	if err != nil { // Check for errors
@@ -86,13 +101,15 @@ func (term *Terminal) handleNewEnvironment() (string, error) {
 
 	term.AddVariable(*env, "Environment") // Add new environment
 
+	foundNode.Environment = env // Set environment
+
 	currentDir, err := common.GetCurrentDir() // Fetch working directory
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
 	}
 
-	err = env.WriteToMemory(currentDir) // Attempt to write to memory
+	err = foundNode.WriteToMemory(currentDir) // Attempt to write to memory
 
 	if err != nil { // Check for errors
 		return "", err // Return found error

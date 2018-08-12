@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 
-	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
 )
 
@@ -17,18 +16,6 @@ func (db *NodeDatabase) WriteToMemory(env *environment.Environment) error {
 	}
 
 	err = env.AddVariable(variable, true) // Attempt to add specified variable
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	currentDir, err := common.GetCurrentDir() // Fetch working directory
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	err = env.WriteToMemory(currentDir) // Write env to memory
 
 	if err != nil { // Check for errors
 		return err // Return found error
