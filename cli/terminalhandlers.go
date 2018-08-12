@@ -75,6 +75,8 @@ func (term *Terminal) handleEnvironment(command string) {
 		queryType := strings.Split(strings.Split(command, "(")[1], ")")[0]
 
 		term.handleQueryTypeCommand(queryType) // Execute command
+	case strings.Contains(strings.ToLower(command), "attach"):
+		term.handleAttachEnvironmentCommand()
 	}
 }
 
@@ -264,6 +266,19 @@ func (term *Terminal) handleStartHandler(port int) (string, error) {
 	BEGIN ENVIRONMENT METHODS
 */
 
+// handleAttachEnvironmentCommand - attempt to read environment at current working directory
+func (term *Terminal) handleAttachEnvironmentCommand() {
+	fmt.Println("attempting to attach") // Log begin
+
+	output, err := term.handleAttachEnvironment() // Attempt to read env
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
+	}
+}
+
 // handleNewEnvironmentCommand - handle execution of handleNewEnvironment method (wrapper)
 func (term *Terminal) handleNewEnvironmentCommand() {
 	fmt.Println("attempting to initialize new environment") // Log begin
@@ -337,7 +352,26 @@ func (term *Terminal) handleQueryType(queryType string) (string, error) {
 		return "", err // Return found error
 	}
 
-	return strVal, nil // Return response
+	return "-- SUCCESS -- found variable with type " + strVal, nil // Return response
+}
+
+// handleAttachEnvironment - handle execution of ReadEnvironment() command
+func (term *Terminal) handleAttachEnvironment() (string, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	term.AddVariable(*env, "Environment") // Add env to variables
+
+	return "-- SUCCESS -- attached to environment", nil // No error occurred, return success
 }
 
 /*
