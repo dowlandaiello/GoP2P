@@ -6,6 +6,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/types/environment"
+
 	"github.com/mitsukomegumi/GoP2P/types/handler"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 	"github.com/mitsukomegumi/GoP2P/upnp"
@@ -17,6 +20,8 @@ func (term *Terminal) handleCommand(command string) {
 		term.handleUpNP(command)
 	case strings.Contains(strings.ToLower(command), "node."): // Account for node methods
 		term.handleNode(command)
+	case strings.Contains(strings.ToLower(command), "environment."): // Account for environment methods
+		term.handleEnvironment(command)
 	}
 }
 
@@ -59,6 +64,17 @@ func (term *Terminal) handleNode(command string) {
 		}
 
 		term.handleStartHandlerCommand(intVal) // Start handler command execution
+	}
+}
+
+func (term *Terminal) handleEnvironment(command string) {
+	switch {
+	case strings.Contains(strings.ToLower(command), "newenvironment"): // Account for environment initializer
+		term.handleNewEnvironmentCommand() // Execute command
+	case strings.Contains(strings.ToLower(command), "querytype"): // Account for querytype method
+		queryType := strings.Split(strings.Split(command, "(")[1], ")")[0]
+
+		term.handleQueryTypeCommand(queryType) // Execute command
 	}
 }
 
@@ -174,7 +190,7 @@ func (term *Terminal) handleAttachNodeCommand() {
 func (term *Terminal) handleStartHandlerCommand(port int) {
 	fmt.Println("attempting to start handler") // Log begin
 
-	output, err := term.handleStartHandler(port) // Attempt to read node
+	output, err := term.handleStartHandler(port) // Attempt to start handler
 
 	if err != nil { // Check for errors
 		fmt.Println("-- ERROR -- " + err.Error()) // Log error
@@ -206,9 +222,10 @@ func (term *Terminal) handleAttachNode() (string, error) {
 
 	term.AddVariable(*node, "Node") // Add new node
 
-	return "-- SUCCESS -- attached to node with address " + node.Address, nil // Log success
+	return "-- SUCCESS -- attached to node with address " + node.Address, nil // No error occurred, return success
 }
 
+// handleStartHandler - attempt to start handler on node
 func (term *Terminal) handleStartHandler(port int) (string, error) {
 	foundNode := node.Node{} // Create placeholder
 
@@ -236,9 +253,93 @@ func (term *Terminal) handleStartHandler(port int) (string, error) {
 
 	go handler.StartHandler(&foundNode, ln)
 
-	return "-- SUCCESS -- started handler on port " + strconv.Itoa(port) + " with address " + foundNode.Address, nil
+	return "-- SUCCESS -- started handler on port " + strconv.Itoa(port) + " with address " + foundNode.Address, nil // No error occurred, return success
 }
 
 /*
 	END NODE METHODS
+*/
+
+/*
+	BEGIN ENVIRONMENT METHODS
+*/
+
+// handleNewEnvironmentCommand - handle execution of handleNewEnvironment method (wrapper)
+func (term *Terminal) handleNewEnvironmentCommand() {
+	fmt.Println("attempting to initialize new environment") // Log begin
+
+	output, err := term.handleNewEnvironment() // Attempt to init new environment
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
+	}
+}
+
+// handleQueryTypeCommand - handle execution of handleQueryType method (wrapper)
+func (term *Terminal) handleQueryTypeCommand(queryType string) {
+	fmt.Println("querying type " + queryType) // Log begin
+
+	output, err := term.handleQueryType(queryType) // Attempt to query for type
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
+	}
+}
+
+// handleNewEnvironment - attempt to initialize new environment
+func (term *Terminal) handleNewEnvironment() (string, error) {
+	env, err := environment.NewEnvironment() // Attempt to create new environment
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	term.AddVariable(*env, "Environment") // Add new environment
+
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = env.WriteToMemory(currentDir) // Attempt to write to memory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	return "-- SUCCESS -- created new environment", nil // No error occurred, return success
+}
+
+// handleQueryType - attempt to query for specified type in environment
+func (term *Terminal) handleQueryType(queryType string) (string, error) {
+	foundEnvironment := environment.Environment{} // Create placeholder
+
+	for x := 0; x != len(term.Variables); x++ { // Iterate through array
+		if term.VariableTypes[x] == "Environment" { // Verify element is environment
+			foundEnvironment = term.Variables[x].(environment.Environment) // Set to value
+		}
+	}
+
+	value, err := foundEnvironment.QueryType(queryType) // Attempt to query for type
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	strVal, err := common.SerializeToString(*value) // Serialize response
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	return strVal, nil // Return response
+}
+
+/*
+	END ENVIRONMENT METHODS
 */
