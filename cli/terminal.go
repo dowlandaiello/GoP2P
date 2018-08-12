@@ -25,14 +25,14 @@ func NewTerminal() error {
 			return err
 		}
 
-		handleCommand(&term, string(input))
+		term.handleCommand(string(input))
 	}
 }
 
 // AddVariable - attempt to append specified variable to terminal variable list
 func (term *Terminal) AddVariable(variable interface{}) error {
-	if reflect.ValueOf(variable).IsNil() { // Check for nil variable
-		return errors.New("nil variable found") // Return error
+	if reflect.ValueOf(term).IsNil() { // Check for nil variable
+		return errors.New("nil terminal found") // Return error
 	}
 
 	if len(term.Variables) == 0 { // Check for uninitialized variable array
