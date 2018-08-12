@@ -55,11 +55,7 @@ func AttachNode() (*node.Node, error) {
 		return &node.Node{}, err // Return found error
 	}
 
-	readNode.Environment, err = environment.ReadEnvironmentFromMemory(currentDir) // Read node environment from memory
-
-	if err != nil { // Check for errors
-		return &node.Node{}, err // Return found error
-	}
+	readNode.Environment, _ = environment.ReadEnvironmentFromMemory(currentDir) // Read node environment from memory
 
 	return readNode, nil // Return read node
 }
