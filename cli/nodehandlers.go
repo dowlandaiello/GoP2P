@@ -76,18 +76,6 @@ func (term *Terminal) handleNewNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	currentDir, err := common.GetCurrentDir() // Fetch working directory
-
-	if err != nil { // Check for errors
-		return "", err // Return found error
-	}
-
-	err = node.Environment.WriteToMemory(currentDir) // Attempt to write to memory
-
-	if err != nil { // Check for errors
-		return "", err // Return found error
-	}
-
 	term.AddVariable(db, "NodeDatabase") // Add new database
 
 	term.AddVariable(*node, "Node") // Add new node
