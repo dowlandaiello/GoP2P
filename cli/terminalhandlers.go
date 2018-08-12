@@ -86,6 +86,8 @@ func (term *Terminal) handleDatabase(command string) {
 		term.handleNewDatabaseCommand()
 	case strings.Contains(strings.ToLower(command), "writetomemory"): // Account for i/o methods
 		term.handleWriteDatabaseToMemoryCommand()
+	case strings.Contains(strings.ToLower(command), "attach"): // Account for attach method
+		term.handleAttachDatabaseCommand()
 	}
 }
 

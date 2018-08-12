@@ -82,7 +82,33 @@ func (term *Terminal) handleNewDatabase() (string, error) {
 
 // handleAttachDatabase - handle execution of database reading, write to term mem
 func (term *Terminal) handleAttachDatabase() (string, error) {
-	return "", nil
+	foundNode := node.Node{} // Create placeholder
+
+	for x := 0; x != len(term.Variables); x++ { // Iterate through array
+		if term.VariableTypes[x] == "Node" { // Verify element is node
+			foundNode = term.Variables[x].(node.Node) // Set to value
+
+			break
+		}
+	}
+
+	if foundNode.Address == "" { // Check for errors
+		return "", errors.New("node not attached") // Log found error
+	}
+
+	db, err := database.ReadDatabaseFromMemory(foundNode.Environment) // Attempt to read database from node environment memory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = term.AddVariable(*db, "NodeDatabase") // Save for persistency
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	return "-- SUCCESS -- attached to nodedatabase with bootstrap address " + (*db.Nodes)[0].Address, nil
 }
 
 // handleWritDatabaseToMemory - handle execution of NodeDatabase writeToMemory() method
