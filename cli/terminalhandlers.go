@@ -81,6 +81,8 @@ func (term *Terminal) handleEnvironment(command string) {
 		term.handleQueryValueCommand(queryValue) // Execute command
 	case strings.Contains(strings.ToLower(command), "attach"):
 		term.handleAttachEnvironmentCommand() // Execute command
+	case strings.Contains(strings.ToLower(command), "writetomemory"):
+		term.handleWriteToMemoryCommand() // Execute command
 	}
 }
 
@@ -298,7 +300,7 @@ func (term *Terminal) handleNewEnvironmentCommand() {
 	}
 }
 
-func (term *Terminal) handleWriteToMemoryCommmand() {
+func (term *Terminal) handleWriteToMemoryCommand() {
 	fmt.Println("attempting to environment to memory") // Log begin
 
 	output, err := term.handleWriteToMemory() // Attempt to write env
