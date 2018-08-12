@@ -22,8 +22,10 @@ func ReadEnvironmentFromMemory(path string) (*Environment, error) {
 	tempEnv := new(Environment)
 
 	err := common.ReadGob(path+filepath.FromSlash("/environment.gob"), tempEnv)
+
 	if err != nil { // Check for errors
 		return nil, err // Return error
 	}
+
 	return tempEnv, nil // No error occurred, return nil error, env
 }
