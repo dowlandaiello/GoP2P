@@ -52,6 +52,8 @@ func (term *Terminal) handleNode(command string) {
 */
 
 func (term *Terminal) handleForwardPortCommand(portNumber int) {
+	fmt.Println("attempting to forward port") // Log begin
+
 	output, err := term.handleForwardPort(portNumber) // Attempt to forward port
 
 	if err != nil { // Check for errors
@@ -63,6 +65,8 @@ func (term *Terminal) handleForwardPortCommand(portNumber int) {
 
 // handleForwardPort - handle execution of forwardport method
 func (term *Terminal) handleForwardPort(portNumber int) (string, error) {
+	fmt.Println("attempting to remove port forwarding") // Log begin
+
 	err := upnp.ForwardPort(uint(portNumber)) // Attempt to forward port
 
 	if err != nil { // Check for errors
