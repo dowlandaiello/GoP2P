@@ -104,6 +104,7 @@ func (term *Terminal) handleAddNode(address string) (string, error) {
 
 func (term *Terminal) handleAddSpecificNode(address string) (string, error) {
 	foundDb := database.NodeDatabase{} // Create placeholder
+	emptyDb := database.NodeDatabase{}
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
 		if term.VariableTypes[x] == "NodeDatabase" { // Verify element is NodeDatabase
@@ -111,6 +112,10 @@ func (term *Terminal) handleAddSpecificNode(address string) (string, error) {
 
 			break
 		}
+	}
+
+	if foundDb == emptyDb {
+		return "", errors.New("node database not attached")
 	}
 
 	_, err := foundDb.QueryForAddress(address)
