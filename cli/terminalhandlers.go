@@ -72,11 +72,15 @@ func (term *Terminal) handleEnvironment(command string) {
 	case strings.Contains(strings.ToLower(command), "newenvironment"): // Account for environment initializer
 		term.handleNewEnvironmentCommand() // Execute command
 	case strings.Contains(strings.ToLower(command), "querytype"): // Account for querytype method
-		queryType := strings.Split(strings.Split(command, "(")[1], ")")[0]
+		queryType := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch value from command
 
 		term.handleQueryTypeCommand(queryType) // Execute command
+	case strings.Contains(strings.ToLower(command), "queryvalue"):
+		queryValue := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch value from command
+
+		term.handleQueryValueCommand(queryValue) // Execute command
 	case strings.Contains(strings.ToLower(command), "attach"):
-		term.handleAttachEnvironmentCommand()
+		term.handleAttachEnvironmentCommand() // Execute command
 	}
 }
 
@@ -234,6 +238,8 @@ func (term *Terminal) handleStartHandler(port int) (string, error) {
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
 		if term.VariableTypes[x] == "Node" { // Verify element is node
 			foundNode = term.Variables[x].(node.Node) // Set to value
+
+			break
 		}
 	}
 
@@ -305,6 +311,19 @@ func (term *Terminal) handleQueryTypeCommand(queryType string) {
 	}
 }
 
+// handleQueryValueCommand - handle execution of handleQueryValue method (wrapper)
+func (term *Terminal) handleQueryValueCommand(queryValue string) {
+	fmt.Println("querying value " + queryValue) // Log begin
+
+	output, err := term.handleQueryValue(queryValue) // Attempt to query for value
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
+	}
+}
+
 // handleNewEnvironment - attempt to initialize new environment
 func (term *Terminal) handleNewEnvironment() (string, error) {
 	env, err := environment.NewEnvironment() // Attempt to create new environment
@@ -337,6 +356,8 @@ func (term *Terminal) handleQueryType(queryType string) (string, error) {
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
 		if term.VariableTypes[x] == "Environment" { // Verify element is environment
 			foundEnvironment = term.Variables[x].(environment.Environment) // Set to value
+
+			break
 		}
 	}
 
@@ -353,6 +374,33 @@ func (term *Terminal) handleQueryType(queryType string) (string, error) {
 	}
 
 	return "-- SUCCESS -- found variable with type " + strVal, nil // Return response
+}
+
+// handleQueryValue - attempt to query for specified value in environment
+func (term *Terminal) handleQueryValue(queryValue string) (string, error) {
+	foundEnvironment := environment.Environment{} // Create placeholder
+
+	for x := 0; x != len(term.Variables); x++ { // Iterate through array
+		if term.VariableTypes[x] == "Environment" { // Verify element is environment
+			foundEnvironment = term.Variables[x].(environment.Environment) // Set to value
+
+			break
+		}
+	}
+
+	value, err := foundEnvironment.QueryValue(queryValue) // Attempt to query for value
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	strVal, err := common.SerializeToString(*value) // Serialize response
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	return "-- SUCCESS -- found variable with value " + strVal, nil // Return response
 }
 
 // handleAttachEnvironment - handle execution of ReadEnvironment() command
