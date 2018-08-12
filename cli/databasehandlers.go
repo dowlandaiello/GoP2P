@@ -22,10 +22,10 @@ func (term *Terminal) handleNewDatabaseCommand() {
 }
 
 // handleAddNodeCommand - handle execution of handleAddNode method (wrapper)
-func (term *Terminal) handleAddNodeCommand() {
+func (term *Terminal) handleAddNodeCommand(address string) {
 	fmt.Println("attempting to add current node to database") // Log begin
 
-	output, err := term.handleAddNode() // Attempt to append
+	output, err := term.handleAddNode(address) // Attempt to append
 
 	if err != nil { // Check for errors
 		fmt.Println("-- ERROR -- " + err.Error()) // Log error
@@ -94,7 +94,48 @@ func (term *Terminal) handleNewDatabase() (string, error) {
 }
 
 // handleAddNode - attempt to append current node to NodeDatabase
-func (term *Terminal) handleAddNode() (string, error) {
+func (term *Terminal) handleAddNode(address string) (string, error) {
+	if address != "" {
+		return term.handleAddSpecificNode(address)
+	}
+
+	return term.handleAddCurrentNode()
+}
+
+func (term *Terminal) handleAddSpecificNode(address string) (string, error) {
+	foundDb := database.NodeDatabase{} // Create placeholder
+
+	for x := 0; x != len(term.Variables); x++ { // Iterate through array
+		if term.VariableTypes[x] == "NodeDatabase" { // Verify element is NodeDatabase
+			foundDb = term.Variables[x].(database.NodeDatabase) // Set to value
+
+			break
+		}
+	}
+
+	_, err := foundDb.QueryForAddress(address)
+
+	if err == nil {
+		return "", errors.New("node already added to database")
+	}
+
+	newNode, err := node.NewNode(address, false) // Attempt to init node with specified address
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = foundDb.AddNode(&newNode) // Attempt to add node
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	return "-- SUCCESS -- added node with address " + address + " to attached node database", nil // Return success
+}
+
+// handleAddCurrentNode - attempt to add current node to attached node database
+func (term *Terminal) handleAddCurrentNode() (string, error) {
 	foundNode := node.Node{}           // Create placeholder
 	foundDb := database.NodeDatabase{} // Create placeholder
 
