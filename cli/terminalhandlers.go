@@ -20,7 +20,7 @@ func handleCommand(term *Terminal, command string) {
 	case strings.Contains(strings.ToLower(command), "attach"): // Account for readnode command
 		fmt.Println("attempting to attach") // Log begin
 
-		output, err := handleNewNode(term) // Attempt to read node
+		output, err := handleAttachNode(term) // Attempt to read node
 
 		if err != nil { // Check for errors
 			fmt.Println("-- ERROR -- " + err.Error()) // Log error
