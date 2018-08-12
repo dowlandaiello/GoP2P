@@ -28,9 +28,17 @@ func (term *Terminal) handleUpNP(command string) {
 	case strings.Contains(strings.ToLower(command), "forwardport"): // Account for forwardport command
 		intVal, _ := strconv.Atoi(strings.Split(strings.Split(command, "(")[1], ")")[0]) // Attempt to fetch port from command
 
+		if intVal == 0 {
+			intVal = handleZeroPort() // Fetch port
+		}
+
 		term.handleForwardPortCommand(intVal) // Forward port
 	case strings.Contains(strings.ToLower(command), "removeportforward"): // Account for removeportforward command
 		intVal, _ := strconv.Atoi(strings.Split(strings.Split(command, "(")[1], ")")[0]) // Attempt to fetch port from command
+
+		if intVal == 0 {
+			intVal = handleZeroPort() // Fetch port
+		}
 
 		term.handleRemoveForwardPortCommand(intVal) // Remove port forwarding
 	}
