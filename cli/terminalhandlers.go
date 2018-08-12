@@ -1,10 +1,12 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
 
+	"github.com/mitsukomegumi/GoP2P/types/node"
 	"github.com/mitsukomegumi/GoP2P/upnp"
 )
 
@@ -40,6 +42,10 @@ func (term *Terminal) handleNode(command string) {
 		term.handleNewNodeCommand()
 	case strings.Contains(strings.ToLower(command), "attach"): // Account for readnode command
 		term.handleAttachNodeCommand()
+	case strings.Contains(strings.ToLower(command), "startlistener"):
+		intVal, _ := strconv.Atoi(strings.Split(strings.Split(command, "(")[1], ")")[0]) // Attempt to fetch port from command
+
+		term.handleStartListenerCommand(intVal) // Start listener command execution
 	}
 }
 
@@ -131,6 +137,19 @@ func (term *Terminal) handleAttachNodeCommand() {
 	}
 }
 
+// handleStartListenerCommand - attempt to start listener on attached node
+func (term *Terminal) handleStartListenerCommand(port int) {
+	fmt.Println("attempting to start listener") // Log begin
+
+	output, err := term.handleStartListener(port) // Attempt to read node
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
+	}
+}
+
 // handleNewNode - handle execution of NewNode() command
 func (term *Terminal) handleNewNode() (string, error) {
 	node, err := NewNode() // Attempt to create new node
@@ -139,7 +158,7 @@ func (term *Terminal) handleNewNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	term.AddVariable(*node) // Add new node
+	term.AddVariable(*node, "Node") // Add new node
 
 	return "-- SUCCESS -- created node with address " + node.Address, nil // No error occurred, return success
 }
@@ -152,9 +171,37 @@ func (term *Terminal) handleAttachNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	term.AddVariable(*node) // Add new node
+	term.AddVariable(*node, "Node") // Add new node
 
 	return "-- SUCCESS -- attached to node with address " + node.Address, nil // Log success
+}
+
+func (term *Terminal) handleStartListener(port int) (string, error) {
+	foundNode := node.Node{} // Create placeholder
+
+	for x := 0; x != len(term.Variables); x++ { // Iterate through array
+		if term.VariableTypes[x] == "Node" { // Verify element is node
+			foundNode = term.Variables[x].(node.Node) // Set to value
+		}
+	}
+
+	if foundNode.Address == "" { // Check for errors
+		return "", errors.New("node not attached") // Log found error
+	}
+
+	ln, err := foundNode.StartListener(port) // Attempt to start listener
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = term.AddVariable(*ln, "Listener") // Attempt to save
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	return "-- SUCCESS -- started listener on port " + strconv.Itoa(port) + " with address " + foundNode.Address, nil
 }
 
 /*
