@@ -6,6 +6,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/types/environment"
+
 	"github.com/mitsukomegumi/GoP2P/types/handler"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 	"github.com/mitsukomegumi/GoP2P/upnp"
@@ -17,6 +20,8 @@ func (term *Terminal) handleCommand(command string) {
 		term.handleUpNP(command)
 	case strings.Contains(strings.ToLower(command), "node."): // Account for node methods
 		term.handleNode(command)
+	case strings.Contains(strings.ToLower(command), "environment."): // Account for environment methods
+		term.handleEnvironment(command)
 	}
 }
 
@@ -59,6 +64,13 @@ func (term *Terminal) handleNode(command string) {
 		}
 
 		term.handleStartHandlerCommand(intVal) // Start handler command execution
+	}
+}
+
+func (term *Terminal) handleEnvironment(command string) {
+	switch {
+	case strings.Contains(strings.ToLower(command), "newenvironment"): // Account for environment initializer
+		term.handleNewEnvironmentCommand() // Execute command
 	}
 }
 
@@ -174,7 +186,7 @@ func (term *Terminal) handleAttachNodeCommand() {
 func (term *Terminal) handleStartHandlerCommand(port int) {
 	fmt.Println("attempting to start handler") // Log begin
 
-	output, err := term.handleStartHandler(port) // Attempt to read node
+	output, err := term.handleStartHandler(port) // Attempt to start handler
 
 	if err != nil { // Check for errors
 		fmt.Println("-- ERROR -- " + err.Error()) // Log error
@@ -206,9 +218,10 @@ func (term *Terminal) handleAttachNode() (string, error) {
 
 	term.AddVariable(*node, "Node") // Add new node
 
-	return "-- SUCCESS -- attached to node with address " + node.Address, nil // Log success
+	return "-- SUCCESS -- attached to node with address " + node.Address, nil // No error occurred, return success
 }
 
+// handleStartHandler - attempt to start handler on node
 func (term *Terminal) handleStartHandler(port int) (string, error) {
 	foundNode := node.Node{} // Create placeholder
 
@@ -236,9 +249,55 @@ func (term *Terminal) handleStartHandler(port int) (string, error) {
 
 	go handler.StartHandler(&foundNode, ln)
 
-	return "-- SUCCESS -- started handler on port " + strconv.Itoa(port) + " with address " + foundNode.Address, nil
+	return "-- SUCCESS -- started handler on port " + strconv.Itoa(port) + " with address " + foundNode.Address, nil // No error occurred, return success
 }
 
 /*
 	END NODE METHODS
+*/
+
+/*
+	BEGIN ENVIRONMENT METHODS
+*/
+
+// handleNewEnvironmentCommand - handle execution of handleNewEnvironment method (wrapper)
+func (term *Terminal) handleNewEnvironmentCommand() {
+	fmt.Println("attempting to initialize new environment") // Log begin
+
+	output, err := term.handleNewEnvironment() // Attempt to read node
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
+	}
+}
+
+// handleNewEnvironment - attempt to initialize new environment
+func (term *Terminal) handleNewEnvironment() (string, error) {
+	env, err := environment.NewEnvironment() // Attempt to create new environment
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	term.AddVariable(*env, "Environment") // Add new environment
+
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = env.WriteToMemory(currentDir) // Attempt to write to memory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	return "-- SUCCESS -- created new environment", nil // No error occurred, return success
+}
+
+/*
+	END ENVIRONMENT METHODS
 */
