@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mitsukomegumi/GoP2P/types/handler"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 	"github.com/mitsukomegumi/GoP2P/upnp"
 )
@@ -50,14 +51,14 @@ func (term *Terminal) handleNode(command string) {
 		term.handleNewNodeCommand()
 	case strings.Contains(strings.ToLower(command), "attach"): // Account for readnode command
 		term.handleAttachNodeCommand()
-	case strings.Contains(strings.ToLower(command), "startlistener"):
+	case strings.Contains(strings.ToLower(command), "starthandler"):
 		intVal, _ := strconv.Atoi(strings.Split(strings.Split(command, "(")[1], ")")[0]) // Attempt to fetch port from command
 
 		if intVal == 0 {
 			intVal = handleZeroPort() // Fetch port
 		}
 
-		term.handleStartListenerCommand(intVal) // Start listener command execution
+		term.handleStartHandlerCommand(intVal) // Start handler command execution
 	}
 }
 
@@ -169,11 +170,11 @@ func (term *Terminal) handleAttachNodeCommand() {
 	}
 }
 
-// handleStartListenerCommand - attempt to start listener on attached node
-func (term *Terminal) handleStartListenerCommand(port int) {
-	fmt.Println("attempting to start listener") // Log begin
+// handleStartHandlerCommand - attempt to start handler on attached node
+func (term *Terminal) handleStartHandlerCommand(port int) {
+	fmt.Println("attempting to start handler") // Log begin
 
-	output, err := term.handleStartListener(port) // Attempt to read node
+	output, err := term.handleStartHandler(port) // Attempt to read node
 
 	if err != nil { // Check for errors
 		fmt.Println("-- ERROR -- " + err.Error()) // Log error
@@ -208,7 +209,7 @@ func (term *Terminal) handleAttachNode() (string, error) {
 	return "-- SUCCESS -- attached to node with address " + node.Address, nil // Log success
 }
 
-func (term *Terminal) handleStartListener(port int) (string, error) {
+func (term *Terminal) handleStartHandler(port int) (string, error) {
 	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
@@ -221,19 +222,21 @@ func (term *Terminal) handleStartListener(port int) (string, error) {
 		return "", errors.New("node not attached") // Log found error
 	}
 
-	ln, err := foundNode.StartListener(port) // Attempt to start listener
+	ln, err := foundNode.StartListener(port) // Attempt to start handler
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
 	}
 
-	err = term.AddVariable(*ln, "Listener") // Attempt to save
+	err = term.AddVariable(*ln, "Handler") // Attempt to save
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- started listener on port " + strconv.Itoa(port) + " with address " + foundNode.Address, nil
+	go handler.StartHandler(&foundNode, ln)
+
+	return "-- SUCCESS -- started handler on port " + strconv.Itoa(port) + " with address " + foundNode.Address, nil
 }
 
 /*
