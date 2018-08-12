@@ -21,6 +21,19 @@ func (term *Terminal) handleNewDatabaseCommand() {
 	}
 }
 
+// handleAttachDatabaseCommand - handle execution of handleAttachDatabase method (wrapper)
+func (term *Terminal) handleAttachDatabaseCommand() {
+	fmt.Println("attempting to attach to NodeDatabase") // Log begin
+
+	output, err := term.handleAttachDatabase() // Attempt to attach to db
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
+	}
+}
+
 // handleWriteDatabaseToMemoryCommand - handle execution of handleWritDatabaseToMemory method (wrapper)
 func (term *Terminal) handleWriteDatabaseToMemoryCommand() {
 	fmt.Println("attempting to write database to memory") // Log begin
@@ -65,6 +78,11 @@ func (term *Terminal) handleNewDatabase() (string, error) {
 	}
 
 	return "-- SUCCESS -- created new nodedatabase with address " + foundNode.Address, nil // No error occurred, return success
+}
+
+// handleAttachDatabase - handle execution of database reading, write to term mem
+func (term *Terminal) handleAttachDatabase() (string, error) {
+	return "", nil
 }
 
 // handleWritDatabaseToMemory - handle execution of NodeDatabase writeToMemory() method
