@@ -15,9 +15,15 @@ import (
 func WriteGob(filePath string, object interface{}) error {
 	file, err := os.Create(filePath) // Attempt to create file at path
 
-	if err == nil { // Check for nil error
-		encoder := gob.NewEncoder(file) // Write to file
-		encoder.Encode(object)          // Encode object
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	encoder := gob.NewEncoder(file) // Write to file
+	err = encoder.Encode(object)    // Encode object
+
+	if err != nil { // Check for errors
+		return err // Return found error
 	}
 
 	file.Close() // Close file operation
@@ -28,9 +34,15 @@ func WriteGob(filePath string, object interface{}) error {
 func ReadGob(filePath string, object interface{}) error {
 	file, err := os.Open(filePath) // Attempt to open file at path
 
-	if err == nil { // Check for nil error
-		decoder := gob.NewDecoder(file) // Attempt to decode gob
-		err = decoder.Decode(object)    // Assign to error
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	decoder := gob.NewDecoder(file) // Attempt to decode gob
+	err = decoder.Decode(object)    // Assign to error
+
+	if err != nil { // Check for errors
+		return err // Return found error
 	}
 
 	file.Close() // Close file
