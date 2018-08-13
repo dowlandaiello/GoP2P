@@ -26,6 +26,22 @@
   revision = "29b680b06c82d044ebea91bf3069038eb562df2a"
 
 [[projects]]
+  digest = "1:ca82a3b99694824c627573c2a76d0e49719b4a9c02d1d85a2ac91f1c1f52ab9b"
+  name = "github.com/fatih/structs"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a720dfa8df582c51dee1b36feabb906bde1588bd"
+  version = "v1.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:5ab79470a1d0fb19b041a624415612f8236b3c06070161a910562f2b2d064355"
+  name = "github.com/mitchellh/mapstructure"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f15292f7a699fcc1a38a80977f80a046874ba8ac"
+
+[[projects]]
   branch = "master"
   digest = "1:9f3a60def1a1eb5ac184e71dde43c6f99606f54d106db7c95f8b8338629a777b"
   name = "github.com/tatsushid/go-fastping"
@@ -98,6 +114,8 @@
   analyzer-version = 1
   input-imports = [
     "github.com/NebulousLabs/go-upnp",
+    "github.com/fatih/structs",
+    "github.com/mitchellh/mapstructure",
     "github.com/tatsushid/go-fastping",
   ]
   solver-name = "gps-cdcl"
