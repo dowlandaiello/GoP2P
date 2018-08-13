@@ -4,12 +4,19 @@ import (
 	"bytes"
 	"encoding/json"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
 )
 
 // WriteToMemory - create serialized instance of specified NodeDatabase in specified path (string)
 func (db *NodeDatabase) WriteToMemory(env *environment.Environment) error {
-	variable, err := environment.NewVariable("NodeDatabase", *db)
+	marshalled, err := common.MarshalInterfaceToMap(*db) // Attempt to map
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	variable, err := environment.NewVariable("NodeDatabase", marshalled)
 
 	if err != nil { // Check for errors
 		return err // Return error
@@ -32,7 +39,15 @@ func ReadDatabaseFromMemory(env *environment.Environment) (*NodeDatabase, error)
 		return &NodeDatabase{}, err // Return found error
 	}
 
-	db := variable.VariableData.(NodeDatabase) // Fetch value
+	buffer := NodeDatabase{} // Init buffer
+
+	decoded, err := common.UnmarshalInterfaceFromStringMap(buffer, variable.VariableData) // Decoded variable data
+
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
+	db := decoded.(NodeDatabase) // Fetch value
 
 	return &db, nil // No error occurred, return nil error, db
 }

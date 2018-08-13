@@ -102,7 +102,13 @@ func handleSingular(node *node.Node, connection *connection.Connection) ([]byte,
 		return common.SerializeToBytes(*db) // Attempt to serialize
 	}
 
-	variable, err := environment.NewVariable("Connection", connection) // Init variable to hold connection data
+	marshalled, err := common.MarshalInterfaceToMap(connection) // Marshal
+
+	if err != nil { // Check for errors
+		return nil, err
+	}
+
+	variable, err := environment.NewVariable("Connection", marshalled) // Init variable to hold connection data
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -152,7 +158,13 @@ func handleCommand(node *node.Node, event *connection.Event) ([]byte, error) {
 func handleNewVariable(node *node.Node, event *connection.Event) ([]byte, error) {
 	variableType := event.Command.ModifierSet.Type // Attempt to fetch variable type from command
 
-	variable, err := environment.NewVariable(variableType, event.Command.ModifierSet.Value) // Attempt to create new variable
+	marshalled, err := common.MarshalInterfaceToMap(event.Command.ModifierSet.Value) // Marshal
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	variable, err := environment.NewVariable(variableType, marshalled) // Attempt to create new variable
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error

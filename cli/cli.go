@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
@@ -43,8 +41,6 @@ func AttachNode() (*node.Node, error) {
 	if err != nil { // Check for errors
 		return &node.Node{}, err // Return found error
 	}
-
-	fmt.Printf("%#v", readNode.Environment)
 
 	return readNode, nil // Return read node
 }

@@ -80,13 +80,16 @@ func (term *Terminal) handleNewNode() (string, error) {
 		return "", err // Return found error
 	}
 
+	fmt.Println("\nattempting to write node to memory")
+
 	err = node.WriteToMemory(currentDir) // Write to mem
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
 	}
 
-	fmt.Println("\nsuccessfully wrote nodedatabase to environment memory")
+	fmt.Println("\n-- SUCCESS -- wrote nodedatabase to environment memory")
+	fmt.Println("-- SUCCESS -- wrote node to memory")
 
 	term.AddVariable(db, "NodeDatabase")               // Add new database
 	term.AddVariable(*node, "Node")                    // Add new node
@@ -108,8 +111,6 @@ func (term *Terminal) handleAttachNode() (string, error) {
 	if err != nil { // Check for errors
 		return "", err // Return found error
 	}
-
-	fmt.Printf("%#v", node.Environment)
 
 	db, err := database.ReadDatabaseFromMemory(env) // Attempt to read database from memory
 

@@ -4,7 +4,11 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/json"
+	"fmt"
 	"os"
+
+	"github.com/fatih/structs"
+	"github.com/mitchellh/mapstructure"
 )
 
 /*
@@ -70,6 +74,46 @@ func SerializeToString(object interface{}) (string, error) {
 	}
 
 	return string(out), nil // Return serialized value
+}
+
+// MarshalInterfaceToMap - attempt to map interface to string map
+func MarshalInterfaceToMap(object interface{}) (map[string]string, error) {
+	mapped := structs.Map(object) // Attempt to create interface map
+
+	stringMap := make(map[string]string) // Init buffer
+
+	for key, value := range mapped { // Iterate through field values
+		strKey := fmt.Sprintf("%v", key)     // Gen key
+		strValue := fmt.Sprintf("%v", value) // Gen value
+
+		stringMap[strKey] = strValue // Create value at key
+	}
+
+	return stringMap, nil // Return decoded result
+}
+
+// UnmarshalInterfaceFromMap - attempt to convert specified map to interface
+func UnmarshalInterfaceFromMap(object map[string]interface{}) (interface{}, error) {
+	var buf interface{} // Init buffer
+
+	err := mapstructure.Decode(object, &buf) // Attempt to decode
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return buf, nil // Return decoded result
+}
+
+// UnmarshalInterfaceFromStringMap - attempt to convert specified map to interface
+func UnmarshalInterfaceFromStringMap(buffer interface{}, object map[string]string) (interface{}, error) {
+	err := mapstructure.Decode(object, &buffer) // Attempt to decode
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return buffer, nil // Return decoded result
 }
 
 /*
