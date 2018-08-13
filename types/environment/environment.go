@@ -13,7 +13,7 @@ type Environment struct {
 	EnvironmentVariables []*Variable `json:"variables"`
 }
 
-// Variable - container holding a variable's data (pointer), and identification properties (id, type)
+// Variable - container holding a variable's data, and identification properties (id, type)
 type Variable struct {
 	VariableType           string      `json:"type"`       // VariableType - type of variable (e.g. string, block, etc...)
 	VariableIdentifier     string      `json:"identifier"` // VariableIdentifier - id of variable (used for querying)
