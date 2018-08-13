@@ -109,6 +109,8 @@ func (term *Terminal) handleAttachNode() (string, error) {
 		return "", err // Return found error
 	}
 
+	fmt.Printf("%#v", node.Environment)
+
 	db, err := database.ReadDatabaseFromMemory(env) // Attempt to read database from memory
 
 	if err != nil { // Check for errors
