@@ -10,13 +10,7 @@ import (
 
 // WriteToMemory - create serialized instance of specified NodeDatabase in specified path (string)
 func (db *NodeDatabase) WriteToMemory(env *environment.Environment) error {
-	marshalled, err := common.MarshalInterfaceToMap(*db) // Attempt to map
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	variable, err := environment.NewVariable("NodeDatabase", marshalled)
+	variable, err := environment.NewVariable("NodeDatabase", *db)
 
 	if err != nil { // Check for errors
 		return err // Return error
@@ -39,17 +33,13 @@ func ReadDatabaseFromMemory(env *environment.Environment) (*NodeDatabase, error)
 		return &NodeDatabase{}, err // Return found error
 	}
 
-	buffer := NodeDatabase{} // Init buffer
+	database := NodeDatabase{} // Init buffer
 
-	decoded, err := common.UnmarshalInterfaceFromStringMap(buffer, variable.VariableData) // Decoded variable data
+	decoded, err := common.InterfaceFromBytes(variable.VariableData, &database) // Fetch value
 
-	if err != nil { // Check for errors
-		return &NodeDatabase{}, err // Return found error
-	}
+	db := decoded.(*NodeDatabase)
 
-	db := decoded.(NodeDatabase) // Fetch value
-
-	return &db, nil // No error occurred, return nil error, db
+	return db, nil // No error occurred, return nil error, db
 }
 
 // FromBytes - attempt to convert specified byte array to db

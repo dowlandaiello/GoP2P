@@ -65,6 +65,17 @@ func SerializeToBytes(object interface{}) ([]byte, error) {
 	return serializedBuffer.Bytes(), nil // Return serialized object
 }
 
+// InterfaceFromBytes - attempt to decode specified byte array to interface
+func InterfaceFromBytes(data []byte, buffer interface{}) (interface{}, error) {
+	err := json.NewDecoder(bytes.NewReader(data)).Decode(&buffer) // Attempt to read
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return buffer, nil // No error occurred, return read value
+}
+
 // SerializeToString - attempt to get string representation of specified object
 func SerializeToString(object interface{}) (string, error) {
 	out, err := json.Marshal(object) // Attempt to marshal object
