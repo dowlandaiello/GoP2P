@@ -3,7 +3,13 @@ package cli
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"strconv"
+	"strings"
+	"time"
 
+	"github.com/briandowns/spinner"
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
@@ -31,6 +37,18 @@ func (term *Terminal) handleNewEnvironmentCommand() {
 	fmt.Println("attempting to initialize new environment") // Log begin
 
 	output, err := term.handleNewEnvironment() // Attempt to init new environment
+
+	if err != nil { // Check for errors
+		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+	} else {
+		fmt.Println(output) // Log success
+	}
+}
+
+func (term *Terminal) handleNewVariableCommand(variableType string, variableDir string, variableData string, replaceExisting bool) {
+	fmt.Println("attempting to add new variable") // Log begin
+
+	output, err := term.handleNewVariable(variableType, variableDir, variableData, replaceExisting) // Execute command
 
 	if err != nil { // Check for errors
 		fmt.Println("-- ERROR -- " + err.Error()) // Log error
@@ -116,6 +134,78 @@ func (term *Terminal) handleNewEnvironment() (string, error) {
 	}
 
 	return "-- SUCCESS -- created new environment", nil // No error occurred, return success
+}
+
+// handleNewVariable - attempt to init and append new variable to environment variables list
+func (term *Terminal) handleNewVariable(variableType string, dir string, variableData string, replaceExisting bool) (string, error) {
+	s := spinner.New(spinner.CharSets[7], 100*time.Millisecond) // Init loading indicator
+
+	s.Prefix = "   "                                    // Add line spacing
+	s.Suffix = " attempting to initialize new variable" // Add log message
+
+	s.Start() // Start loading indicator
+
+	var data []byte
+
+	var err error
+
+	if variableData == "" {
+		file, err := os.Open(dir) // Attempt to open file at specified directory
+
+		if err != nil { // Check for errors
+			return "", err // Return found errors
+		}
+
+		data, err = ioutil.ReadAll(file) // Attempt to read file
+
+		if err != nil { // Check for errors
+			return "", err // Return found error
+		}
+	}
+
+	foundNode := node.Node{} // Create placeholder
+
+	for x := 0; x != len(term.Variables); x++ { // Iterate through array
+		if term.VariableTypes[x] == "Node" { // Verify element is environment
+			foundNode = term.Variables[x].(node.Node) // Set to value
+
+			break
+		}
+	}
+
+	variable := &environment.Variable{}
+
+	if variableData == "" {
+		variable, err = environment.NewVariable(variableType, data) // Init variable
+	} else {
+		variable, err = environment.NewVariable(variableType, variableData) // Init variable
+	}
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = foundNode.Environment.AddVariable(variable, replaceExisting) // Append
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = foundNode.WriteToMemory(currentDir) // Write node to mem
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	s.Stop() // Stop loading indicator
+
+	return "-- SUCCESS -- initialized and added variable with type " + variable.VariableType, err
 }
 
 // handleQueryType - attempt to query for specified type in environment
@@ -216,6 +306,41 @@ func (term *Terminal) handleWriteToMemory() (string, error) {
 	}
 
 	return "-- SUCCESS -- wrote environment to memory", nil // Return success
+}
+
+func handleNilVarParams() (string, string, string, bool) {
+	var variableType string    // Init buffer
+	var variableDir string     // Init buffer
+	var variableData string    // Init buffer
+	var replaceExisting string // Init buffer
+
+	fmt.Print("\nvariable type: ")
+	fmt.Scanln(&variableType)
+
+	fmt.Print("\nvariable data directory (optional): ")
+	fmt.Scanln(&variableDir)
+
+	fmt.Print("\nvariable data (optional): ")
+	fmt.Scanln(&variableData)
+
+	fmt.Print("\nreplace existing directory: ")
+	fmt.Scanln(&replaceExisting)
+
+	boolVal, _ := strconv.ParseBool(replaceExisting)
+
+	return variableType, variableDir, variableData, boolVal
+}
+
+func handleVarParams(command string) (string, string, string, bool) {
+	params := strings.Split(strings.Split(strings.Split(command, "(")[1], ")")[0], ", ") // Split command
+
+	boolVal, _ := strconv.ParseBool(params[len(params)-1]) // Parse replace existing
+
+	if strings.Contains(command, "/") || strings.Contains(command, "\\") {
+		return params[0], "", params[1], boolVal // Return values
+	}
+
+	return params[0], params[1], params[2], boolVal // Return values
 }
 
 /*

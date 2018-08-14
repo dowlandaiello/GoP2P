@@ -65,6 +65,17 @@ func (term *Terminal) handleEnvironment(command string) {
 	switch {
 	case strings.Contains(strings.ToLower(command), "newenvironment"): // Account for environment initializer
 		term.handleNewEnvironmentCommand() // Execute command
+	case strings.Contains(strings.ToLower(command), "newvariable"): // Account for newvariable method
+		var variableType, variableDir, variableData string
+		var replaceExisting bool
+
+		if !strings.Contains(command, ",") {
+			variableType, variableDir, variableData, replaceExisting = handleNilVarParams()
+		} else {
+			variableType, variableDir, variableData, replaceExisting = handleVarParams(command)
+		}
+
+		term.handleNewVariableCommand(variableType, variableDir, variableData, replaceExisting)
 	case strings.Contains(strings.ToLower(command), "querytype"): // Account for querytype method
 		queryType := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch value from command
 
