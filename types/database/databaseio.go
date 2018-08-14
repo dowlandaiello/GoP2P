@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
 )
 
@@ -32,9 +33,13 @@ func ReadDatabaseFromMemory(env *environment.Environment) (*NodeDatabase, error)
 		return &NodeDatabase{}, err // Return found error
 	}
 
-	db := variable.VariableData.(NodeDatabase) // Fetch value
+	database := NodeDatabase{} // Init buffer
 
-	return &db, nil // No error occurred, return nil error, db
+	decoded, err := common.InterfaceFromBytes(variable.VariableData, &database) // Fetch value
+
+	db := decoded.(*NodeDatabase)
+
+	return db, nil // No error occurred, return nil error, db
 }
 
 // FromBytes - attempt to convert specified byte array to db

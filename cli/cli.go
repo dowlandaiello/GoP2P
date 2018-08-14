@@ -25,18 +25,6 @@ func NewNode() (*node.Node, error) {
 		return nil, err
 	}
 
-	currentDir, err := common.GetCurrentDir() // Fetch current directory
-
-	if err != nil { // Check for errors
-		return nil, err // Return found error
-	}
-
-	err = node.WriteToMemory(currentDir) // Attempt to write node to memory
-
-	if err != nil { // Check for errors
-		return nil, err // Return found error
-	}
-
 	return &node, nil // No error occurred, return node
 }
 
