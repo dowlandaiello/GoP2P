@@ -145,11 +145,11 @@ func (term *Terminal) handleNewVariable(variableType string, dir string, variabl
 
 	s.Start() // Start loading indicator
 
-	var data []byte
+	var data []byte // Init buffer
 
-	var err error
+	var err error // Init error
 
-	if variableData == "" {
+	if variableData == "" { // Check for data
 		file, err := os.Open(dir) // Attempt to open file at specified directory
 
 		if err != nil { // Check for errors
@@ -185,7 +185,7 @@ func (term *Terminal) handleNewVariable(variableType string, dir string, variabl
 		return "", err // Return found error
 	}
 
-	err = foundNode.Environment.AddVariable(variable, replaceExisting) // Append
+	err = (*foundNode.Environment).AddVariable(variable, replaceExisting) // Append
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
@@ -210,17 +210,17 @@ func (term *Terminal) handleNewVariable(variableType string, dir string, variabl
 
 // handleQueryType - attempt to query for specified type in environment
 func (term *Terminal) handleQueryType(queryType string) (string, error) {
-	foundEnvironment := environment.Environment{} // Create placeholder
+	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Environment" { // Verify element is environment
-			foundEnvironment = term.Variables[x].(environment.Environment) // Set to value
+		if term.VariableTypes[x] == "Node" { // Verify element is node
+			foundNode = term.Variables[x].(node.Node) // Set to value
 
 			break
 		}
 	}
 
-	value, err := foundEnvironment.QueryType(queryType) // Attempt to query for type
+	value, err := foundNode.Environment.QueryType(queryType) // Attempt to query for type
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
@@ -237,17 +237,17 @@ func (term *Terminal) handleQueryType(queryType string) (string, error) {
 
 // handleQueryValue - attempt to query for specified value in environment
 func (term *Terminal) handleQueryValue(queryValue string) (string, error) {
-	foundEnvironment := environment.Environment{} // Create placeholder
+	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
 		if term.VariableTypes[x] == "Environment" { // Verify element is environment
-			foundEnvironment = term.Variables[x].(environment.Environment) // Set to value
+			foundNode = term.Variables[x].(node.Node) // Set to value
 
 			break
 		}
 	}
 
-	value, err := foundEnvironment.QueryValue(queryValue) // Attempt to query for value
+	value, err := foundNode.Environment.QueryValue(queryValue) // Attempt to query for value
 
 	if err != nil { // Check for errors
 		return "", err // Return found error

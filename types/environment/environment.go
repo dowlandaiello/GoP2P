@@ -121,13 +121,7 @@ func (environment *Environment) replaceVariable(variable *Variable) error {
 
 	(*foundVariable).VariableData = (*variable).VariableData // Set existing data to given data
 
-	currentDir, err := common.GetCurrentDir() // Attempt to fetch current dir
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	return environment.WriteToMemory(currentDir) // No error occurred, return nil
+	return nil // No error occurred, return nil
 }
 
 func (environment *Environment) addVariable(variable *Variable) error {
@@ -137,13 +131,7 @@ func (environment *Environment) addVariable(variable *Variable) error {
 
 	(*environment).EnvironmentVariables = append((*environment).EnvironmentVariables, variable) // Append value
 
-	currentDir, err := common.GetCurrentDir() // Attempt to fetch current dir
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	return environment.WriteToMemory(currentDir) // Attempt to write to memory
+	return nil
 }
 
 /*
