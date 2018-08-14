@@ -15,10 +15,10 @@ type Environment struct {
 
 // Variable - container holding a variable's data, and identification properties (id, type)
 type Variable struct {
-	VariableType           string      `json:"type"`       // VariableType - type of variable (e.g. string, block, etc...)
-	VariableIdentifier     string      `json:"identifier"` // VariableIdentifier - id of variable (used for querying)
-	VariableData           interface{} `json:"data"`       // VariableData - pretty self-explanatory (usually a pointer to a struct)
-	VariableSerializedData string      `json:"serialized"` // VariableSerializedData - string value representation of VariableData property (used for querying)
+	VariableType           string `json:"type"`       // VariableType - type of variable (e.g. string, block, etc...)
+	VariableIdentifier     string `json:"identifier"` // VariableIdentifier - id of variable (used for querying)
+	VariableData           []byte `json:"data"`       // VariableData - pretty self-explanatory (usually a pointer to a struct)
+	VariableSerializedData string `json:"serialized"` // VariableSerializedData - string value representation of VariableData property (used for querying)
 }
 
 /*
@@ -74,13 +74,19 @@ func NewVariable(variableType string, variableData interface{}) (*Variable, erro
 		return &Variable{}, errors.New("invalid variable initialization values") // Return error
 	}
 
-	serializedData, err := common.SerializeToString(variableData)
+	serializedData, err := common.SerializeToString(variableData) // Fetch string representation
 
-	if err != nil {
-		return &Variable{}, err
+	if err != nil { // Check for errors
+		return &Variable{}, err // Return found error
 	}
 
-	variable := Variable{VariableType: variableType, VariableIdentifier: "", VariableData: variableData, VariableSerializedData: serializedData} // Initialize variable
+	byteData, err := common.SerializeToBytes(variableData) // Serialize data to bytes
+
+	if err != nil { // Check for errors
+		return &Variable{}, err // Return found error
+	}
+
+	variable := Variable{VariableType: variableType, VariableIdentifier: "", VariableData: byteData, VariableSerializedData: serializedData} // Initialize variable
 
 	serializedVariable, err := common.SerializeToBytes(variable) // Serialize variable to generate hash
 
