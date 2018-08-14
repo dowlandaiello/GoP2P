@@ -26,10 +26,10 @@ func GetGateway() (*upnp.IGD, error) { // Returns error if forward failed, retur
 
 // ForwardPort - forwards specified port on current device
 func ForwardPort(portNumber uint) error { // Returns error if forward failed
-	s := spinner.New(spinner.CharSets[7], 100*time.Millisecond) // Init loading
+	s := spinner.New(spinner.CharSets[7], 100*time.Millisecond) // Init loading indicator
 
-	s.Prefix = " "
-	s.Suffix = " attempting to discover network gateway"
+	s.Prefix = "   "                                     // Add line spacing
+	s.Suffix = " attempting to discover network gateway" // Add log message
 
 	s.Start() // Start loading indicator
 
@@ -46,7 +46,7 @@ func ForwardPort(portNumber uint) error { // Returns error if forward failed
 
 	fmt.Println("\nfound gateway")
 
-	s.Suffix = " attempting to forward port"
+	s.Suffix = " attempting to forward port" // Add log message
 
 	s.Restart() // Start loading indicator
 
