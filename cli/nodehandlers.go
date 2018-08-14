@@ -4,7 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"time"
 
+	"github.com/briandowns/spinner"
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/database"
 	"github.com/mitsukomegumi/GoP2P/types/handler"
@@ -18,9 +20,16 @@ import (
 
 // handleNewNodeCommand - handle execution of newnode method
 func (term *Terminal) handleNewNodeCommand() {
-	fmt.Println("attempting to create new node") // Log begin
+	s := spinner.New(spinner.CharSets[7], 100*time.Millisecond) // Init loading indicator
+
+	s.Prefix = "   "                            // Add line spacing
+	s.Suffix = " attempting to create new node" // Add log message
+
+	s.Start() // Start loading indicator
 
 	output, err := term.handleNewNode() // Attempt to initialize new node
+
+	s.Stop() // Stop indicator
 
 	if err != nil { // Check for errors
 		fmt.Println("-- ERROR -- " + err.Error()) // Log error
