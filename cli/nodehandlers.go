@@ -9,6 +9,7 @@ import (
 	"github.com/mitsukomegumi/GoP2P/types/database"
 	"github.com/mitsukomegumi/GoP2P/types/handler"
 	"github.com/mitsukomegumi/GoP2P/types/node"
+	"github.com/mitsukomegumi/GoP2P/upnp"
 )
 
 /*
@@ -139,6 +140,12 @@ func (term *Terminal) handleStartHandler(port int) (string, error) {
 
 	if foundNode.Address == "" { // Check for errors
 		return "", errors.New("node not attached") // Log found error
+	}
+
+	err := upnp.ForwardPort(3000) // Attempt to forward port
+
+	if err != nil {
+		fmt.Println(err.Error())
 	}
 
 	ln, err := foundNode.StartListener(port) // Attempt to start handler
