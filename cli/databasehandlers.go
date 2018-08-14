@@ -23,7 +23,7 @@ func (term *Terminal) handleNewDatabaseCommand() {
 
 // handleAddNodeCommand - handle execution of handleAddNode method (wrapper)
 func (term *Terminal) handleAddNodeCommand(address string) {
-	fmt.Println("attempting to add current node to database") // Log begin
+	fmt.Println("attempting to add node " + address + " to database") // Log begin
 
 	output, err := term.handleAddNode(address) // Attempt to append
 
