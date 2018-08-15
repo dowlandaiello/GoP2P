@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-func (term *Terminal) handleCommand(command string) {
+// HandleCommand - attempt to handle specified command
+func (term *Terminal) HandleCommand(command string) {
 	switch { // Iterate through possible commands
 	case strings.Contains(strings.ToLower(command), "upnp."): // Account for UpNP methods
 		term.handleUpNP(command)
@@ -100,9 +101,13 @@ func (term *Terminal) handleDatabase(command string) {
 	case strings.Contains(strings.ToLower(command), "attach"): // Account for attach method
 		term.handleAttachDatabaseCommand() // Execute command
 	case strings.Contains(strings.ToLower(command), "addnode"): // Account for AddNode method
-		address := strings.Split(strings.Split(command, "(")[1], ")")[0]
+		address := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch address from command
 
 		term.handleAddNodeCommand(address) // Execute command
+	case strings.Contains(strings.ToLower(command), "removenode"):
+		address := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch address from command
+
+		term.handleRemoveNodeCommand(address) // Execute command
 	}
 }
 

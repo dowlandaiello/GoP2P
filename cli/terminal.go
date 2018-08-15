@@ -29,7 +29,7 @@ func NewTerminal() error {
 			panic(err)
 		}
 
-		term.handleCommand(string(input)) // Handle specified command
+		term.HandleCommand(string(input)) // Handle specified command
 	}
 }
 
@@ -50,4 +50,19 @@ func (term *Terminal) AddVariable(variable interface{}, variableType string) err
 	term.VariableTypes = append(term.VariableTypes, variableType) // Append to array
 
 	return nil // No error occurred, return nil
+}
+
+// ReplaceVariable - attempt to replace value at index with specified variable
+func (term *Terminal) ReplaceVariable(variableIndex int, variable interface{}) error {
+	if reflect.ValueOf(term).IsNil() { // Check for nil variable
+		return errors.New("nil terminal found") // Return error
+	}
+
+	if len(term.Variables) == 0 { // Check for uninitialized variable array
+		return errors.New("empty environment") // Return found error
+	}
+
+	(*term).Variables[variableIndex] = variable // Replace value
+
+	return nil
 }
