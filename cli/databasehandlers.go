@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/database"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
@@ -125,6 +126,8 @@ func (term *Terminal) handleRemoveNode(address string) (string, error) {
 }
 
 func (term *Terminal) handleAddSpecificNode(address string) (string, error) {
+	foundNode := term.Variables[0].(node.Node) // Fetch attached node
+
 	db, err := term.findDatabase() // Attempt to attach to database
 
 	if err != nil { // Check for errors
@@ -149,7 +152,19 @@ func (term *Terminal) handleAddSpecificNode(address string) (string, error) {
 		return "", err // Return found error
 	}
 
-	err = db.WriteToMemory(term.Variables[0].(node.Node).Environment) // Serialize
+	err = db.WriteToMemory(foundNode.Environment) // Serialize
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = foundNode.WriteToMemory(currentDir) // Write node to memory
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
@@ -159,6 +174,8 @@ func (term *Terminal) handleAddSpecificNode(address string) (string, error) {
 }
 
 func (term *Terminal) handleRemoveSpecificNode(address string) (string, error) {
+	foundNode := term.Variables[0].(node.Node) // Fetch attached node
+
 	db, err := term.findDatabase()
 
 	if err != nil {
@@ -171,7 +188,19 @@ func (term *Terminal) handleRemoveSpecificNode(address string) (string, error) {
 		return "", err // Return found error
 	}
 
-	err = db.WriteToMemory(term.Variables[0].(node.Node).Environment) // Serialize
+	err = db.WriteToMemory(foundNode.Environment) // Serialize
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = foundNode.WriteToMemory(currentDir) // Write node to memory
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
@@ -220,6 +249,18 @@ func (term *Terminal) handleAddCurrentNode() (string, error) {
 		return "", err // Return found error
 	}
 
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = foundNode.WriteToMemory(currentDir) // Write node to memory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
 	return "-- SUCCESS -- appended node with address " + foundNode.Address + " to NodeDatabase", nil // No error occurred, return success
 }
 
@@ -258,6 +299,18 @@ func (term *Terminal) handleRemoveCurrentNode() (string, error) {
 	}
 
 	err = db.WriteToMemory(term.Variables[0].(node.Node).Environment) // Serialize
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return "", err // Return found error
+	}
+
+	err = foundNode.WriteToMemory(currentDir) // Write node to memory
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
