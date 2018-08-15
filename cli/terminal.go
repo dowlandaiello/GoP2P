@@ -29,7 +29,7 @@ func NewTerminal() error {
 			panic(err)
 		}
 
-		term.handleCommand(string(input)) // Handle specified command
+		term.HandleCommand(string(input)) // Handle specified command
 	}
 }
 

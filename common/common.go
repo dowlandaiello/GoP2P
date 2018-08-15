@@ -30,6 +30,13 @@ var (
 	BEGIN EXPORTED METHODS:
 */
 
+// Forever - prevent thread from closing
+func Forever() {
+	for {
+		time.Sleep(time.Second)
+	}
+}
+
 // CheckAddress - check that specified IP address can be pinged, and is available on specified port
 func CheckAddress(address string) error {
 	if address == "" { // Check for nil address

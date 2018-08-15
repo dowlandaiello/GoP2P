@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-func (term *Terminal) handleCommand(command string) {
+// HandleCommand - attempt to handle specified command
+func (term *Terminal) HandleCommand(command string) {
 	switch { // Iterate through possible commands
 	case strings.Contains(strings.ToLower(command), "upnp."): // Account for UpNP methods
 		term.handleUpNP(command)
