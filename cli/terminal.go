@@ -1,8 +1,10 @@
 package cli
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"os"
 	"reflect"
 )
 
@@ -17,13 +19,14 @@ func NewTerminal() error {
 	term := Terminal{Variables: []interface{}{}, VariableTypes: []string{}}
 
 	for {
-		var input string // Init buffer
-
 		fmt.Print("\n> ")
-		_, err := fmt.Scanln(&input) // Search for user input
+
+		reader := bufio.NewReader(os.Stdin) // Init reader
+
+		input, err := reader.ReadString('\n') // Search for user input
 
 		if err != nil {
-			return err
+			panic(err)
 		}
 
 		term.handleCommand(string(input)) // Handle specified command
