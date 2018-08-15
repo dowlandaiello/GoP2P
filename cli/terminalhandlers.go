@@ -111,7 +111,7 @@ func (term *Terminal) handleDatabase(command string) {
 	case strings.Contains(strings.ToLower(command), "queryaddress"):
 		address := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch address from command
 
-		term.handleQueryForAddressCommand(address)
+		term.handleQueryForAddressCommand(address) // Execute command
 	}
 }
 
