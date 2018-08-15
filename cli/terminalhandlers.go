@@ -108,10 +108,10 @@ func (term *Terminal) handleDatabase(command string) {
 		address := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch address from command
 
 		term.handleRemoveNodeCommand(address) // Execute command
-	case strings.Contains(strings.ToLower(command), "queryforaddress"):
+	case strings.Contains(strings.ToLower(command), "queryaddress"):
 		address := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch address from command
 
-		term.handleQueryForAddress(address)
+		term.handleQueryForAddressCommand(address)
 	}
 }
 
