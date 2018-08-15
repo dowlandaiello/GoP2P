@@ -26,9 +26,9 @@ func main() {
 
 // startNode - attempt to execute attachnode, starthandler commands
 func startNode() {
-	terminal := cli.Terminal{Variables: []interface{}{}, VariableTypes: []string{}}
+	terminal := cli.Terminal{Variables: []interface{}{}, VariableTypes: []string{}} // Init terminal
 
 	terminal.HandleCommand("node.Attach()") // Attach node
 
-	terminal.HandleCommand("node.StartHandler()")
+	terminal.HandleCommand("node.StartHandler()") // Start handler
 }
