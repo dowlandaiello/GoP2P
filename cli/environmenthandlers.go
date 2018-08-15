@@ -240,7 +240,7 @@ func (term *Terminal) handleQueryValue(queryValue string) (string, error) {
 	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Environment" { // Verify element is environment
+		if term.VariableTypes[x] == "Node" { // Verify element is environment
 			foundNode = term.Variables[x].(node.Node) // Set to value
 
 			break
@@ -337,10 +337,10 @@ func handleVarParams(command string) (string, string, string, bool) {
 	boolVal, _ := strconv.ParseBool(params[len(params)-1]) // Parse replace existing
 
 	if strings.Contains(command, "/") || strings.Contains(command, "\\") {
-		return params[0], "", params[1], boolVal // Return values
+		return params[0], params[1], "", boolVal // Return values
 	}
 
-	return params[0], params[1], params[2], boolVal // Return values
+	return params[0], "", params[1], boolVal // Return values
 }
 
 /*
