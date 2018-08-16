@@ -59,10 +59,29 @@ func (term *Terminal) ReplaceVariable(variableIndex int, variable interface{}) e
 	}
 
 	if len(term.Variables) == 0 { // Check for uninitialized variable array
-		return errors.New("empty environment") // Return found error
+		return errors.New("empty terminal environment") // Return found error
 	}
 
 	(*term).Variables[variableIndex] = variable // Replace value
 
 	return nil
+}
+
+// QueryType - attempt to fetch index of variable with matching type
+func (term *Terminal) QueryType(variableType string) (uint, error) {
+	if variableType == "" { // Check for nil parameter
+		return 0, errors.New("invalid type") // Return found error
+	}
+
+	if len(term.Variables) == 0 { // Check that terminal environment is not nil
+		return 0, errors.New("empty terminal environment") // Return found error
+	}
+
+	for x := 0; x != len(term.Variables); x++ { // Declare, increment iterator
+		if term.VariableTypes[x] == variableType { // Check for match
+			return uint(x), nil // Return result
+		}
+	}
+
+	return 0, errors.New("couldn't find matching variable")
 }

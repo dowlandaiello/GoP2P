@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-
-	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
 // HandleCommand - attempt to handle specified command
@@ -122,8 +120,12 @@ func (term *Terminal) handleDatabase(command string) {
 func (term *Terminal) handleConnection(command string) {
 	switch {
 	case strings.Contains(strings.ToLower(command), "newconnection"):
-		sourceNode := term.Variables[0].(node.Node)
+		address := strings.Split(strings.Split(command, "(")[1], ")")[0]                      // Fetch address from command
+		port := strings.Split(strings.Split(strings.Split(command, "(")[1], ")")[0], ", ")[1] // Fetch port from command
 
+		intVal, _ := strconv.Atoi(port) // Convert port to int
+
+		term.handleNewConnectionCommand(address, intVal)
 	}
 }
 
