@@ -89,5 +89,5 @@ func (term *Terminal) QueryType(variableType string) (uint, error) {
 		}
 	}
 
-	return 0, errors.New("couldn't find matching variable")
+	return 0, errors.New("couldn't find matching variable") // Return error
 }
