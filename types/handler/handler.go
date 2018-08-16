@@ -47,7 +47,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
-	fmt.Println("\n\n-- CONNECTION " + conn.RemoteAddr().String() + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.")
+	fmt.Println("\n\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.")
 
 	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
 		val, err := handleSingular(node, readConnection) // Handle singular event
@@ -63,6 +63,8 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		if err != nil { // Check for errors
 			return err // Return found error
 		}
+
+		fmt.Println("\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- responding with data " + string(serializedResponse))
 
 		conn.Write(serializedResponse) // Write success
 
@@ -82,6 +84,8 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
+
+	fmt.Println("\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- responding with data " + string(serializedResponse))
 
 	conn.Write(serializedResponse) // Write success
 
