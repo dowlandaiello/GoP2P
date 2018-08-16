@@ -110,7 +110,7 @@ func (term *Terminal) handleNewDatabase() (string, error) {
 		return "", err // Return found error
 	}
 
-	term.AddVariable(db, "NodeDatabase") // Add new database
+	term.AddVariable("", db, "NodeDatabase") // Add new database
 
 	err = db.WriteToMemory(foundNode.Environment) // Attempt to write to memory
 
@@ -141,7 +141,7 @@ func (term *Terminal) handleRemoveNode(address string) (string, error) {
 
 // handleAddSpecificNode - handle execution of addnode method
 func (term *Terminal) handleAddSpecificNode(address string) (string, error) {
-	foundNode := term.Variables[0].(node.Node) // Fetch attached node
+	foundNode := term.Variables[0].VariableData.(node.Node) // Fetch attached node
 
 	db, err := term.findDatabase() // Attempt to attach to database
 
@@ -190,7 +190,7 @@ func (term *Terminal) handleAddSpecificNode(address string) (string, error) {
 
 // handleRemoveSpecificNode - handle execution of removenode command
 func (term *Terminal) handleRemoveSpecificNode(address string) (string, error) {
-	foundNode := term.Variables[0].(node.Node) // Fetch attached node
+	foundNode := term.Variables[0].VariableData.(node.Node) // Fetch attached node
 
 	db, err := term.findDatabase()
 
@@ -230,8 +230,8 @@ func (term *Terminal) handleAddCurrentNode() (string, error) {
 	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Node" { // Verify element is node
-			foundNode = term.Variables[x].(node.Node) // Set to value
+		if term.Variables[x].VariableType == "Node" { // Verify element is node
+			foundNode = term.Variables[x].VariableData.(node.Node) // Set to value
 
 			break
 		}
@@ -259,7 +259,7 @@ func (term *Terminal) handleAddCurrentNode() (string, error) {
 		return "", errors.New("node already exists in attached database") // Return found error
 	}
 
-	err = db.WriteToMemory(term.Variables[0].(node.Node).Environment) // Serialize
+	err = db.WriteToMemory(term.Variables[0].VariableData.(node.Node).Environment) // Serialize
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
@@ -285,8 +285,8 @@ func (term *Terminal) handleRemoveCurrentNode() (string, error) {
 	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Node" { // Verify element is node
-			foundNode = term.Variables[x].(node.Node) // Set to value
+		if term.Variables[x].VariableType == "Node" { // Verify element is node
+			foundNode = term.Variables[x].VariableData.(node.Node) // Set to value
 
 			break
 		}
@@ -314,7 +314,7 @@ func (term *Terminal) handleRemoveCurrentNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	err = db.WriteToMemory(term.Variables[0].(node.Node).Environment) // Serialize
+	err = db.WriteToMemory(term.Variables[0].VariableData.(node.Node).Environment) // Serialize
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
@@ -340,8 +340,8 @@ func (term *Terminal) handleAttachDatabase() (string, error) {
 	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Node" { // Verify element is node
-			foundNode = term.Variables[x].(node.Node) // Set to value
+		if term.Variables[x].VariableType == "Node" { // Verify element is node
+			foundNode = term.Variables[x].VariableData.(node.Node) // Set to value
 
 			break
 		}
@@ -357,7 +357,7 @@ func (term *Terminal) handleAttachDatabase() (string, error) {
 		return "", err // Return found error
 	}
 
-	err = term.AddVariable(*db, "NodeDatabase") // Save for persistency
+	err = term.AddVariable("", *db, "NodeDatabase") // Save for persistency
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
@@ -371,8 +371,8 @@ func (term *Terminal) handleWriteDatabaseToMemory() (string, error) {
 	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Node" { // Verify element is node
-			foundNode = term.Variables[x].(node.Node) // Set to value
+		if term.Variables[x].VariableType == "Node" { // Verify element is node
+			foundNode = term.Variables[x].VariableData.(node.Node) // Set to value
 
 			break
 		}
@@ -419,8 +419,8 @@ func (term *Terminal) findDatabase() (*database.NodeDatabase, error) {
 	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Node" { // Verify element is node
-			foundNode = term.Variables[x].(node.Node) // Set to value
+		if term.Variables[x].VariableType == "Node" { // Verify element is node
+			foundNode = term.Variables[x].VariableData.(node.Node) // Set to value
 
 			break
 		}

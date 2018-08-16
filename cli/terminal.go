@@ -22,7 +22,7 @@ type Variable struct {
 
 // NewTerminal - attempts to start io handler for term commands
 func NewTerminal() error {
-	term := Terminal{Variables: []interface{}{}, VariableTypes: []string{}}
+	term := Terminal{Variables: []Variable{}}
 
 	for {
 		fmt.Print("\n> ")
@@ -41,18 +41,17 @@ func NewTerminal() error {
 
 // AddVariable - attempt to append specified variable to terminal variable list
 func (term *Terminal) AddVariable(variableName string, variableData interface{}, variableType string) error {
+	variable := Variable{VariableName: variableName, VariableData: variableData, VariableType: variableType}
+
 	if reflect.ValueOf(term).IsNil() { // Check for nil variable
 		return errors.New("nil terminal found") // Return error
 	}
 
 	if len(term.Variables) == 0 { // Check for uninitialized variable array
-		term.Variables = []interface{}{variable}    // Initialize with variable
-		term.VariableTypes = []string{variableType} // Initialize with type
+		term.Variables = []Variable{variable} // Initialize with variable
 
 		return nil // No error occurred, return nil
 	}
-
-	variable := Variable{VariableName: variableName, VariableData: variableData, VariableType: variableType}
 
 	term.Variables = append(term.Variables, variable) // Append to array
 

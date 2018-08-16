@@ -101,9 +101,9 @@ func (term *Terminal) handleNewNode() (string, error) {
 	fmt.Println("\n-- SUCCESS -- wrote nodedatabase to environment memory")
 	fmt.Println("-- SUCCESS -- wrote node to memory")
 
-	term.AddVariable(db, "NodeDatabase")               // Add new database
-	term.AddVariable(*node, "Node")                    // Add new node
-	term.AddVariable(*node.Environment, "Environment") // Add new environment
+	term.AddVariable("", db, "NodeDatabase")               // Add new database
+	term.AddVariable("", *node, "Node")                    // Add new node
+	term.AddVariable("", *node.Environment, "Environment") // Add new environment
 
 	return "-- SUCCESS -- created node with address " + node.Address, nil // No error occurred, return success
 }
@@ -128,9 +128,9 @@ func (term *Terminal) handleAttachNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	term.AddVariable(*node, "Node")       // Add node
-	term.AddVariable(*env, "Environment") // Add environment
-	term.AddVariable(*db, "NodeDatabase") // Add db
+	term.AddVariable("", *node, "Node")       // Add node
+	term.AddVariable("", *env, "Environment") // Add environment
+	term.AddVariable("", *db, "NodeDatabase") // Add db
 
 	return "-- SUCCESS -- attached to node with address " + node.Address, nil // No error occurred, return success
 }
@@ -140,8 +140,8 @@ func (term *Terminal) handleStartHandler(port int) (string, error) {
 	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Node" { // Verify element is node
-			foundNode = term.Variables[x].(node.Node) // Set to value
+		if term.Variables[x].VariableType == "Node" { // Verify element is node
+			foundNode = term.Variables[x].VariableData.(node.Node) // Set to value
 
 			break
 		}
@@ -163,7 +163,7 @@ func (term *Terminal) handleStartHandler(port int) (string, error) {
 		return "", err // Return found error
 	}
 
-	err = term.AddVariable(*ln, "Handler") // Attempt to save
+	err = term.AddVariable("", *ln, "Handler") // Attempt to save
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
