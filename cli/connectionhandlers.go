@@ -38,13 +38,13 @@ func (term *Terminal) handleNewConnection(address string, port int) (string, err
 
 	data := term.Variables[dataIndex].([]byte) // Fetch data
 
-	connectionStackIndex, err := term.QueryType("[]Event") // Fetch connection stack index
+	connectionStackIndex, _ := term.QueryType("[]Event") // Fetch connection stack index
 
-	if err != nil { // Check for errors
-		return "", err // Return found error
+	connectionStack := []connection.Event{} // Create placeholder
+
+	if connectionStackIndex != 0 { // Check for nil index
+		connectionStack = term.Variables[connectionStackIndex].([]connection.Event) // Fetch connection stack
 	}
-
-	connectionStack := term.Variables[connectionStackIndex].([]connection.Event) // Fetch connection stack
 
 	sourceNode := term.Variables[0].(node.Node) // Fetch sourceNode
 
