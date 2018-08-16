@@ -10,8 +10,14 @@ import (
 
 // Terminal - absctract container holding set of variable with values (runtime only)
 type Terminal struct {
-	Variables     []interface{}
-	VariableTypes []string
+	Variables []Variable
+}
+
+// Variable - container holding variable values
+type Variable struct {
+	VariableName string      `json:"name"`
+	VariableData interface{} `json:"data"`
+	VariableType string      `json:"type"`
 }
 
 // NewTerminal - attempts to start io handler for term commands
@@ -34,7 +40,7 @@ func NewTerminal() error {
 }
 
 // AddVariable - attempt to append specified variable to terminal variable list
-func (term *Terminal) AddVariable(variable interface{}, variableType string) error {
+func (term *Terminal) AddVariable(variableName string, variableData interface{}, variableType string) error {
 	if reflect.ValueOf(term).IsNil() { // Check for nil variable
 		return errors.New("nil terminal found") // Return error
 	}
@@ -46,14 +52,15 @@ func (term *Terminal) AddVariable(variable interface{}, variableType string) err
 		return nil // No error occurred, return nil
 	}
 
-	term.Variables = append(term.Variables, variable)             // Append to array
-	term.VariableTypes = append(term.VariableTypes, variableType) // Append to array
+	variable := Variable{VariableName: variableName, VariableData: variableData, VariableType: variableType}
+
+	term.Variables = append(term.Variables, variable) // Append to array
 
 	return nil // No error occurred, return nil
 }
 
 // ReplaceVariable - attempt to replace value at index with specified variable
-func (term *Terminal) ReplaceVariable(variableIndex int, variable interface{}) error {
+func (term *Terminal) ReplaceVariable(variableIndex int, variableData interface{}) error {
 	if reflect.ValueOf(term).IsNil() { // Check for nil variable
 		return errors.New("nil terminal found") // Return error
 	}
@@ -62,7 +69,7 @@ func (term *Terminal) ReplaceVariable(variableIndex int, variable interface{}) e
 		return errors.New("empty terminal environment") // Return found error
 	}
 
-	(*term).Variables[variableIndex] = variable // Replace value
+	(*term).Variables[variableIndex].VariableData = variableData // Replace value
 
 	return nil
 }
@@ -78,7 +85,7 @@ func (term *Terminal) QueryType(variableType string) (uint, error) {
 	}
 
 	for x := 0; x != len(term.Variables); x++ { // Declare, increment iterator
-		if term.VariableTypes[x] == variableType { // Check for match
+		if term.Variables[x].VariableType == variableType { // Check for match
 			return uint(x), nil // Return result
 		}
 	}

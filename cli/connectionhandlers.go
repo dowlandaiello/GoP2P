@@ -28,7 +28,7 @@ func (term *Terminal) handleNewConnection(address string, port int) (string, err
 		return "", err // Return found error
 	}
 
-	db := term.Variables[dbIndex].(database.NodeDatabase) // Fetch db
+	db := term.Variables[dbIndex].VariableData.(database.NodeDatabase) // Fetch db
 
 	dataIndex, err := term.QueryType("[]byte") // Fetch data index from term
 
@@ -36,17 +36,17 @@ func (term *Terminal) handleNewConnection(address string, port int) (string, err
 		return "", err // Return found error
 	}
 
-	data := term.Variables[dataIndex].([]byte) // Fetch data
+	data := term.Variables[dataIndex].VariableData.([]byte) // Fetch data
 
 	connectionStackIndex, _ := term.QueryType("[]Event") // Fetch connection stack index
 
 	connectionStack := []connection.Event{} // Create placeholder
 
 	if connectionStackIndex != 0 { // Check for nil index
-		connectionStack = term.Variables[connectionStackIndex].([]connection.Event) // Fetch connection stack
+		connectionStack = term.Variables[connectionStackIndex].VariableData.([]connection.Event) // Fetch connection stack
 	}
 
-	sourceNode := term.Variables[0].(node.Node) // Fetch sourceNode
+	sourceNode := term.Variables[0].VariableData.(node.Node) // Fetch sourceNode
 
 	destinationNodeIndex, err := db.QueryForAddress(address) // Fetch destination node index
 

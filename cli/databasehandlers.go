@@ -93,8 +93,8 @@ func (term *Terminal) handleNewDatabase() (string, error) {
 	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Node" { // Verify element is node
-			foundNode = term.Variables[x].(node.Node) // Set to value
+		if term.Variables[x].VariableType == "Node" { // Verify element is node
+			foundNode = term.Variables[x].VariableData.(node.Node) // Set to value
 
 			break
 		}
