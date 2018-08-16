@@ -96,7 +96,8 @@ func (connection *Connection) attempt() error {
 
 // attemptStack - iterate through connection stack, attempt each event
 func (connection *Connection) attemptStack() error {
-	fmt.Println("-- CONNECTION -- attempting stack")
+	fmt.Println("-- CONNECTION -- attempting stack") // Log connection
+
 	x := 0 // Init iterator
 
 	for x != len(connection.ConnectionStack) { // Iterate through connection stack

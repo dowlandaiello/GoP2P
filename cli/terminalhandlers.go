@@ -4,19 +4,23 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
 // HandleCommand - attempt to handle specified command
 func (term *Terminal) HandleCommand(command string) {
 	switch { // Iterate through possible commands
-	case strings.Contains(strings.ToLower(command), "upnp."): // Account for UpNP methods
+	case strings.Contains(strings.ToLower(command), "upnp."): // Account for UpNP package methods
 		term.handleUpNP(command)
-	case strings.Contains(strings.ToLower(command), "node."): // Account for node methods
+	case strings.Contains(strings.ToLower(command), "node."): // Account for node package methods
 		term.handleNode(command)
-	case strings.Contains(strings.ToLower(command), "environment."): // Account for environment methods
+	case strings.Contains(strings.ToLower(command), "environment."): // Account for environment package methods
 		term.handleEnvironment(command)
-	case strings.Contains(strings.ToLower(command), "database."): // Account for nodedatabase methods
+	case strings.Contains(strings.ToLower(command), "database."): // Account for nodedatabase package methods
 		term.handleDatabase(command)
+	case strings.Contains(strings.ToLower(command), "connection."): // Account for connection package methods
+		term.handleConnection(command)
 	}
 }
 
@@ -112,6 +116,14 @@ func (term *Terminal) handleDatabase(command string) {
 		address := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch address from command
 
 		term.handleQueryForAddressCommand(address) // Execute command
+	}
+}
+
+func (term *Terminal) handleConnection(command string) {
+	switch {
+	case strings.Contains(strings.ToLower(command), "newconnection"):
+		sourceNode := term.Variables[0].(node.Node)
+
 	}
 }
 
