@@ -100,8 +100,8 @@ func (term *Terminal) handleNewEnvironment() (string, error) {
 	foundNode := node.Node{}
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Node" { // Verify element is node
-			foundNode = term.Variables[x].(node.Node) // Set to value
+		if term.Variables[x].VariableData == "Node" { // Verify element is node
+			foundNode = term.Variables[x].VariableData.(node.Node) // Set to value
 
 			break
 		}
@@ -117,7 +117,7 @@ func (term *Terminal) handleNewEnvironment() (string, error) {
 		return "", err // Return found error
 	}
 
-	term.AddVariable(*env, "Environment") // Add new environment
+	term.AddVariable("", *env, "Environment") // Add new environment
 
 	foundNode.Environment = env // Set environment
 
@@ -166,8 +166,8 @@ func (term *Terminal) handleNewVariable(variableType string, dir string, variabl
 	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Node" { // Verify element is environment
-			foundNode = term.Variables[x].(node.Node) // Set to value
+		if term.Variables[x].VariableData == "Node" { // Verify element is environment
+			foundNode = term.Variables[x].VariableData.(node.Node) // Set to value
 
 			break
 		}
@@ -213,8 +213,8 @@ func (term *Terminal) handleQueryType(queryType string) (string, error) {
 	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Node" { // Verify element is node
-			foundNode = term.Variables[x].(node.Node) // Set to value
+		if term.Variables[x].VariableData == "Node" { // Verify element is node
+			foundNode = term.Variables[x].VariableData.(node.Node) // Set to value
 
 			break
 		}
@@ -240,8 +240,8 @@ func (term *Terminal) handleQueryValue(queryValue string) (string, error) {
 	foundNode := node.Node{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Node" { // Verify element is environment
-			foundNode = term.Variables[x].(node.Node) // Set to value
+		if term.Variables[x].VariableData == "Node" { // Verify element is environment
+			foundNode = term.Variables[x].VariableData.(node.Node) // Set to value
 
 			break
 		}
@@ -276,7 +276,7 @@ func (term *Terminal) handleAttachEnvironment() (string, error) {
 		return "", err // Return found error
 	}
 
-	term.AddVariable(*node.Environment, "Environment") // Add env to variables
+	term.AddVariable("", *node.Environment, "Environment") // Add env to variables
 
 	return "-- SUCCESS -- attached to environment", nil // No error occurred, return success
 }
@@ -286,8 +286,8 @@ func (term *Terminal) handleWriteToMemory() (string, error) {
 	foundEnvironment := environment.Environment{} // Create placeholder
 
 	for x := 0; x != len(term.Variables); x++ { // Iterate through array
-		if term.VariableTypes[x] == "Environment" { // Verify element is environment
-			foundEnvironment = term.Variables[x].(environment.Environment) // Set to value
+		if term.Variables[x].VariableData == "Environment" { // Verify element is environment
+			foundEnvironment = term.Variables[x].VariableData.(environment.Environment) // Set to value
 
 			break
 		}
