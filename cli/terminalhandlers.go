@@ -45,7 +45,7 @@ func (term *Terminal) handleUpNP(command string) {
 			intVal = handleZeroPort() // Fetch port
 		}
 
-		term.handleRemoveForwardPortCommand(intVal) // Remove port forwarding
+		term.handleRemoveForwardPortCommand(command, intVal) // Remove port forwarding
 	}
 }
 
