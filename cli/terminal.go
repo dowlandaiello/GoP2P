@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"strings"
 )
 
 // Terminal - absctract container holding set of variable with values (runtime only)
@@ -90,4 +91,13 @@ func (term *Terminal) QueryType(variableType string) (uint, error) {
 	}
 
 	return 0, errors.New("couldn't find matching variable") // Return error
+}
+
+// hasVariableSet - checks if specified command sets a variable
+func hasVariableSet(command string) bool {
+	if strings.HasPrefix(strings.ToLower(command), "var") { // Check for prefix
+		return true
+	}
+
+	return false
 }
