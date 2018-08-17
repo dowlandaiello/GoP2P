@@ -1,7 +1,9 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
+	"reflect"
 	"strconv"
 	"strings"
 )
@@ -35,7 +37,7 @@ func (term *Terminal) handleUpNP(command string) {
 			intVal = handleZeroPort() // Fetch port
 		}
 
-		term.handleForwardPortCommand(intVal) // Forward port
+		term.handleForwardPortCommand(command, intVal) // Forward port
 	case strings.Contains(strings.ToLower(command), "removeportforward"): // Account for removeportforward command
 		intVal, _ := strconv.Atoi(strings.Split(strings.Split(command, "(")[1], ")")[0]) // Attempt to fetch port from command
 
@@ -147,6 +149,26 @@ func handleZeroPort() int {
 	intVal, _ := strconv.Atoi(input) // Convert to int
 
 	return intVal // Return result
+}
+
+func (term *Terminal) handleOutputVariable(command string, variableData interface{}, variableType string) error {
+	variableName := strings.Split(strings.Split(command, "var ")[1], " =")[0] // Parse name
+
+	if reflect.ValueOf(variableData).IsNil() { // Check for nil data
+		return errors.New("nil variable data") // Return error
+	} else if variableType == "" { // Check for nil type
+		return errors.New("nil variable type") // Return error
+	} else if variableName == "" || variableName == " " { // Check validity of name
+		return errors.New("invalid variable name") // Return error
+	}
+
+	err := term.AddVariable(variableName, variableData, variableType) // Init, append variable
+
+	if err != nil { // Check for error
+		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
 }
 
 /*
