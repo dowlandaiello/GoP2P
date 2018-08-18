@@ -15,8 +15,8 @@ func main() {
 	flag.Parse() // Parse flags
 
 	if *terminalFlag {
-		cli.NewTerminal() // TODO: on attachment, make sure to write changes to a discovered node's db.
-	} // TODO: add Windows docker support
+		cli.NewTerminal()
+	}
 
 	startNode() // Attempt to start gop2p in node mode
 
@@ -32,3 +32,8 @@ func startNode() {
 
 	terminal.HandleCommand("node.StartHandler()") // Start handler
 }
+
+/* TODO:
+- On attachment, make sure to write changes to a discovered node's db.
+- Add no-UpNP support
+*/
