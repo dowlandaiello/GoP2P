@@ -154,7 +154,7 @@ func handleZeroPort() int {
 func (term *Terminal) handleOutputVariable(command string, variableData interface{}, variableType string) error {
 	variableName := strings.Split(strings.Split(command, "var ")[1], " =")[0] // Parse name
 
-	if reflect.ValueOf(variableData).IsNil() { // Check for nil data
+	if reflect.ValueOf(&variableData).IsNil() { // Check for nil data
 		return errors.New("nil variable data") // Return error
 	} else if variableType == "" { // Check for nil type
 		return errors.New("nil variable type") // Return error

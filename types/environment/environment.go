@@ -27,15 +27,11 @@ type Variable struct {
 
 // NewEnvironment - creates new instance of environment struct with specified node value
 func NewEnvironment() (*Environment, error) {
-	return &Environment{EnvironmentVariables: []*Variable{}}, nil // No error occurred, return nil
+	return &Environment{EnvironmentVariables: []*Variable{&Variable{VariableType: "string", VariableIdentifier: "genesis", VariableData: []byte("genesis"), VariableSerializedData: "genesis"}}}, nil // No error occurred, return nil
 }
 
 // QueryType - Fetches latest entry into environment with matching type
 func (environment *Environment) QueryType(variableType string) (*Variable, error) {
-	if len(environment.EnvironmentVariables) == 0 { // Checksafe
-		return &Variable{}, errors.New("found nil environment variables") // Return error
-	}
-
 	x := len(environment.EnvironmentVariables) - 1 // Initialize iterator
 
 	for x != -1 { // Check not out of bounds
