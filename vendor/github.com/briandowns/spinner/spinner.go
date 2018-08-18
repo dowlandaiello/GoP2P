@@ -14,6 +14,7 @@
 package spinner
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -21,7 +22,6 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
-	"encoding/hex"
 
 	"github.com/fatih/color"
 )

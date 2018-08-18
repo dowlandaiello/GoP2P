@@ -27,7 +27,7 @@ type Variable struct {
 
 // NewEnvironment - creates new instance of environment struct with specified node value
 func NewEnvironment() (*Environment, error) {
-	return &Environment{EnvironmentVariables: []*Variable{&Variable{VariableType: "string", VariableIdentifier: "genesis", VariableData: []byte("genesis"), VariableSerializedData: "genesis"}}}, nil // No error occurred, return nil
+	return &Environment{EnvironmentVariables: []*Variable{{VariableType: "string", VariableIdentifier: "genesis", VariableData: []byte("genesis"), VariableSerializedData: "genesis"}}}, nil // No error occurred, return nil
 }
 
 // QueryType - Fetches latest entry into environment with matching type
