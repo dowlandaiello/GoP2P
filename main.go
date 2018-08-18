@@ -16,7 +16,7 @@ func main() {
 
 	if *terminalFlag {
 		cli.NewTerminal() // TODO: on attachment, make sure to write changes to a discovered node's db.
-	}
+	} // TODO: add Windows docker support
 
 	startNode() // Attempt to start gop2p in node mode
 
