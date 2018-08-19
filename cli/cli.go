@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"fmt"
+
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
@@ -18,6 +20,8 @@ func NewNode() (*node.Node, error) {
 			return nil, gErr
 		}
 	}
+
+	fmt.Printf("found address %s", address)
 
 	node, err := node.NewNode(address, true) // Attempt to create new node
 
