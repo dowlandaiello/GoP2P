@@ -35,5 +35,4 @@ func startNode() {
 
 /* TODO:
 - On attachment, make sure to write changes to a discovered node's db.
-- Add no-UpNP support
 */

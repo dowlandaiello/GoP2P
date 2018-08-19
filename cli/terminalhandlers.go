@@ -11,6 +11,8 @@ import (
 // HandleCommand - attempt to handle specified command
 func (term *Terminal) HandleCommand(command string) {
 	switch { // Iterate through possible commands
+	case strings.Contains(strings.ToLower(command), "terminal."): // Account for terminal methods
+		term.handleTerminal(command)
 	case strings.Contains(strings.ToLower(command), "upnp."): // Account for UpNP package methods
 		term.handleUpNP(command)
 	case strings.Contains(strings.ToLower(command), "node."): // Account for node package methods
@@ -27,6 +29,15 @@ func (term *Terminal) HandleCommand(command string) {
 /*
 	BEGIN METHOD ROUTING
 */
+
+func (term *Terminal) handleTerminal(command string) {
+	switch {
+	case strings.Contains(strings.ToLower(command), "querytype"):
+		queryType := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch value from command
+
+		term.handleQueryTypeCommandTerminal(queryType)
+	}
+}
 
 func (term *Terminal) handleUpNP(command string) {
 	switch {
