@@ -21,7 +21,7 @@ func NewNode() (*node.Node, error) {
 		}
 	}
 
-	fmt.Printf("found address %s", address)
+	fmt.Printf("found address %s", address) // Log found address
 
 	node, err := node.NewNode(address, true) // Attempt to create new node
 
