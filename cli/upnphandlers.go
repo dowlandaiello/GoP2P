@@ -32,10 +32,10 @@ func (term *Terminal) handleForwardPort(command string, portNumber int) (string,
 	}
 
 	if hasVariableSet(command) {
-		term.handleOutputVariable(command, "-- SUCCESS -- port "+strconv.Itoa(portNumber)+" forwarded successfully", "string")
+		term.handleOutputVariable(command, "Success: port "+strconv.Itoa(portNumber)+" forwarded successfully", "string")
 	}
 
-	return "-- SUCCESS -- port " + strconv.Itoa(portNumber) + " forwarded successfully", nil // Return success
+	return "Success: port " + strconv.Itoa(portNumber) + " forwarded successfully", nil // Return success
 }
 
 func (term *Terminal) handleRemoveForwardPortCommand(command string, portNumber int) {
@@ -59,10 +59,10 @@ func (term *Terminal) handleRemoveForwardPort(command string, portNumber int) (s
 	}
 
 	if hasVariableSet(command) {
-		term.handleOutputVariable(command, "-- SUCCESS -- forwarding on port "+strconv.Itoa(portNumber)+" removed successfully", "string")
+		term.handleOutputVariable(command, "Success: forwarding on port "+strconv.Itoa(portNumber)+" removed successfully", "string")
 	}
 
-	return "-- SUCCESS -- forwarding on port " + strconv.Itoa(portNumber) + " removed successfully", nil // Return success
+	return "Success: forwarding on port " + strconv.Itoa(portNumber) + " removed successfully", nil // Return success
 }
 
 /*

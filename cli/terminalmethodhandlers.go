@@ -13,7 +13,7 @@ func (term *Terminal) handleQueryTypeCommandTerminal(queryType string) {
 	output, err := term.handleQueryTypeTerminal(queryType) // Attempt to query for type
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -35,5 +35,5 @@ func (term *Terminal) handleQueryTypeTerminal(queryType string) (string, error) 
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- found variable with type " + strVal, nil // Return response
+	return "Success: found variable with type " + strVal, nil // Return response
 }

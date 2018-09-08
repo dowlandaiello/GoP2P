@@ -17,7 +17,7 @@ func (term *Terminal) handleNewDatabaseCommand() {
 	output, err := term.handleNewDatabase() // Attempt to init new db
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -30,7 +30,7 @@ func (term *Terminal) handleAddNodeCommand(address string) {
 	output, err := term.handleAddNode(address) // Attempt to append
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -43,7 +43,7 @@ func (term *Terminal) handleRemoveNodeCommand(address string) {
 	output, err := term.handleRemoveNode(address) // Attempt to remove
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -56,7 +56,7 @@ func (term *Terminal) handleAttachDatabaseCommand() {
 	output, err := term.handleAttachDatabase() // Attempt to attach to db
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -69,7 +69,7 @@ func (term *Terminal) handleWriteDatabaseToMemoryCommand() {
 	output, err := term.handleWriteDatabaseToMemory() // Attempt to write db
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -82,7 +82,7 @@ func (term *Terminal) handleQueryForAddressCommand(address string) {
 	output, err := term.handleQueryForAddress(address) // Query
 
 	if err != nil {
-		fmt.Println("-- ERROR -- " + err.Error())
+		fmt.Println("Error: " + err.Error())
 	} else {
 		fmt.Println(output)
 	}
@@ -118,7 +118,7 @@ func (term *Terminal) handleNewDatabase() (string, error) {
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- created new nodedatabase with address " + foundNode.Address, nil // No error occurred, return success
+	return "Success: created new nodedatabase with address " + foundNode.Address, nil // No error occurred, return success
 }
 
 // handleAddNode - attempt to append current node to NodeDatabase
@@ -185,7 +185,7 @@ func (term *Terminal) handleAddSpecificNode(address string) (string, error) {
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- added node with address " + address + " to attached node database", nil // Return success
+	return "Success: added node with address " + address + " to attached node database", nil // Return success
 }
 
 // handleRemoveSpecificNode - handle execution of removenode command
@@ -222,7 +222,7 @@ func (term *Terminal) handleRemoveSpecificNode(address string) (string, error) {
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- removed node with address " + address + " from attached node database", nil // Return success
+	return "Success: removed node with address " + address + " from attached node database", nil // Return success
 }
 
 // handleAddCurrentNode - attempt to add current node to attached node database
@@ -277,7 +277,7 @@ func (term *Terminal) handleAddCurrentNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- appended node with address " + foundNode.Address + " to NodeDatabase", nil // No error occurred, return success
+	return "Success: appended node with address " + foundNode.Address + " to NodeDatabase", nil // No error occurred, return success
 }
 
 // handleAddCurrentNode - attempt to add current node to attached node database
@@ -332,7 +332,7 @@ func (term *Terminal) handleRemoveCurrentNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- removed node with address " + foundNode.Address + " from NodeDatabase", nil // No error occurred, return success
+	return "Success: removed node with address " + foundNode.Address + " from NodeDatabase", nil // No error occurred, return success
 }
 
 // handleAttachDatabase - handle execution of database reading, write to term mem
@@ -363,7 +363,7 @@ func (term *Terminal) handleAttachDatabase() (string, error) {
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- attached to nodedatabase with bootstrap address " + (*db.Nodes)[0].Address, nil
+	return "Success: attached to nodedatabase with bootstrap address " + (*db.Nodes)[0].Address, nil
 }
 
 // handleWritDatabaseToMemory - handle execution of NodeDatabase writeToMemory() method
@@ -394,7 +394,7 @@ func (term *Terminal) handleWriteDatabaseToMemory() (string, error) {
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- wrote nodedatabase with address " + foundNode.Address + " to memory", nil // No error occurred, return success
+	return "Success: wrote nodedatabase with address " + foundNode.Address + " to memory", nil // No error occurred, return success
 }
 
 // handleQueryForAddress - handle execution of queryforaddress command
@@ -411,7 +411,7 @@ func (term *Terminal) handleQueryForAddress(address string) (string, error) {
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- found node with index " + strconv.Itoa(int(index)), nil
+	return "Success: found node with index " + strconv.Itoa(int(index)), nil
 }
 
 // findDatabase - attempt to attach to environment database

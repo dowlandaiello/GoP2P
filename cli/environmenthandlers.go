@@ -26,7 +26,7 @@ func (term *Terminal) handleAttachEnvironmentCommand() {
 	output, err := term.handleAttachEnvironment() // Attempt to read env
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -39,7 +39,7 @@ func (term *Terminal) handleNewEnvironmentCommand() {
 	output, err := term.handleNewEnvironment() // Attempt to init new environment
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -51,7 +51,7 @@ func (term *Terminal) handleNewVariableCommand(variableType string, variableDir 
 	output, err := term.handleNewVariable(variableType, variableDir, variableData, replaceExisting) // Execute command
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -63,7 +63,7 @@ func (term *Terminal) handleWriteToMemoryCommand() {
 	output, err := term.handleWriteToMemory() // Attempt to write env
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -76,7 +76,7 @@ func (term *Terminal) handleQueryTypeCommand(queryType string) {
 	output, err := term.handleQueryType(queryType) // Attempt to query for type
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -89,7 +89,7 @@ func (term *Terminal) handleQueryValueCommand(queryValue string) {
 	output, err := term.handleQueryValue(queryValue) // Attempt to query for value
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -133,7 +133,7 @@ func (term *Terminal) handleNewEnvironment() (string, error) {
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- created new environment", nil // No error occurred, return success
+	return "Success: created new environment", nil // No error occurred, return success
 }
 
 // handleNewVariable - attempt to init and append new variable to environment variables list
@@ -205,7 +205,7 @@ func (term *Terminal) handleNewVariable(variableType string, dir string, variabl
 
 	s.Stop() // Stop loading indicator
 
-	return "-- SUCCESS -- initialized and added variable with type " + variable.VariableType, err
+	return "Success: initialized and added variable with type " + variable.VariableType, err
 }
 
 // handleQueryType - attempt to query for specified type in environment
@@ -232,7 +232,7 @@ func (term *Terminal) handleQueryType(queryType string) (string, error) {
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- found variable with type " + strVal, nil // Return response
+	return "Success: found variable with type " + strVal, nil // Return response
 }
 
 // handleQueryValue - attempt to query for specified value in environment
@@ -259,7 +259,7 @@ func (term *Terminal) handleQueryValue(queryValue string) (string, error) {
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- found variable with value " + strVal, nil // Return response
+	return "Success: found variable with value " + strVal, nil // Return response
 }
 
 // handleAttachEnvironment - handle execution of ReadEnvironment() command
@@ -278,7 +278,7 @@ func (term *Terminal) handleAttachEnvironment() (string, error) {
 
 	term.AddVariable("", *node.Environment, "Environment") // Add env to variables
 
-	return "-- SUCCESS -- attached to environment", nil // No error occurred, return success
+	return "Success: attached to environment", nil // No error occurred, return success
 }
 
 // handleWriteToMemory - handle execution of WriteToMemory() method
@@ -305,7 +305,7 @@ func (term *Terminal) handleWriteToMemory() (string, error) {
 		return "", err // Return found error
 	}
 
-	return "-- SUCCESS -- wrote environment to memory", nil // Return success
+	return "Success: wrote environment to memory", nil // Return success
 }
 
 func handleNilVarParams() (string, string, string, bool) {
