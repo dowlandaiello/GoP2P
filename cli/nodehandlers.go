@@ -32,7 +32,7 @@ func (term *Terminal) handleNewNodeCommand() {
 	s.Stop() // Stop indicator
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -45,7 +45,7 @@ func (term *Terminal) handleAttachNodeCommand() {
 	output, err := term.handleAttachNode() // Attempt to read node
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -58,7 +58,7 @@ func (term *Terminal) handleStartHandlerCommand(port int) {
 	output, err := term.handleStartHandler(port) // Attempt to start handler
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}
@@ -98,14 +98,14 @@ func (term *Terminal) handleNewNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	fmt.Println("\n-- SUCCESS -- wrote nodedatabase to environment memory")
-	fmt.Println("-- SUCCESS -- wrote node to memory")
+	fmt.Println("\nSuccess: wrote nodedatabase to environment memory")
+	fmt.Println("Success: wrote node to memory")
 
 	term.AddVariable("", db, "NodeDatabase")               // Add new database
 	term.AddVariable("", *node, "Node")                    // Add new node
 	term.AddVariable("", *node.Environment, "Environment") // Add new environment
 
-	return "-- SUCCESS -- created node with address " + node.Address, nil // No error occurred, return success
+	return "Success: created node with address " + node.Address, nil // No error occurred, return success
 }
 
 // handleAttachNode - handle execution of ReadNode() command
@@ -132,7 +132,7 @@ func (term *Terminal) handleAttachNode() (string, error) {
 	term.AddVariable("", *env, "Environment") // Add environment
 	term.AddVariable("", *db, "NodeDatabase") // Add db
 
-	return "-- SUCCESS -- attached to node with address " + node.Address, nil // No error occurred, return success
+	return "Success: attached to node with address " + node.Address, nil // No error occurred, return success
 }
 
 // handleStartHandler - attempt to start handler on node
@@ -171,7 +171,7 @@ func (term *Terminal) handleStartHandler(port int) (string, error) {
 
 	go handler.StartHandler(&foundNode, ln)
 
-	return "-- SUCCESS -- started handler on port " + strconv.Itoa(port) + " with address " + foundNode.Address, nil // No error occurred, return success
+	return "Success: started handler on port " + strconv.Itoa(port) + " with address " + foundNode.Address, nil // No error occurred, return success
 }
 
 /*
