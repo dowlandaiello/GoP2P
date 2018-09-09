@@ -25,15 +25,15 @@ type Variable struct {
 func NewTerminal() error {
 	term := Terminal{Variables: []Variable{}}
 
+	reader := bufio.NewReader(os.Stdin) // Init reader
+
 	for {
 		fmt.Print("\n> ")
-
-		reader := bufio.NewReader(os.Stdin) // Init reader
 
 		input, err := reader.ReadString('\n') // Search for user input
 
 		if err != nil {
-			panic(err)
+			panic(err) // Panic
 		}
 
 		term.HandleCommand(string(input)) // Handle specified command

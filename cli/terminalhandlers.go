@@ -35,7 +35,7 @@ func (term *Terminal) handleTerminal(command string) {
 	case strings.Contains(strings.ToLower(command), "querytype"):
 		queryType := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch value from command
 
-		term.handleQueryTypeCommandTerminal(queryType)
+		term.handleQueryTypeCommandTerminal(queryType) // Handle command
 	}
 }
 
