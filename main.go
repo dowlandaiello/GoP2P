@@ -15,7 +15,7 @@ func main() {
 	flag.Parse() // Parse flags
 
 	if *terminalFlag {
-		cli.NewTerminal()
+		cli.NewTerminal() // Initialize terminal
 	}
 
 	startNode() // Attempt to start gop2p in node mode
