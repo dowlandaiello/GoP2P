@@ -10,8 +10,6 @@ import (
 	"strings"
 
 	serverTypes "github.com/mitsukomegumi/Go-Rpcify/networking/types"
-	"github.com/mitsukomegumi/Go-Rpcify/types"
-	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
 // Terminal - absctract container holding set of variable with values (runtime only)
@@ -54,7 +52,7 @@ func NewTerminal() error {
 }
 
 func setupCalls(server *serverTypes.Server) {
-	call, _ := types.NewCall(node.NewNode, "node.NewNode()")
+	//call, _ := types.NewCall(node.NewNode, "node.NewNode()")
 }
 
 func sendCommand(command string) {
