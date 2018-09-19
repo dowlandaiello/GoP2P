@@ -75,20 +75,6 @@
   version = "v1.0"
 
 [[projects]]
-  digest = "1:4c0989ca0bcd10799064318923b9bc2db6b4d6338dd75f3f2d86c3511aaaf5cf"
-  name = "github.com/golang/protobuf"
-  packages = [
-    "proto",
-    "ptypes",
-    "ptypes/any",
-    "ptypes/duration",
-    "ptypes/timestamp",
-  ]
-  pruneopts = "UT"
-  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
-  version = "v1.2.0"
-
-[[projects]]
   digest = "1:c658e84ad3916da105a761660dcaeb01e63416c8ec7bc62256a9b411a05fcd67"
   name = "github.com/mattn/go-colorable"
   packages = ["."]
@@ -145,25 +131,18 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:092fdcdd758a788a4201c8518ad1bcebc66021e06dc5055d6c22fac6a41ff3d5"
+  digest = "1:9720bf1adff0c3840a94ed52470cca030185cd9d2f707c11131a834c1c9ae0e8"
   name = "golang.org/x/net"
   packages = [
     "bpf",
-    "context",
     "html",
     "html/atom",
     "html/charset",
-    "http/httpguts",
-    "http2",
-    "http2/hpack",
     "icmp",
-    "idna",
     "internal/iana",
     "internal/socket",
-    "internal/timeseries",
     "ipv4",
     "ipv6",
-    "trace",
   ]
   pruneopts = "UT"
   revision = "f4c29de78a2a91c00474a2e689954305c350adf9"
@@ -180,11 +159,9 @@
   revision = "0ffbfd41fbef8ffcf9b62b0b0aa3a5873ed7a4fe"
 
 [[projects]]
-  digest = "1:436b24586f8fee329e0dd65fd67c817681420cda1d7f934345c13fe78c212a73"
+  digest = "1:4392fcf42d5cf0e3ff78c96b2acf8223d49e4fdc53eb77c99d2f8dfe4680e006"
   name = "golang.org/x/text"
   packages = [
-    "collate",
-    "collate/build",
     "encoding",
     "encoding/charmap",
     "encoding/htmlindex",
@@ -195,7 +172,6 @@
     "encoding/simplifiedchinese",
     "encoding/traditionalchinese",
     "encoding/unicode",
-    "internal/colltab",
     "internal/gen",
     "internal/tag",
     "internal/triegen",
@@ -203,59 +179,13 @@
     "internal/utf8internal",
     "language",
     "runes",
-    "secure/bidirule",
     "transform",
-    "unicode/bidi",
     "unicode/cldr",
     "unicode/norm",
-    "unicode/rangetable",
   ]
   pruneopts = "UT"
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
-
-[[projects]]
-  branch = "master"
-  digest = "1:56b0bca90b7e5d1facf5fbdacba23e4e0ce069d25381b8e2f70ef1e7ebfb9c1a"
-  name = "google.golang.org/genproto"
-  packages = ["googleapis/rpc/status"]
-  pruneopts = "UT"
-  revision = "c3f76f3b92d1ffa4c58a9ff842a58b8877655e0f"
-
-[[projects]]
-  digest = "1:ab8e92d746fb5c4c18846b0879842ac8e53b3d352449423d0924a11f1020ae1b"
-  name = "google.golang.org/grpc"
-  packages = [
-    ".",
-    "balancer",
-    "balancer/base",
-    "balancer/roundrobin",
-    "codes",
-    "connectivity",
-    "credentials",
-    "encoding",
-    "encoding/proto",
-    "grpclog",
-    "internal",
-    "internal/backoff",
-    "internal/channelz",
-    "internal/envconfig",
-    "internal/grpcrand",
-    "internal/transport",
-    "keepalive",
-    "metadata",
-    "naming",
-    "peer",
-    "resolver",
-    "resolver/dns",
-    "resolver/passthrough",
-    "stats",
-    "status",
-    "tap",
-  ]
-  pruneopts = "UT"
-  revision = "8dea3dc473e90c8179e519d91302d0597c0ca1d1"
-  version = "v1.15.0"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -267,7 +197,6 @@
     "github.com/mitchellh/mapstructure",
     "github.com/mitsukomegumi/Go-Rpcify/networking/types",
     "github.com/tatsushid/go-fastping",
-    "google.golang.org/grpc",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
