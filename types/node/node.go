@@ -75,7 +75,7 @@ func StartListener(port int) (*net.Listener, error) {
 
 // WriteToMemory - create serialized instance of specified environment in specified path (string)
 func (node *Node) WriteToMemory(path string) error {
-	os.Remove(path + filepath.FromSlash("/node.gob"))
+	os.Remove(path + filepath.FromSlash("/node.gob")) // Overwrite
 
 	err := common.WriteGob(path+filepath.FromSlash("/node.gob"), node) // Attempt to write env to path
 

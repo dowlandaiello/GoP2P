@@ -16,7 +16,7 @@ message NewNodeRequest {
 }
 
 message StartListenerRequest {
-    int port = 1; // Port of listener
+    uint32 port = 1; // Port of listener
 }
 
 message ReadFromMemoryRequest {
