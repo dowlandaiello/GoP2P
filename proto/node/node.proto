@@ -1,0 +1,29 @@
+syntax = "proto3"; // Specify syntax version
+
+package node; // Init package
+
+service Node {
+    rpc NewNode(NewNodeRequest) returns (GeneralResponse) {} // Initialize node
+    rpc StartListener(StartListenerRequest) returns (GeneralResponse) {} // Start listener
+}
+
+/* BEGIN REQUESTS */
+
+message NewNodeRequest {
+    string address = 1; // Address of new node
+    bool isBootstrap = 2; // Bootstrap configurator
+}
+
+message StartListenerRequest {
+    int port = 1; // Port of listener
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1; // Response
+}
+
+/* END RESPONSES */
