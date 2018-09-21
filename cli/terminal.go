@@ -4,12 +4,9 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"net/http"
 	"os"
 	"reflect"
 	"strings"
-
-	serverTypes "github.com/mitsukomegumi/Go-Rpcify/networking/types"
 )
 
 // Terminal - absctract container holding set of variable with values (runtime only)
@@ -26,12 +23,6 @@ type Variable struct {
 
 // NewTerminal - attempts to start io handler for term commands
 func NewTerminal() error {
-	server := serverTypes.NewServer("server") // Initialize server
-
-	setupCalls(server) // Set calls
-
-	go server.StartServer() // Start server
-
 	term := Terminal{Variables: []Variable{}}
 
 	reader := bufio.NewReader(os.Stdin) // Init reader
@@ -45,18 +36,8 @@ func NewTerminal() error {
 			panic(err) // Panic
 		}
 
-		sendCommand(string(input)) // Send to server
-
 		term.HandleCommand(string(input)) // Handle specified command
 	}
-}
-
-func setupCalls(server *serverTypes.Server) {
-	//call, _ := types.NewCall(node.NewNode, "node.NewNode()")
-}
-
-func sendCommand(command string) {
-	http.Get("http://localhost:8080/call/" + command) // Send command
 }
 
 // AddVariable - attempt to append specified variable to terminal variable list
