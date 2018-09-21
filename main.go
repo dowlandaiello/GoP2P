@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	terminalFlag = flag.Bool("terminal", false, "launch gop2p in terminal mode") // Init term flag
+	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode") // Init term flag
 )
 
 func main() {
@@ -23,7 +23,7 @@ func main() {
 		cli.NewTerminal() // Initialize terminal
 	}
 
-	startNode() // Attempt to start gop2p in node mode
+	startNode() // Attempt to start GoP2P in node mode
 
 	go common.Forever() // Prevent main from closing
 	select {}           // Prevent main from closing

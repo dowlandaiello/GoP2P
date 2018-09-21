@@ -6,7 +6,7 @@ import (
 	proto "github.com/mitsukomegumi/GoP2P/rpc/proto"
 )
 
-// Server - gop2p RPC server
+// Server - GoP2P RPC server
 type Server struct{}
 
 // TODO: move server.go to node/server.go

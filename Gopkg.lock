@@ -125,7 +125,7 @@
 [[projects]]
   branch = "rpc"
   digest = "1:f3c1ae46f8ded29037ca191b8d733193291f4de340d1f54f24e93bb4b1d5c5f1"
-  name = "github.com/mitsukomegumi/gop2p"
+  name = "github.com/mitsukomegumi/GoP2P"
   packages = ["rpc/proto"]
   pruneopts = "UT"
   revision = "cbf0ac4bea5f108913a772a30ccd0a5705339360"
@@ -230,7 +230,7 @@
     "github.com/golang/protobuf/proto",
     "github.com/mitchellh/mapstructure",
     "github.com/mitsukomegumi/Go-Rpcify/networking/types",
-    "github.com/mitsukomegumi/gop2p/rpc/proto",
+    "github.com/mitsukomegumi/GoP2P/rpc/proto",
     "github.com/tatsushid/go-fastping",
     "github.com/twitchtv/twirp",
     "github.com/twitchtv/twirp/ctxsetters",
