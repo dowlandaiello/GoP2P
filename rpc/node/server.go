@@ -11,8 +11,6 @@ import (
 // Server - GoP2P RPC server
 type Server struct{}
 
-// TODO: move server.go to node/server.go
-
 // NewNode - node.NewNode RPC handler
 func (server *Server) NewNode(ctx context.Context, req *proto.NewNodeRequest) (*proto.GeneralResponse, error) {
 	node, err := node.NewNode(req.Address, req.IsBootstrap) // Init node
