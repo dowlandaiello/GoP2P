@@ -37,7 +37,9 @@ type Node interface {
 
 	StartListener(context.Context, *StartListenerRequest) (*GeneralResponse, error)
 
-	ReadFromMemory(context.Context, *ReadFromMemoryRequest) (*GeneralResponse, error)
+	ReadFromMemory(context.Context, *MemoryRequest) (*GeneralResponse, error)
+
+	WriteToMemory(context.Context, *MemoryRequest) (*GeneralResponse, error)
 }
 
 // ====================
@@ -46,17 +48,18 @@ type Node interface {
 
 type nodeProtobufClient struct {
 	client HTTPClient
-	urls   [3]string
+	urls   [4]string
 }
 
 // NewNodeProtobufClient creates a Protobuf client that implements the Node interface.
 // It communicates using Protobuf and can be configured with a custom HTTPClient.
 func NewNodeProtobufClient(addr string, client HTTPClient) Node {
 	prefix := urlBase(addr) + NodePathPrefix
-	urls := [3]string{
+	urls := [4]string{
 		prefix + "NewNode",
 		prefix + "StartListener",
 		prefix + "ReadFromMemory",
+		prefix + "WriteToMemory",
 	}
 	if httpClient, ok := client.(*http.Client); ok {
 		return &nodeProtobufClient{
@@ -94,12 +97,24 @@ func (c *nodeProtobufClient) StartListener(ctx context.Context, in *StartListene
 	return out, nil
 }
 
-func (c *nodeProtobufClient) ReadFromMemory(ctx context.Context, in *ReadFromMemoryRequest) (*GeneralResponse, error) {
+func (c *nodeProtobufClient) ReadFromMemory(ctx context.Context, in *MemoryRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "node")
 	ctx = ctxsetters.WithServiceName(ctx, "Node")
 	ctx = ctxsetters.WithMethodName(ctx, "ReadFromMemory")
 	out := new(GeneralResponse)
 	err := doProtobufRequest(ctx, c.client, c.urls[2], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nodeProtobufClient) WriteToMemory(ctx context.Context, in *MemoryRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "node")
+	ctx = ctxsetters.WithServiceName(ctx, "Node")
+	ctx = ctxsetters.WithMethodName(ctx, "WriteToMemory")
+	out := new(GeneralResponse)
+	err := doProtobufRequest(ctx, c.client, c.urls[3], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -112,17 +127,18 @@ func (c *nodeProtobufClient) ReadFromMemory(ctx context.Context, in *ReadFromMem
 
 type nodeJSONClient struct {
 	client HTTPClient
-	urls   [3]string
+	urls   [4]string
 }
 
 // NewNodeJSONClient creates a JSON client that implements the Node interface.
 // It communicates using JSON and can be configured with a custom HTTPClient.
 func NewNodeJSONClient(addr string, client HTTPClient) Node {
 	prefix := urlBase(addr) + NodePathPrefix
-	urls := [3]string{
+	urls := [4]string{
 		prefix + "NewNode",
 		prefix + "StartListener",
 		prefix + "ReadFromMemory",
+		prefix + "WriteToMemory",
 	}
 	if httpClient, ok := client.(*http.Client); ok {
 		return &nodeJSONClient{
@@ -160,12 +176,24 @@ func (c *nodeJSONClient) StartListener(ctx context.Context, in *StartListenerReq
 	return out, nil
 }
 
-func (c *nodeJSONClient) ReadFromMemory(ctx context.Context, in *ReadFromMemoryRequest) (*GeneralResponse, error) {
+func (c *nodeJSONClient) ReadFromMemory(ctx context.Context, in *MemoryRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "node")
 	ctx = ctxsetters.WithServiceName(ctx, "Node")
 	ctx = ctxsetters.WithMethodName(ctx, "ReadFromMemory")
 	out := new(GeneralResponse)
 	err := doJSONRequest(ctx, c.client, c.urls[2], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nodeJSONClient) WriteToMemory(ctx context.Context, in *MemoryRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "node")
+	ctx = ctxsetters.WithServiceName(ctx, "Node")
+	ctx = ctxsetters.WithMethodName(ctx, "WriteToMemory")
+	out := new(GeneralResponse)
+	err := doJSONRequest(ctx, c.client, c.urls[3], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -228,6 +256,9 @@ func (s *nodeServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 		return
 	case "/twirp/node.Node/ReadFromMemory":
 		s.serveReadFromMemory(ctx, resp, req)
+		return
+	case "/twirp/node.Node/WriteToMemory":
+		s.serveWriteToMemory(ctx, resp, req)
 		return
 	default:
 		msg := fmt.Sprintf("no handler for path %q", req.URL.Path)
@@ -552,7 +583,7 @@ func (s *nodeServer) serveReadFromMemoryJSON(ctx context.Context, resp http.Resp
 		return
 	}
 
-	reqContent := new(ReadFromMemoryRequest)
+	reqContent := new(MemoryRequest)
 	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
 	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
 		err = wrapErr(err, "failed to parse request json")
@@ -620,7 +651,7 @@ func (s *nodeServer) serveReadFromMemoryProtobuf(ctx context.Context, resp http.
 		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
 		return
 	}
-	reqContent := new(ReadFromMemoryRequest)
+	reqContent := new(MemoryRequest)
 	if err = proto.Unmarshal(buf, reqContent); err != nil {
 		err = wrapErr(err, "failed to parse request proto")
 		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
@@ -646,6 +677,150 @@ func (s *nodeServer) serveReadFromMemoryProtobuf(ctx context.Context, resp http.
 	}
 	if respContent == nil {
 		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling ReadFromMemory. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		err = wrapErr(err, "failed to marshal proto response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *nodeServer) serveWriteToMemory(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveWriteToMemoryJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveWriteToMemoryProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *nodeServer) serveWriteToMemoryJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "WriteToMemory")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	reqContent := new(MemoryRequest)
+	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
+	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request json")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.Node.WriteToMemory(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling WriteToMemory. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	var buf bytes.Buffer
+	marshaler := &jsonpb.Marshaler{OrigName: true}
+	if err = marshaler.Marshal(&buf, respContent); err != nil {
+		err = wrapErr(err, "failed to marshal json response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.WriteHeader(http.StatusOK)
+
+	respBytes := buf.Bytes()
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *nodeServer) serveWriteToMemoryProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "WriteToMemory")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		err = wrapErr(err, "failed to read request body")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+	reqContent := new(MemoryRequest)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request proto")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.Node.WriteToMemory(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling WriteToMemory. nil responses are not supported"))
 		return
 	}
 
@@ -1098,21 +1273,22 @@ func callError(ctx context.Context, h *twirp.ServerHooks, err twirp.Error) conte
 }
 
 var twirpFileDescriptor0 = []byte{
-	// 246 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x91, 0xc1, 0x4a, 0xc3, 0x40,
-	0x10, 0x86, 0x8d, 0x04, 0xab, 0x23, 0xad, 0x30, 0xb4, 0x10, 0xea, 0x25, 0xec, 0xa9, 0x58, 0xe8,
-	0x41, 0x2f, 0x9e, 0x45, 0xea, 0xa5, 0xf6, 0xb0, 0x3e, 0xc1, 0xca, 0x0e, 0x5a, 0x30, 0x99, 0xb8,
-	0x33, 0x22, 0xbe, 0xa4, 0xcf, 0x24, 0xbb, 0x49, 0xa0, 0x91, 0xf6, 0xf6, 0xcf, 0xf0, 0xf3, 0xed,
-	0x7c, 0x2c, 0x40, 0xcd, 0x9e, 0x56, 0x4d, 0x60, 0x65, 0xcc, 0x63, 0x36, 0x1b, 0x98, 0x6c, 0xe9,
-	0x7b, 0xcb, 0x9e, 0x2c, 0x7d, 0x7e, 0x91, 0x28, 0x16, 0x30, 0x72, 0xde, 0x07, 0x12, 0x29, 0xb2,
-	0x32, 0x5b, 0x5c, 0xd8, 0x7e, 0xc4, 0x12, 0x2e, 0x77, 0xf2, 0xc0, 0xac, 0xa2, 0xc1, 0x35, 0xc5,
-	0x69, 0x99, 0x2d, 0xce, 0xed, 0xfe, 0xca, 0xdc, 0xc0, 0xf4, 0x45, 0x5d, 0xd0, 0xcd, 0x4e, 0x94,
-	0x6a, 0x0a, 0x3d, 0x13, 0x21, 0x6f, 0x38, 0x68, 0x02, 0x8e, 0x6d, 0xca, 0x66, 0x09, 0x33, 0x4b,
-	0xce, 0xaf, 0x03, 0x57, 0xcf, 0x54, 0x71, 0xf8, 0xd9, 0x2f, 0x3b, 0x7d, 0xef, 0x5e, 0x4f, 0xd9,
-	0x2c, 0xe1, 0xea, 0x29, 0x02, 0xdd, 0x87, 0x25, 0x69, 0xb8, 0x16, 0x8a, 0x77, 0x56, 0x24, 0xe2,
-	0xde, 0xa8, 0xbf, 0xb3, 0x1b, 0x6f, 0x7f, 0x33, 0xc8, 0xa3, 0x11, 0xde, 0xc3, 0xa8, 0x93, 0xc3,
-	0xe9, 0x2a, 0xa9, 0x0f, 0x5d, 0xe7, 0xb3, 0x76, 0xfb, 0x0f, 0x6d, 0x4e, 0xf0, 0x11, 0xc6, 0x03,
-	0x11, 0x9c, 0xb7, 0xcd, 0x43, 0x76, 0xc7, 0x29, 0x6b, 0x98, 0x0c, 0x15, 0xf1, 0xba, 0xad, 0x1e,
-	0x14, 0x3f, 0xca, 0x79, 0x3d, 0x4b, 0x3f, 0x76, 0xf7, 0x17, 0x00, 0x00, 0xff, 0xff, 0x9e, 0x09,
-	0x87, 0xb3, 0xbf, 0x01, 0x00, 0x00,
+	// 259 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x91, 0xc1, 0x4a, 0xc3, 0x40,
+	0x10, 0x86, 0x4d, 0x09, 0x56, 0x47, 0x52, 0x61, 0xad, 0x10, 0x7a, 0x0a, 0xf1, 0x52, 0x14, 0x7a,
+	0xd0, 0x8b, 0x17, 0x3d, 0x88, 0xe8, 0xa5, 0xf6, 0xb0, 0x0a, 0x9e, 0x57, 0x76, 0xd0, 0x80, 0xc9,
+	0xc4, 0x99, 0x11, 0xf1, 0x01, 0x7c, 0x6f, 0xc9, 0x26, 0x81, 0x46, 0xec, 0xa5, 0xb7, 0x99, 0xe1,
+	0x9f, 0x6f, 0xe7, 0x63, 0x01, 0x2a, 0xf2, 0xb8, 0xa8, 0x99, 0x94, 0x4c, 0xdc, 0xd4, 0xf9, 0x12,
+	0x26, 0x2b, 0xfc, 0x5a, 0x91, 0x47, 0x8b, 0x1f, 0x9f, 0x28, 0x6a, 0x52, 0x18, 0x3b, 0xef, 0x19,
+	0x45, 0xd2, 0x28, 0x8b, 0xe6, 0xfb, 0xb6, 0x6f, 0x4d, 0x06, 0x07, 0x85, 0xdc, 0x10, 0xa9, 0x28,
+	0xbb, 0x3a, 0x1d, 0x65, 0xd1, 0x7c, 0xcf, 0xae, 0x8f, 0xf2, 0x53, 0x98, 0x3e, 0xaa, 0x63, 0x5d,
+	0x16, 0xa2, 0x58, 0x21, 0xf7, 0x4c, 0x03, 0x71, 0x4d, 0xac, 0x01, 0x98, 0xd8, 0x50, 0xe7, 0x27,
+	0x90, 0x3c, 0x60, 0x49, 0xfc, 0xbd, 0x1e, 0x72, 0xfa, 0xd6, 0xbd, 0x1a, 0xea, 0xfc, 0x0c, 0x0e,
+	0xef, 0x1b, 0x90, 0x7b, 0xb7, 0x28, 0x35, 0x55, 0x82, 0xcd, 0x7d, 0x25, 0x8a, 0xb8, 0x57, 0xec,
+	0xef, 0xeb, 0xda, 0xf3, 0x9f, 0x11, 0xc4, 0x8d, 0x89, 0xb9, 0x84, 0x71, 0x27, 0x65, 0xa6, 0x8b,
+	0xa0, 0x3c, 0x74, 0x9c, 0x1d, 0xb7, 0xd3, 0x3f, 0xe8, 0x7c, 0xc7, 0xdc, 0x42, 0x32, 0x10, 0x30,
+	0xb3, 0x36, 0xf9, 0x9f, 0xd5, 0x66, 0xca, 0x35, 0x4c, 0x2c, 0x3a, 0x7f, 0xc7, 0x54, 0xb6, 0x8a,
+	0xe6, 0xa8, 0x8d, 0x0e, 0x84, 0x37, 0xef, 0x5f, 0x41, 0xf2, 0xcc, 0x85, 0xe2, 0x13, 0x6d, 0xb3,
+	0xfe, 0xb2, 0x1b, 0x3e, 0xf8, 0xe2, 0x37, 0x00, 0x00, 0xff, 0xff, 0x43, 0xfa, 0x7f, 0x9a, 0xee,
+	0x01, 0x00, 0x00,
 }

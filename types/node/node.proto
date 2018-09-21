@@ -5,7 +5,8 @@ package node; // Init package
 service Node {
     rpc NewNode(NewNodeRequest) returns (GeneralResponse) {} // Initialize node
     rpc StartListener(StartListenerRequest) returns (GeneralResponse) {} // Start listener
-    rpc ReadFromMemory(ReadFromMemoryRequest) returns (GeneralResponse) {} // Read node from memory
+    rpc ReadFromMemory(MemoryRequest) returns (GeneralResponse) {} // Read node from memory
+    rpc WriteToMemory(MemoryRequest) returns (GeneralResponse) {} // Write node to memory
 }
 
 /* BEGIN REQUESTS */
@@ -19,7 +20,7 @@ message StartListenerRequest {
     uint32 port = 1; // Port of listener
 }
 
-message ReadFromMemoryRequest {
+message MemoryRequest {
     string path = 1; // Node path
 }
 
