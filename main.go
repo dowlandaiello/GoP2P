@@ -6,7 +6,7 @@ import (
 
 	"github.com/mitsukomegumi/GoP2P/cli"
 	"github.com/mitsukomegumi/GoP2P/common"
-	rpc "github.com/mitsukomegumi/GoP2P/rpc"
+	node "github.com/mitsukomegumi/GoP2P/rpc/node"
 	proto "github.com/mitsukomegumi/GoP2P/rpc/proto"
 )
 
@@ -31,12 +31,13 @@ func main() {
 
 // startRPCServer - start RPC server
 func startRPCServer() {
-	twirpHandler := proto.NewNodeServer(&rpc.Server{}, nil) // Init handler
+	nodeHandler := proto.NewNodeServer(&node.Server{}, nil) // Init handler
 
 	mux := http.NewServeMux() // Init mux
 
-	mux.Handle(proto.NodePathPrefix, twirpHandler) // Start mux node handler
-	go http.ListenAndServe(":808", mux)            // Start server
+	mux.Handle(proto.NodePathPrefix, nodeHandler) // Start mux node handler
+
+	go http.ListenAndServe(":8080", mux) // Start server
 }
 
 // startNode - attempt to execute attachnode, starthandler commands
