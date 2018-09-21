@@ -62,17 +62,6 @@ func (node *Node) StartListener(port int) (*net.Listener, error) {
 	return &ln, nil // No error occurred, return listener
 }
 
-// StartListener - attempt to listen on specified port, return new listener
-func StartListener(port int) (*net.Listener, error) {
-	ln, err := net.Listen("tcp", ":"+strconv.Itoa(port)) // Listen on port
-
-	if err != nil { // Check for errors
-		return nil, err // Return found error
-	}
-
-	return &ln, nil // No error occurred, return listener
-}
-
 // WriteToMemory - create serialized instance of specified environment in specified path (string)
 func (node *Node) WriteToMemory(path string) error {
 	os.Remove(path + filepath.FromSlash("/node.gob")) // Overwrite

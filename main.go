@@ -2,9 +2,12 @@ package main
 
 import (
 	"flag"
+	"net/http"
 
 	"github.com/mitsukomegumi/GoP2P/cli"
 	"github.com/mitsukomegumi/GoP2P/common"
+	rpc "github.com/mitsukomegumi/GoP2P/rpc"
+	proto "github.com/mitsukomegumi/GoP2P/rpc/proto"
 )
 
 var (
@@ -14,6 +17,8 @@ var (
 func main() {
 	flag.Parse() // Parse flags
 
+	startRPCServer() // Start RPC server
+
 	if *terminalFlag {
 		cli.NewTerminal() // Initialize terminal
 	}
@@ -22,6 +27,16 @@ func main() {
 
 	go common.Forever() // Prevent main from closing
 	select {}           // Prevent main from closing
+}
+
+// startRPCServer - start RPC server
+func startRPCServer() {
+	twirpHandler := proto.NewNodeServer(&rpc.Server{}, nil) // Init handler
+
+	mux := http.NewServeMux() // Init mux
+
+	mux.Handle(proto.NodePathPrefix, twirpHandler) // Start mux node handler
+	go http.ListenAndServe(":808", mux)            // Start server
 }
 
 // startNode - attempt to execute attachnode, starthandler commands
