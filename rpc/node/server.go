@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mitsukomegumi/GoP2P/common"
 	proto "github.com/mitsukomegumi/GoP2P/rpc/proto"
@@ -33,7 +34,7 @@ func (server *Server) NewNode(ctx context.Context, req *proto.NewNodeRequest) (*
 		return &proto.GeneralResponse{}, err // Return found error
 	}
 
-	return &proto.GeneralResponse{Message: "test"}, nil // Return response
+	return &proto.GeneralResponse{Message: fmt.Sprintf("%v", node)}, nil // Return response
 }
 
 // StartListener - node.StartListener RPC handler
