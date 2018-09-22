@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -47,18 +48,25 @@ func NewTerminal() error {
 			panic(err) // Panic
 		}
 
-		reflectParams := common.ConvertStringToReflectValues(params) // Parse inputs as []reflect.value
-
-		switch receiver { // TODO: ask Eamonn how to initialize structs by name
+		switch receiver {
 		case "node":
-			handleNode()
-			result := reflect.ValueOf(nodeClient).MethodByName(methodname).Call([]reflect.Value{reflect.ValueOf(context.Background()), reflect.ValueOf(reflectParams)}) // Call method
+			reflectParams := []reflect.Value{} // Init buffer
+
+			switch methodname {
+			case "NewNode":
+				boolVal, _ := strconv.ParseBool(params[1]) // Parse isBootstrap
+
+				reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+				reflectParams = append(reflectParams, reflect.ValueOf(&proto.GeneralRequest{Address: params[0], IsBootstrap: boolVal})) // Append params
+			}
+
+			result := reflect.ValueOf(nodeClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 			response := result[0].Interface().(*proto.GeneralResponse) // Get response
-			err := result[1].Interface().(error)                       // Get err
 
-			if err != nil { // Check for errors
-				fmt.Println(err.Error()) // Log error
+			if result[1].Interface() != nil { // Check for errors
+				fmt.Println(result[1].Interface().(error).Error()) // Log error
 			} else {
 				fmt.Println(response.Message) // Log response
 			}

@@ -13,7 +13,7 @@ import (
 type Server struct{}
 
 // NewNode - node.NewNode RPC handler
-func (server *Server) NewNode(ctx context.Context, req *proto.NewNodeRequest) (*proto.GeneralResponse, error) {
+func (server *Server) NewNode(ctx context.Context, req *proto.GeneralRequest) (*proto.GeneralResponse, error) {
 	node, err := node.NewNode(req.Address, req.IsBootstrap) // Init node
 
 	if err != nil { // Check for errors
@@ -32,23 +32,23 @@ func (server *Server) NewNode(ctx context.Context, req *proto.NewNodeRequest) (*
 		return &proto.GeneralResponse{}, err // Return found error
 	}
 
-	return &proto.GeneralResponse{Message: fmt.Sprintf("%v", node)}, nil // Return response
+	return &proto.GeneralResponse{Message: fmt.Sprintf("\nInitialized Node %v", node)}, nil // Return response
 }
 
 // StartListener - node.StartListener RPC handler
-func (server *Server) StartListener(ctx context.Context, req *proto.StartListenerRequest) (*proto.GeneralResponse, error) {
+func (server *Server) StartListener(ctx context.Context, req *proto.GeneralRequest) (*proto.GeneralResponse, error) {
 	return &proto.GeneralResponse{Message: "test"}, nil // Return response
 }
 
 /* BEGIN IO HANDLERS */
 
 // WriteToMemory - node.WriteToMemory RPC handler
-func (server *Server) WriteToMemory(ctx context.Context, req *proto.MemoryRequest) (*proto.GeneralResponse, error) {
+func (server *Server) WriteToMemory(ctx context.Context, req *proto.GeneralRequest) (*proto.GeneralResponse, error) {
 	return &proto.GeneralResponse{Message: "test"}, nil // Return response
 }
 
 // ReadFromMemory - node.ReadFromMemory RPC handler
-func (server *Server) ReadFromMemory(ctx context.Context, req *proto.MemoryRequest) (*proto.GeneralResponse, error) {
+func (server *Server) ReadFromMemory(ctx context.Context, req *proto.GeneralRequest) (*proto.GeneralResponse, error) {
 	return &proto.GeneralResponse{Message: "test"}, nil // Return response
 }
 
