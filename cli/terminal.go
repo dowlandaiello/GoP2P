@@ -51,6 +51,7 @@ func NewTerminal() error {
 
 		switch receiver { // TODO: ask Eamonn how to initialize structs by name
 		case "node":
+			handleNode()
 			result := reflect.ValueOf(nodeClient).MethodByName(methodname).Call([]reflect.Value{reflect.ValueOf(context.Background()), reflect.ValueOf(reflectParams)}) // Call method
 
 			response := result[0].Interface().(*proto.GeneralResponse) // Get response
@@ -63,6 +64,10 @@ func NewTerminal() error {
 			}
 		}
 	}
+}
+
+func handleNode(nodeClient *proto.Node) {
+
 }
 
 // AddVariable - attempt to append specified variable to terminal variable list

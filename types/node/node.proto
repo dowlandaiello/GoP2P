@@ -3,25 +3,21 @@ syntax = "proto3"; // Specify syntax version
 package node; // Init package
 
 service Node {
-    rpc NewNode(NewNodeRequest) returns (GeneralResponse) {} // Initialize node
-    rpc StartListener(StartListenerRequest) returns (GeneralResponse) {} // Start listener
-    rpc ReadFromMemory(MemoryRequest) returns (GeneralResponse) {} // Read node from memory
-    rpc WriteToMemory(MemoryRequest) returns (GeneralResponse) {} // Write node to memory
+    rpc NewNode(GeneralRequest) returns (GeneralResponse) {} // Initialize node
+    rpc StartListener(GeneralRequest) returns (GeneralResponse) {} // Start listener
+    rpc ReadFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read node from memory
+    rpc WriteToMemory(GeneralRequest) returns (GeneralResponse) {} // Write node to memory
 }
 
 /* BEGIN REQUESTS */
 
-message NewNodeRequest {
+message GeneralRequest {
     string address = 1; // Address of new node
     bool isBootstrap = 2; // Bootstrap configurator
-}
 
-message StartListenerRequest {
-    uint32 port = 1; // Port of listener
-}
-
-message MemoryRequest {
-    string path = 1; // Node path
+    uint32 port = 3; // Port of listener
+    
+    string path = 4; // Node path
 }
 
 /* END REQUESTS */
