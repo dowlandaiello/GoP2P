@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bufio"
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -27,11 +28,9 @@ type Variable struct {
 
 // NewTerminal - attempts to start io handler for term commands
 func NewTerminal() error {
-	term := Terminal{Variables: []Variable{}}
-
 	reader := bufio.NewReader(os.Stdin) // Init reader
 
-	nodeClient := proto.NewNodeProtobufClient("http://localhost:8080", &http.Client{})
+	nodeClient := proto.NewNodeProtobufClient("http://localhost:8080", &http.Client{}) // Init node client
 
 	for {
 		fmt.Print("\n> ")
@@ -50,9 +49,9 @@ func NewTerminal() error {
 
 		reflectParams := common.ConvertStringToReflectValues(params) // Parse inputs as []reflect.value
 
-		switch receiver {
+		switch receiver { // TODO: ask Eamonn how to initialize structs by name
 		case "node":
-			result := reflect.ValueOf(nodeClient).MethodByName(methodname).Call([]reflect.Value{reflect.ValueOf(reflectParams)}) // Call method
+			result := reflect.ValueOf(nodeClient).MethodByName(methodname).Call([]reflect.Value{reflect.ValueOf(context.Background()), reflect.ValueOf(reflectParams)}) // Call method
 
 			response := result[0].Interface().(*proto.GeneralResponse) // Get response
 			err := result[1].Interface().(error)                       // Get err
@@ -63,8 +62,6 @@ func NewTerminal() error {
 				fmt.Println(response.Message) // Log response
 			}
 		}
-
-		term.HandleCommand(string(input)) // Handle specified command
 	}
 }
 
