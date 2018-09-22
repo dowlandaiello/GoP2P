@@ -50,32 +50,42 @@ func NewTerminal() error {
 
 		switch receiver {
 		case "node":
-			reflectParams := []reflect.Value{} // Init buffer
+			err := handleNode(&nodeClient, methodname, params) // Handle node
 
-			switch methodname {
-			case "NewNode":
-				boolVal, _ := strconv.ParseBool(params[1]) // Parse isBootstrap
-
-				reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
-
-				reflectParams = append(reflectParams, reflect.ValueOf(&proto.GeneralRequest{Address: params[0], IsBootstrap: boolVal})) // Append params
-			}
-
-			result := reflect.ValueOf(nodeClient).MethodByName(methodname).Call(reflectParams) // Call method
-
-			response := result[0].Interface().(*proto.GeneralResponse) // Get response
-
-			if result[1].Interface() != nil { // Check for errors
-				fmt.Println(result[1].Interface().(error).Error()) // Log error
-			} else {
-				fmt.Println(response.Message) // Log response
+			if err != nil { // Check for errors
+				fmt.Println(err.Error()) // Log found error
 			}
 		}
 	}
 }
 
-func handleNode(nodeClient *proto.Node) {
+func handleNode(nodeClient *proto.Node, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
 
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "NewNode":
+		boolVal, _ := strconv.ParseBool(params[1]) // Parse isBootstrap
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&proto.GeneralRequest{Address: params[0], IsBootstrap: boolVal})) // Append params
+	case "StartListener":
+		intVal, _ := strconv.Atoi(params[0]) // Get int val
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&proto.GeneralRequest{Port: uint32(intVal)})) // Append params
+	}
+
+	result := reflect.ValueOf(*nodeClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*proto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		fmt.Println(result[1].Interface().(error).Error()) // Log error
+	} else {
+		fmt.Println(response.Message) // Log response
+	}
+
+	return nil
 }
 
 // AddVariable - attempt to append specified variable to terminal variable list

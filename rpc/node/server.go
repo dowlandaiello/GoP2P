@@ -2,7 +2,9 @@ package rpc
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/mitsukomegumi/GoP2P/common"
 	proto "github.com/mitsukomegumi/GoP2P/rpc/proto"
@@ -32,12 +34,26 @@ func (server *Server) NewNode(ctx context.Context, req *proto.GeneralRequest) (*
 		return &proto.GeneralResponse{}, err // Return found error
 	}
 
-	return &proto.GeneralResponse{Message: fmt.Sprintf("\nInitialized Node %v", node)}, nil // Return response
+	return &proto.GeneralResponse{Message: fmt.Sprintf("\nInitialized node %v", node)}, nil // Return response
 }
 
 // StartListener - node.StartListener RPC handler
 func (server *Server) StartListener(ctx context.Context, req *proto.GeneralRequest) (*proto.GeneralResponse, error) {
-	return &proto.GeneralResponse{Message: "test"}, nil // Return response
+	currentDir, err := common.GetCurrentDir() // Fetch current directory
+
+	if err != nil { // Check for errors
+		return &proto.GeneralResponse{}, err // Return found error
+	}
+
+	node, err := node.ReadNodeFromMemory(currentDir) // Read node from memory
+
+	if err != nil { // Check for errors
+		return &proto.GeneralResponse{}, errors.New("Node not attached") // Return found error
+	}
+
+	go node.StartListener(int(req.Port)) // Start Listener
+
+	return &proto.GeneralResponse{Message: fmt.Sprintf("Started listener with host :%s", strconv.Itoa(int(req.Port)))}, nil // Return response
 }
 
 /* BEGIN IO HANDLERS */
