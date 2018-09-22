@@ -4,9 +4,13 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"reflect"
 	"strings"
+
+	"github.com/mitsukomegumi/GoP2P/common"
+	proto "github.com/mitsukomegumi/GoP2P/rpc/proto"
 )
 
 // Terminal - absctract container holding set of variable with values (runtime only)
@@ -27,7 +31,7 @@ func NewTerminal() error {
 
 	reader := bufio.NewReader(os.Stdin) // Init reader
 
-	//nodeClient := proto.NewNodeProtobufClient("http://localhost:8080", &http.Client{})
+	nodeClient := proto.NewNodeProtobufClient("http://localhost:8080", &http.Client{})
 
 	for {
 		fmt.Print("\n> ")
@@ -36,6 +40,28 @@ func NewTerminal() error {
 
 		if err != nil { // Check for errors
 			panic(err) // Panic
+		}
+
+		receiver, methodname, params, err := common.ParseStringMethodCall(input) // Attempt to parse as method call
+
+		if err != nil { // Check for errors
+			panic(err) // Panic
+		}
+
+		reflectParams := common.ConvertStringToReflectValues(params) // Parse inputs as []reflect.value
+
+		switch receiver {
+		case "node":
+			result := reflect.ValueOf(nodeClient).MethodByName(methodname).Call([]reflect.Value{reflect.ValueOf(reflectParams)}) // Call method
+
+			response := result[0].Interface().(*proto.GeneralResponse) // Get response
+			err := result[1].Interface().(error)                       // Get err
+
+			if err != nil { // Check for errors
+				fmt.Println(err.Error()) // Log error
+			} else {
+				fmt.Println(response.Message) // Log response
+			}
 		}
 
 		term.HandleCommand(string(input)) // Handle specified command
