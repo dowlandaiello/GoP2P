@@ -31,21 +31,23 @@ var (
 	BEGIN EXPORTED METHODS:
 */
 
-// ParseStringMethodCall - attempt to parse string as method call, returning method name and params
-func ParseStringMethodCall(input string) (string, []string, error) {
+// ParseStringMethodCall - attempt to parse string as method call, returning receiver, method name, and params
+func ParseStringMethodCall(input string) (string, string, []string, error) {
 	if input == "" { // Check for errors
-		return "", []string{}, errors.New("nil input") // Return found error
+		return "", "", []string{}, errors.New("nil input") // Return found error
 	}
 
-	method := strings.Split(input, "(")[0] // Fetch method
+	method := strings.Split(strings.Split(input, "(")[0], ".")[1] // Fetch method
+
+	receiver := StringFetchCallReceiver(input) // Fetch receiver
 
 	params, err := ParseStringParams(input) // Fetch params
 
 	if err != nil { // Check for errors
-		return "", []string{}, err // Return found error
+		return "", "", []string{}, err // Return found error
 	}
 
-	return method, params, nil // No error occurred, return parsed method+params
+	return receiver, method, params, nil // No error occurred, return parsed method+params
 }
 
 // ParseStringParams - attempt to fetch string parameters from (..., ..., ...) style call
@@ -54,11 +56,16 @@ func ParseStringParams(input string) ([]string, error) {
 		return []string{}, errors.New("nil input") // Return found error
 	}
 
-	parenthesesStripped := StringStripParentheses(input) // Strip parentheses
+	parenthesesStripped := StringStripParentheses(StringStripReceiverCall(input)) // Strip parentheses
 
 	params := strings.Split(parenthesesStripped, ", ") // Split by ', '
 
 	return params, nil // No error occurred, return split params
+}
+
+// StringStripReceiverCall - strip receiver from string method call
+func StringStripReceiverCall(input string) string {
+	return "(" + strings.Split(input, "(")[1] // Split
 }
 
 // StringStripParentheses - strip parantheses from string
@@ -66,6 +73,11 @@ func StringStripParentheses(input string) string {
 	leftStripped := strings.Replace(input, "(", "", -1) // Strip left parent
 
 	return strings.Replace(leftStripped, ")", "", -1) // Return right stripped
+}
+
+// StringFetchCallReceiver - attempt to fetch receiver from string, as if it were a x.y(..., ..., ...) style method call
+func StringFetchCallReceiver(input string) string {
+	return strings.Split(strings.Split(input, "(")[0], ".")[0] // Return split string
 }
 
 // Forever - prevent thread from closing
