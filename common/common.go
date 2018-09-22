@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	upnp "github.com/NebulousLabs/go-upnp"
@@ -29,6 +30,26 @@ var (
 /*
 	BEGIN EXPORTED METHODS:
 */
+
+// ParseStringParams - attempt to fetch string parameters from (..., ..., ...) style call
+func ParseStringParams(input string) ([]string, error) {
+	if input == "" { // Check for errors
+		return []string{}, errors.New("nil input") // Return found error
+	}
+
+	parenthesesStripped := StringStripParentheses(input) // Strip parentheses
+
+	params := strings.Split(parenthesesStripped, ", ") // Split by ', '
+
+	return params, nil // No error occurred, return split params
+}
+
+// StringStripParentheses - strip parantheses from string
+func StringStripParentheses(input string) string {
+	leftStripped := strings.Replace(input, "(", "", -1) // Strip left parent
+
+	return strings.Replace(leftStripped, ")", "", -1) // Return right stripped
+}
 
 // Forever - prevent thread from closing
 func Forever() {
