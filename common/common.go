@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"time"
 
@@ -61,6 +62,17 @@ func ParseStringParams(input string) ([]string, error) {
 	params := strings.Split(parenthesesStripped, ", ") // Split by ', '
 
 	return params, nil // No error occurred, return split params
+}
+
+// ConvertStringToReflectValues - convert string to []reflect.Value
+func ConvertStringToReflectValues(inputs []string) []reflect.Value {
+	values := []reflect.Value{} // Init buffer
+
+	for input := range inputs {
+		values = append(values, reflect.ValueOf(input)) // Add reflect value
+	}
+
+	return values
 }
 
 // StringStripReceiverCall - strip receiver from string method call
