@@ -31,6 +31,23 @@ var (
 	BEGIN EXPORTED METHODS:
 */
 
+// ParseStringMethodCall - attempt to parse string as method call, returning method name and params
+func ParseStringMethodCall(input string) (string, []string, error) {
+	if input == "" { // Check for errors
+		return "", []string{}, errors.New("nil input") // Return found error
+	}
+
+	method := strings.Split(input, "(")[0] // Fetch method
+
+	params, err := ParseStringParams(input) // Fetch params
+
+	if err != nil { // Check for errors
+		return "", []string{}, err // Return found error
+	}
+
+	return method, params, nil // No error occurred, return parsed method+params
+}
+
 // ParseStringParams - attempt to fetch string parameters from (..., ..., ...) style call
 func ParseStringParams(input string) ([]string, error) {
 	if input == "" { // Check for errors

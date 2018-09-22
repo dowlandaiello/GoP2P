@@ -2,16 +2,11 @@ package cli
 
 import (
 	"bufio"
-	"context"
 	"errors"
 	"fmt"
-	"net/http"
 	"os"
 	"reflect"
-	"strconv"
 	"strings"
-
-	proto "github.com/mitsukomegumi/GoP2P/rpc/proto"
 )
 
 // Terminal - absctract container holding set of variable with values (runtime only)
@@ -32,20 +27,15 @@ func NewTerminal() error {
 
 	reader := bufio.NewReader(os.Stdin) // Init reader
 
-	client := proto.NewNodeProtobufClient("http://localhost:8080", &http.Client{})
+	//nodeClient := proto.NewNodeProtobufClient("http://localhost:8080", &http.Client{})
 
 	for {
 		fmt.Print("\n> ")
 
 		input, err := reader.ReadString('\n') // Search for user input
 
-		if err != nil {
+		if err != nil { // Check for errors
 			panic(err) // Panic
-		}
-
-		switch input {
-		case "NewNode":
-			resp, err := client.NewNode(context.Background(), &proto.NewNodeRequest{Address: strings.Split(strings.Split(strings.Split(input, ",")[1], ")")[0], " ")[1], IsBootstrap: strconv.ParseBool(strings.Split(strings.Split(strings.Split(input, ",")[0], "(")[1], " ")[1])})
 		}
 
 		term.HandleCommand(string(input)) // Handle specified command

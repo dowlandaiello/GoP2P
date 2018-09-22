@@ -5,6 +5,20 @@ import (
 	"testing"
 )
 
+// TestParseStringMethodCall - test functionality of ParseStringMethodCall() function
+func TestParseStringMethodCall(t *testing.T) {
+	input := "node.NewNode(localhost, 3000)" // Init input
+
+	method, params, err := ParseStringMethodCall(input) // Parse string method call
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("found parsed method call %s, %s, %s", method, params[0], params[1]) // Log success
+}
+
 // TestParseStringParams - test functionality of ParseStringParams() function
 func TestParseStringParams(t *testing.T) {
 	input := "node.NewNode(localhost, 3000)" // Init input
