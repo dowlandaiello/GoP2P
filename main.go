@@ -8,14 +8,20 @@ import (
 	"github.com/mitsukomegumi/GoP2P/common"
 	node "github.com/mitsukomegumi/GoP2P/rpc/node"
 	proto "github.com/mitsukomegumi/GoP2P/rpc/proto"
+	"github.com/mitsukomegumi/GoP2P/upnp"
 )
 
 var (
-	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode") // Init term flag
+	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                   // Init term flag
+	upnpFlag     = flag.Bool("upnp", false, "launch GoP2P without automatic UPnP port forwarding") // Init upnp flag
 )
 
 func main() {
 	flag.Parse() // Parse flags
+
+	if !*upnpFlag {
+		go upnp.ForwardPortSilent(8080) // Forward port 8080
+	}
 
 	startRPCServer() // Start RPC server
 
@@ -50,5 +56,6 @@ func startNode() {
 }
 
 /* TODO:
+- Add custom RPC addresses
 - On attachment, make sure to write changes to a discovered node's db.
 */
