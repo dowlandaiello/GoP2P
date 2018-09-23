@@ -42,10 +42,10 @@ func ParseStringMethodCall(input string) (string, string, []string, error) {
 
 	receiver := StringFetchCallReceiver(input) // Fetch receiver
 
-	params, err := ParseStringParams(input) // Fetch params
+	params := []string{} // Init buffer
 
-	if err != nil { // Check for errors
-		return "", "", []string{}, err // Return found error
+	if !strings.Contains(input, "()") { // Check for nil params
+		params, _ = ParseStringParams(input) // Fetch params
 	}
 
 	return receiver, method, params, nil // No error occurred, return parsed method+params
