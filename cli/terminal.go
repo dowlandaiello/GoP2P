@@ -42,6 +42,8 @@ func NewTerminal() error {
 			panic(err) // Panic
 		}
 
+		input = strings.TrimSuffix(input, "\n") // Trim newline
+
 		receiver, methodname, params, err := common.ParseStringMethodCall(input) // Attempt to parse as method call
 
 		if err != nil { // Check for errors
