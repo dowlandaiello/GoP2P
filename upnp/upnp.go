@@ -24,6 +24,23 @@ func GetGateway() (*upnp.IGD, error) { // Returns error if forward failed, retur
 	return d, err
 }
 
+// ForwardPortSilent - forwards specified port on current device without log output
+func ForwardPortSilent(portNumber uint) error { // Returns error if forward failed
+	GatewayDevice, err := GetGateway() // Find network gateway device
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	err = GatewayDevice.Forward(uint16(portNumber), "resourceforwarding") // Attempts to forward
+
+	if err != nil { // Checks if error occurred
+		return err // Return error
+	}
+
+	return nil // No error occurred, return nil
+}
+
 // ForwardPort - forwards specified port on current device
 func ForwardPort(portNumber uint) error { // Returns error if forward failed
 	s := spinner.New(spinner.CharSets[7], 100*time.Millisecond) // Init loading indicator
