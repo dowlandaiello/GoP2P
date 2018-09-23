@@ -60,6 +60,10 @@ func NewTerminal() error {
 }
 
 func handleNode(nodeClient *proto.Node, methodname string, params []string) error {
+	if len(params) == 0 { // Check for nil parameters
+		return errors.New("invalid parameters") // Return error
+	}
+
 	reflectParams := []reflect.Value{} // Init buffer
 
 	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
