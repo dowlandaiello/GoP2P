@@ -92,7 +92,7 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *proto.GeneralRequ
 	node, err := node.ReadNodeFromMemory(req.Path) // Read node from memory
 
 	if err != nil {
-		return &proto.GeneralResponse{}, errors.New("Node not fount at directory " + req.Path) // Return found error
+		return &proto.GeneralResponse{}, errors.New("Node not found at directory " + req.Path) // Return found error
 	}
 
 	err = node.WriteToMemory(currentDir) // Attach to current directory
