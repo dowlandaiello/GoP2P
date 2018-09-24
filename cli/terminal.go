@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/mitsukomegumi/GoP2P/common"
-	proto "github.com/mitsukomegumi/GoP2P/rpc/proto"
+	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
 )
 
 // Terminal - absctract container holding set of variable with values (runtime only)
@@ -31,7 +31,7 @@ type Variable struct {
 func NewTerminal() error {
 	reader := bufio.NewReader(os.Stdin) // Init reader
 
-	nodeClient := proto.NewNodeProtobufClient("http://localhost:8080", &http.Client{}) // Init node client
+	nodeClient := nodeProto.NewNodeProtobufClient("http://localhost:8080", &http.Client{}) // Init node client
 
 	for {
 		fmt.Print("\n> ")
@@ -61,7 +61,7 @@ func NewTerminal() error {
 	}
 }
 
-func handleNode(nodeClient *proto.Node, methodname string, params []string) error {
+func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) error {
 	if len(params) == 0 { // Check for nil parameters
 		return errors.New("invalid parameters") // Return error
 	}
@@ -74,18 +74,18 @@ func handleNode(nodeClient *proto.Node, methodname string, params []string) erro
 	case "NewNode":
 		boolVal, _ := strconv.ParseBool(params[1]) // Parse isBootstrap
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&proto.GeneralRequest{Address: params[0], IsBootstrap: boolVal})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{Address: params[0], IsBootstrap: boolVal})) // Append params
 	case "StartListener":
 		intVal, _ := strconv.Atoi(params[0]) // Get int val
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&proto.GeneralRequest{Port: uint32(intVal)})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{Port: uint32(intVal)})) // Append params
 	case "WriteToMemory", "ReadFromMemory":
-		reflectParams = append(reflectParams, reflect.ValueOf(&proto.GeneralRequest{Path: params[0]})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{Path: params[0]})) // Append params
 	}
 
 	result := reflect.ValueOf(*nodeClient).MethodByName(methodname).Call(reflectParams) // Call method
 
-	response := result[0].Interface().(*proto.GeneralResponse) // Get response
+	response := result[0].Interface().(*nodeProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
 		fmt.Println(result[1].Interface().(error).Error()) // Log error
