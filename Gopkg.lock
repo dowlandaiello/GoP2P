@@ -26,31 +26,6 @@
   revision = "29b680b06c82d044ebea91bf3069038eb562df2a"
 
 [[projects]]
-  branch = "master"
-  digest = "1:1c132b7395a7e4ce1359ce1bf6e1b4e9562490d60b5fd1bfde3af4c63fe052c5"
-  name = "github.com/apaxa-go/eval"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "1d18b251d6795e462ef99e1cd2d0c88f64a0918b"
-
-[[projects]]
-  branch = "master"
-  digest = "1:7ebccb0531c344833d9b247fd76456336418ce732018bd9f58b929d2de8151a2"
-  name = "github.com/apaxa-go/helper"
-  packages = [
-    "goh/asth",
-    "goh/constanth",
-    "goh/tokenh",
-    "mathh",
-    "reflecth",
-    "strconvh",
-    "stringsh",
-    "unicodeh",
-  ]
-  pruneopts = "UT"
-  revision = "61d31b1c31c30c359f50b231e26927c91369061a"
-
-[[projects]]
   digest = "1:3c2529252615b209e6cf92c89a77505016f192372d279d28f49513fe7b69367c"
   name = "github.com/briandowns/spinner"
   packages = ["."]
@@ -111,26 +86,6 @@
   revision = "f15292f7a699fcc1a38a80977f80a046874ba8ac"
 
 [[projects]]
-  digest = "1:9d31420d25a097c1c69a96079d9fc7342299fd52c5a04b23f3ef23557e3ffc0a"
-  name = "github.com/mitsukomegumi/Go-Rpcify"
-  packages = [
-    "common",
-    "networking/types",
-    "types",
-  ]
-  pruneopts = "UT"
-  revision = "c7e61f4549bc33162a8b4b8176d8eb9a8b2bd786"
-  version = "v1.0"
-
-[[projects]]
-  branch = "rpc"
-  digest = "1:f3c1ae46f8ded29037ca191b8d733193291f4de340d1f54f24e93bb4b1d5c5f1"
-  name = "github.com/mitsukomegumi/GoP2P"
-  packages = ["rpc/proto"]
-  pruneopts = "UT"
-  revision = "cbf0ac4bea5f108913a772a30ccd0a5705339360"
-
-[[projects]]
   branch = "master"
   digest = "1:9f3a60def1a1eb5ac184e71dde43c6f99606f54d106db7c95f8b8338629a777b"
   name = "github.com/tatsushid/go-fastping"
@@ -152,12 +107,9 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:639218d427f9b9f6158eb48e936b0541d393cfed00707f0e51bd038524af80ea"
+  digest = "1:f0b918a9d2a0d3dcd073cbb908d81b0166af14b8bc765039673d1120c71e17cc"
   name = "golang.org/x/crypto"
-  packages = [
-    "blake2b",
-    "sha3",
-  ]
+  packages = ["blake2b"]
   pruneopts = "UT"
   revision = "56440b844dfe139a8ac053f4ecac0b20b79058f4"
 
@@ -191,7 +143,7 @@
   revision = "0ffbfd41fbef8ffcf9b62b0b0aa3a5873ed7a4fe"
 
 [[projects]]
-  digest = "1:4392fcf42d5cf0e3ff78c96b2acf8223d49e4fdc53eb77c99d2f8dfe4680e006"
+  digest = "1:aa4d6967a3237f8367b6bf91503964a77183ecf696f1273e8ad3551bb4412b5f"
   name = "golang.org/x/text"
   packages = [
     "encoding",
@@ -206,14 +158,11 @@
     "encoding/unicode",
     "internal/gen",
     "internal/tag",
-    "internal/triegen",
-    "internal/ucd",
     "internal/utf8internal",
     "language",
     "runes",
     "transform",
     "unicode/cldr",
-    "unicode/norm",
   ]
   pruneopts = "UT"
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
@@ -229,8 +178,6 @@
     "github.com/golang/protobuf/jsonpb",
     "github.com/golang/protobuf/proto",
     "github.com/mitchellh/mapstructure",
-    "github.com/mitsukomegumi/Go-Rpcify/networking/types",
-    "github.com/mitsukomegumi/GoP2P/rpc/proto",
     "github.com/tatsushid/go-fastping",
     "github.com/twitchtv/twirp",
     "github.com/twitchtv/twirp/ctxsetters",
