@@ -60,12 +60,48 @@ func (server *Server) StartListener(ctx context.Context, req *proto.GeneralReque
 
 // WriteToMemory - node.WriteToMemory RPC handler
 func (server *Server) WriteToMemory(ctx context.Context, req *proto.GeneralRequest) (*proto.GeneralResponse, error) {
-	return &proto.GeneralResponse{Message: "test"}, nil // Return response
+	currentDir, err := common.GetCurrentDir() // Fetch current directory
+
+	if err != nil {
+		return &proto.GeneralResponse{}, err // Return found error
+	}
+
+	node, err := node.ReadNodeFromMemory(currentDir) // Read node from memory
+
+	if err != nil {
+		return &proto.GeneralResponse{}, errors.New("Node not attached") // Return found error
+	}
+
+	err = node.WriteToMemory(req.Path) // Write to memory
+
+	if err != nil { // Check for errors
+		return &proto.GeneralResponse{}, err // Return found error
+	}
+
+	return &proto.GeneralResponse{Message: "Wrote to directory " + req.Path}, nil // Return response
 }
 
 // ReadFromMemory - node.ReadFromMemory RPC handler
 func (server *Server) ReadFromMemory(ctx context.Context, req *proto.GeneralRequest) (*proto.GeneralResponse, error) {
-	return &proto.GeneralResponse{Message: "test"}, nil // Return response
+	currentDir, err := common.GetCurrentDir() // Fetch current directory
+
+	if err != nil {
+		return &proto.GeneralResponse{}, err // Return found error
+	}
+
+	node, err := node.ReadNodeFromMemory(req.Path) // Read node from memory
+
+	if err != nil {
+		return &proto.GeneralResponse{}, errors.New("Node not fount at directory " + req.Path) // Return found error
+	}
+
+	err = node.WriteToMemory(currentDir) // Attach to current directory
+
+	if err != nil { // Check for error
+		return &proto.GeneralResponse{}, err // Return found error
+	}
+
+	return &proto.GeneralResponse{Message: "Read from directory " + req.Path}, nil // Return response
 }
 
 /* END IO HANDLERS */
