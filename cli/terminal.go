@@ -79,6 +79,8 @@ func handleNode(nodeClient *proto.Node, methodname string, params []string) erro
 		intVal, _ := strconv.Atoi(params[0]) // Get int val
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&proto.GeneralRequest{Port: uint32(intVal)})) // Append params
+	case "WriteToMemory", "ReadFromMemory":
+		reflectParams = append(reflectParams, reflect.ValueOf(&proto.GeneralRequest{Path: params[0]})) // Append params
 	}
 
 	result := reflect.ValueOf(*nodeClient).MethodByName(methodname).Call(reflectParams) // Call method
