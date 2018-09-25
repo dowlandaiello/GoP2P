@@ -29,18 +29,16 @@ type Variable struct {
 
 // NewTerminal - attempts to start io handler for term commands
 func NewTerminal() error {
-	reader := bufio.NewReader(os.Stdin) // Init reader
+	reader := bufio.NewScanner(os.Stdin) // Init reader
 
 	nodeClient := nodeProto.NewNodeProtobufClient("http://localhost:8080", &http.Client{}) // Init node client
 
 	for {
-		fmt.Print("\n> ")
+		fmt.Print("\n> ") // Print prompt
 
-		input, err := reader.ReadString('\n') // Search for user input
+		reader.Scan() // Scan
 
-		if err != nil { // Check for errors
-			panic(err) // Panic
-		}
+		input := reader.Text() // Fetch string input
 
 		input = strings.TrimSuffix(input, "\n") // Trim newline
 
