@@ -49,7 +49,9 @@ func NewTerminal() error {
 		receiver, methodname, params, err := common.ParseStringMethodCall(input) // Attempt to parse as method call
 
 		if err != nil { // Check for errors
-			panic(err) // Panic
+			fmt.Println(err.Error()) // Log found error
+
+			continue
 		}
 
 		switch receiver {
@@ -155,9 +157,19 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 	switch methodname {
 	case "NewEnvironment":
 		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{})) // Append empty request
+	case "QueryType":
+		if len(params) == 0 { // Check for errors
+			return errors.New("invalid parameters (requires string)") // Return found error
+		}
+
+		queryTypeVal := params[0] // Fetch queryTypeVal
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{VariableType: queryTypeVal})) // Append querytype request
 	default:
 		return errors.New("illegal method " + methodname) // Return error
 	}
+
+	fmt.Println(reflectParams)
 
 	result := reflect.ValueOf(*environmentClient).MethodByName(methodname).Call(reflectParams) // Call method
 
@@ -170,7 +182,6 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 	}
 
 	return nil // No error occurred, return nil
-
 }
 
 // AddVariable - attempt to append specified variable to terminal variable list
