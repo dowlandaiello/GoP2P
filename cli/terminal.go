@@ -169,8 +169,6 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 		return errors.New("illegal method " + methodname) // Return error
 	}
 
-	fmt.Println(reflectParams)
-
 	result := reflect.ValueOf(*environmentClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 	response := result[0].Interface().(*environmentProto.GeneralResponse) // Get response
