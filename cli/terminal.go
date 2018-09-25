@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/mitsukomegumi/GoP2P/common"
+	handlerProto "github.com/mitsukomegumi/GoP2P/rpc/proto/handler"
 	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
 )
 
@@ -31,7 +32,8 @@ type Variable struct {
 func NewTerminal() error {
 	reader := bufio.NewScanner(os.Stdin) // Init reader
 
-	nodeClient := nodeProto.NewNodeProtobufClient("http://localhost:8080", &http.Client{}) // Init node client
+	nodeClient := nodeProto.NewNodeProtobufClient("http://localhost:8080", &http.Client{})          // Init node client
+	handlerClient := handlerProto.NewHandlerProtobufClient("http://localhost:8080", &http.Client{}) // Init handler client
 
 	for {
 		fmt.Print("\n> ") // Print prompt
@@ -51,6 +53,12 @@ func NewTerminal() error {
 		switch receiver {
 		case "node":
 			err := handleNode(&nodeClient, methodname, params) // Handle node
+
+			if err != nil { // Check for errors
+				fmt.Println(err.Error()) // Log found error
+			}
+		case "handler":
+			err := handleHandler(&handlerClient, methodname, params) // Handle handler
 
 			if err != nil { // Check for errors
 				fmt.Println(err.Error()) // Log found error
@@ -91,7 +99,36 @@ func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) 
 		fmt.Println(response.Message) // Log response
 	}
 
-	return nil
+	return nil // No error occurred, return nil
+}
+
+func handleHandler(handlerClient *handlerProto.Handler, methodname string, params []string) error {
+	if len(params) == 0 { // Check for nil parameters
+		return errors.New("invalid parameters") // Return error
+	}
+
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "StartHandler":
+		port, _ := strconv.Atoi(params[0]) // Parse port
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{Port: uint32(port)})) // Append params
+	}
+
+	result := reflect.ValueOf(*handlerClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*handlerProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		fmt.Println(result[1].Interface().(error).Error()) // Log error
+	} else {
+		fmt.Println(response.Message) // Log response
+	}
+
+	return nil // No error occurred, return nil
 }
 
 // AddVariable - attempt to append specified variable to terminal variable list
