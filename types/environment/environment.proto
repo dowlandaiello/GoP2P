@@ -3,5 +3,21 @@ syntax = "proto3";
 package environment;
 
 service Environment {
-
+    rpc NewEnvironment(GeneralRequest) returns (GeneralResponse) {} // Init environment
 }
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    string variableType = 1;
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1;
+}
+
+/* END RESPONSES */
