@@ -87,6 +87,8 @@ func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) 
 		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{Port: uint32(intVal)})) // Append params
 	case "WriteToMemory", "ReadFromMemory":
 		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{Path: params[0]})) // Append params
+	default:
+		return errors.New("illegal method " + methodname)
 	}
 
 	result := reflect.ValueOf(*nodeClient).MethodByName(methodname).Call(reflectParams) // Call method
@@ -115,7 +117,9 @@ func handleHandler(handlerClient *handlerProto.Handler, methodname string, param
 	case "StartHandler":
 		port, _ := strconv.Atoi(params[0]) // Parse port
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{Port: uint32(port)})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&handlerProto.GeneralRequest{Port: uint32(port)})) // Append params
+	default:
+		return errors.New("illegal method " + methodname)
 	}
 
 	result := reflect.ValueOf(*handlerClient).MethodByName(methodname).Call(reflectParams) // Call method
