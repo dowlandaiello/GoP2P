@@ -30,5 +30,5 @@ func (server *Server) NewEnvironment(ctx context.Context, req *environmentProto.
 		}
 	}
 
-	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nInitialized node %v", env)}, nil // Return response
+	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nInitialized environment %v", env)}, nil // Return response
 }

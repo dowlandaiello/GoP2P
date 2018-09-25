@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/mitsukomegumi/GoP2P/common"
+	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
 	handlerProto "github.com/mitsukomegumi/GoP2P/rpc/proto/handler"
 	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
 )
@@ -32,8 +33,9 @@ type Variable struct {
 func NewTerminal() error {
 	reader := bufio.NewScanner(os.Stdin) // Init reader
 
-	nodeClient := nodeProto.NewNodeProtobufClient("http://localhost:8080", &http.Client{})          // Init node client
-	handlerClient := handlerProto.NewHandlerProtobufClient("http://localhost:8080", &http.Client{}) // Init handler client
+	nodeClient := nodeProto.NewNodeProtobufClient("http://localhost:8080", &http.Client{})                      // Init node client
+	handlerClient := handlerProto.NewHandlerProtobufClient("http://localhost:8080", &http.Client{})             // Init handler client
+	environmentClient := environmentProto.NewEnvironmentProtobufClient("http://localhost:8080", &http.Client{}) // Init environment client
 
 	for {
 		fmt.Print("\n> ") // Print prompt
@@ -59,6 +61,12 @@ func NewTerminal() error {
 			}
 		case "handler":
 			err := handleHandler(&handlerClient, methodname, params) // Handle handler
+
+			if err != nil { // Check for errors
+				fmt.Println(err.Error()) // Log found error
+			}
+		case "environment":
+			err := handleEnvironment(&environmentClient, methodname, params) // Handle environment
 
 			if err != nil { // Check for errors
 				fmt.Println(err.Error()) // Log found error
@@ -92,7 +100,7 @@ func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) 
 	case "WriteToMemory", "ReadFromMemory":
 		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{Path: params[0]})) // Append params
 	default:
-		return errors.New("illegal method " + methodname)
+		return errors.New("illegal method " + methodname) // Return error
 	}
 
 	result := reflect.ValueOf(*nodeClient).MethodByName(methodname).Call(reflectParams) // Call method
@@ -123,7 +131,7 @@ func handleHandler(handlerClient *handlerProto.Handler, methodname string, param
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&handlerProto.GeneralRequest{Port: uint32(port)})) // Append params
 	default:
-		return errors.New("illegal method " + methodname)
+		return errors.New("illegal method " + methodname) // Return error
 	}
 
 	result := reflect.ValueOf(*handlerClient).MethodByName(methodname).Call(reflectParams) // Call method
@@ -137,6 +145,32 @@ func handleHandler(handlerClient *handlerProto.Handler, methodname string, param
 	}
 
 	return nil // No error occurred, return nil
+}
+
+func handleEnvironment(environmentClient *environmentProto.Environment, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "NewEnvironment":
+		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{})) // Append empty request
+	default:
+		return errors.New("illegal method " + methodname) // Return error
+	}
+
+	result := reflect.ValueOf(*environmentClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*environmentProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		fmt.Println(result[1].Interface().(error).Error()) // Log error
+	} else {
+		fmt.Println(response.Message) // Log response
+	}
+
+	return nil // No error occurred, return nil
+
 }
 
 // AddVariable - attempt to append specified variable to terminal variable list

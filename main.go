@@ -6,8 +6,10 @@ import (
 
 	"github.com/mitsukomegumi/GoP2P/cli"
 	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/rpc/environment"
 	handler "github.com/mitsukomegumi/GoP2P/rpc/handler"
 	node "github.com/mitsukomegumi/GoP2P/rpc/node"
+	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
 	handlerProto "github.com/mitsukomegumi/GoP2P/rpc/proto/handler"
 	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
 	"github.com/mitsukomegumi/GoP2P/upnp"
@@ -39,13 +41,15 @@ func main() {
 
 // startRPCServer - start RPC server
 func startRPCServer() {
-	nodeHandler := nodeProto.NewNodeServer(&node.Server{}, nil)             // Init handler
-	handlerHandler := handlerProto.NewHandlerServer(&handler.Server{}, nil) // Init handler
+	nodeHandler := nodeProto.NewNodeServer(&node.Server{}, nil)                             // Init handler
+	handlerHandler := handlerProto.NewHandlerServer(&handler.Server{}, nil)                 // Init handler
+	environmentHandler := environmentProto.NewEnvironmentServer(&environment.Server{}, nil) // Init handler
 
 	mux := http.NewServeMux() // Init mux
 
-	mux.Handle(nodeProto.NodePathPrefix, nodeHandler)          // Start mux node handler
-	mux.Handle(handlerProto.HandlerPathPrefix, handlerHandler) // Start mux handler handler
+	mux.Handle(nodeProto.NodePathPrefix, nodeHandler)                      // Start mux node handler
+	mux.Handle(handlerProto.HandlerPathPrefix, handlerHandler)             // Start mux handler handler
+	mux.Handle(environmentProto.EnvironmentPathPrefix, environmentHandler) // Start mux environment handler
 
 	go http.ListenAndServe(":8080", mux) // Start server
 }
