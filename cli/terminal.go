@@ -69,7 +69,7 @@ func NewTerminal() error {
 
 func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) error {
 	if len(params) == 0 { // Check for nil parameters
-		return errors.New("invalid parameters") // Return error
+		return errors.New("invalid parameters (requires at least 1 parameter)") // Return error
 	}
 
 	reflectParams := []reflect.Value{} // Init buffer
@@ -78,6 +78,10 @@ func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) 
 
 	switch methodname {
 	case "NewNode":
+		if len(params) != 2 { // Check for insufficient parameters
+			return errors.New("invalid parameters (requires string, int)") // Return error
+		}
+
 		boolVal, _ := strconv.ParseBool(params[1]) // Parse isBootstrap
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{Address: params[0], IsBootstrap: boolVal})) // Append params

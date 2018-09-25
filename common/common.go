@@ -36,6 +36,8 @@ var (
 func ParseStringMethodCall(input string) (string, string, []string, error) {
 	if input == "" { // Check for errors
 		return "", "", []string{}, errors.New("nil input") // Return found error
+	} else if !strings.Contains(input, "(") {
+		return "", "", []string{}, errors.New("illegal find method call")
 	}
 
 	method := strings.Split(strings.Split(input, "(")[0], ".")[1] // Fetch method
