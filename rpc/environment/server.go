@@ -34,3 +34,7 @@ func (server *Server) NewEnvironment(ctx context.Context, req *environmentProto.
 
 	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nInitialized environment %v", env)}, nil // Return response
 }
+
+func (server *Server) QueryType(ctx context.Context, req *environmentProto.GeneralRequest) (*environmentProto.GeneralResponse, error) {
+
+}
