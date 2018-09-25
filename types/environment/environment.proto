@@ -4,6 +4,10 @@ package environment;
 
 service Environment {
     rpc NewEnvironment(GeneralRequest) returns (GeneralResponse) {} // Init environment
+    rpc QueryType(GeneralRequest) returns (GeneralResponse) {} // Query type
+    rpc QueryValue(GeneralRequest) returns (GeneralResponse) {} // Query value
+    rpc NewVariable(GeneralRequest) returns (GeneralResponse) {} // New Variable
+    rpc AddVariable(GeneralRequest) returns (GeneralResponse) {} // Add Variable
 }
 
 /* BEGIN REQUESTS */
