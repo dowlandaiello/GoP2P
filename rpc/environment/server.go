@@ -30,5 +30,7 @@ func (server *Server) NewEnvironment(ctx context.Context, req *environmentProto.
 		}
 	}
 
+	env.WriteToMemory(currentDir) // Save for persistency
+
 	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nInitialized environment %v", env)}, nil // Return response
 }
