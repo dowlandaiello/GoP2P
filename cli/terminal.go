@@ -110,7 +110,7 @@ func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) 
 
 func handleHandler(handlerClient *handlerProto.Handler, methodname string, params []string) error {
 	if len(params) == 0 { // Check for nil parameters
-		return errors.New("invalid parameters") // Return error
+		return errors.New("invalid parameters (requires at least 1 parameter)") // Return error
 	}
 
 	reflectParams := []reflect.Value{} // Init buffer

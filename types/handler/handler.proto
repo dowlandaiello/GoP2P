@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package proto;
+package handler;
 
 service Handler {
     rpc StartHandler(GeneralRequest) returns (GeneralResponse) {} // Start handler
