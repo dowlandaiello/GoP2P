@@ -16,7 +16,7 @@ import (
 type Server struct{}
 
 // StartHandler - handler.StartHandler RPC handler
-func StartHandler(ctx context.Context, req *handlerProto.GeneralRequest) (*handlerProto.GeneralResponse, error) {
+func (server *Server) StartHandler(ctx context.Context, req *handlerProto.GeneralRequest) (*handlerProto.GeneralResponse, error) {
 	currentDir, err := common.GetCurrentDir() // Fetch current directory
 
 	if err != nil { // Check for errors
