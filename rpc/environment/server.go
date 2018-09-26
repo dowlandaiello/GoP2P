@@ -34,7 +34,13 @@ func (server *Server) NewEnvironment(ctx context.Context, req *environmentProto.
 
 	env.WriteToMemory(currentDir) // Save for persistency
 
-	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nInitialized environment %v", env)}, nil // Return response
+	marshaledVal, err := json.Marshal(*env) // Marshal initialized variable
+
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
 }
 
 // QueryType - environment.QueryType RPC handler
@@ -222,5 +228,11 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *environmentProto.
 		return &environmentProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nRead environment %s from path %s", env, req.Path)}, nil // No error occurred, return output
+	marshaledVal, err := json.Marshal(*env) // Marshal initialized variable
+
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // No error occurred, return output
 }

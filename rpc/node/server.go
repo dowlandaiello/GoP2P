@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
@@ -34,7 +35,13 @@ func (server *Server) NewNode(ctx context.Context, req *nodeProto.GeneralRequest
 		return &nodeProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &nodeProto.GeneralResponse{Message: fmt.Sprintf("\nInitialized node %v", node)}, nil // Return response
+	marshaledVal, err := json.Marshal(node) // Marshal initialized variable
+
+	if err != nil { // Check for errors
+		return &nodeProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &nodeProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
 }
 
 // StartListener - node.StartListener RPC handler
