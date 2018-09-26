@@ -2,6 +2,7 @@ package environment
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 
@@ -62,7 +63,9 @@ func (server *Server) QueryType(ctx context.Context, req *environmentProto.Gener
 		return &environmentProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nFound variable %v", foundVariable)}, nil // No error occurred, return output
+	marshaledVal, err := json.Marshal(foundVariable) // Marshal found value
+
+	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // No error occurred, return output
 }
 
 // QueryValue - environment.QueryValue RPC handler
@@ -91,7 +94,9 @@ func (server *Server) QueryValue(ctx context.Context, req *environmentProto.Gene
 		return &environmentProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nFound variable %v", foundVariable)}, nil // No error occurred, return output
+	marshaledVal, err := json.Marshal(foundVariable) // Marshal found value
+
+	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // No error occurred, return output
 }
 
 // NewVariable - environment.NewVariable RPC handler
@@ -126,7 +131,9 @@ func (server *Server) NewVariable(ctx context.Context, req *environmentProto.Gen
 		return &environmentProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nInitialized variable %v", variable)}, nil // No error occurred, return output
+	marshaledVal, err := json.Marshal(variable) // Marshal initialized variable
+
+	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // No error occurred, return output
 }
 
 // AddVariable - environment.AddVariable RPC handler
