@@ -165,6 +165,14 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 		queryTypeVal := params[0] // Fetch queryTypeVal
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{VariableType: queryTypeVal})) // Append querytype request
+	case "QueryValue":
+		if len(params) == 0 { // Check for errors
+			return errors.New("invalid parameters (requires string)") // Return found error
+		}
+
+		queryValueVal := params[0] // Fetch query val
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{Value: queryValueVal})) // Append queryval request
 	default:
 		return errors.New("illegal method " + methodname) // Return error
 	}
