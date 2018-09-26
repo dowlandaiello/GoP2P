@@ -222,7 +222,7 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 
 	switch methodname {
 	case "GetGateway":
-		reflectParams = append(reflectParams, reflect.ValueOf(&handlerProto.GeneralRequest{})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&upnpProto.GeneralRequest{})) // Append params
 	case "ForwardPortSilent", "ForwardPort", "RemoveForwarding":
 		if len(params) != 1 { // Check for invalid parameters
 			return errors.New("invalid parameters (requires uint32)") // Return error
@@ -234,7 +234,7 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 			return err // Return found error
 		}
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&handlerProto.GeneralRequest{Port: uint32(port)})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&upnpProto.GeneralRequest{PortNumber: uint32(port)})) // Append params
 	default:
 		return errors.New("illegal method " + methodname) // Return error
 	}
