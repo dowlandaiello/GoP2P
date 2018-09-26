@@ -158,7 +158,7 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 	case "NewEnvironment":
 		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{})) // Append empty request
 	case "QueryType":
-		if len(params) == 0 { // Check for errors
+		if len(params) != 1 { // Check for errors
 			return errors.New("invalid parameters (requires string)") // Return found error
 		}
 
@@ -166,13 +166,30 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{VariableType: queryTypeVal})) // Append querytype request
 	case "QueryValue":
-		if len(params) == 0 { // Check for errors
+		if len(params) != 1 { // Check for errors
 			return errors.New("invalid parameters (requires string)") // Return found error
 		}
 
 		queryValueVal := params[0] // Fetch query val
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{Value: queryValueVal})) // Append queryval request
+	case "NewVariable":
+		if len(params) != 2 { // Check for errors
+			return errors.New("invalid parameters (requires string, string)") // Return found error
+		}
+
+		variablePathVal := params[0] // Fetch variable data path
+		variableTypeVal := params[1] // Fetch variable type
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{Path: variablePathVal, VariableType: variableTypeVal})) // Append path request
+	case "AddVariable", "WriteToMemory", "ReadFromMemory":
+		if len(params) != 1 { // Check for errors
+			return errors.New("invalid parameters (requires string)") // Return found error
+		}
+
+		pathVal := params[0] // Fetch variable data path
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{Path: pathVal})) // Append path request
 	default:
 		return errors.New("illegal method " + methodname) // Return error
 	}
