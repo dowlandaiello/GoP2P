@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package upnp;
+
+service Upnp {
+    rpc GetGateway(GeneralRequest) returns (GeneralResponse) {} // Fetch gateway
+    rpc ForwardPortSilent(GeneralRequest) returns (GeneralResponse) {} // Forward port without verbose output
+    rpc ForwardPort(GeneralRequest) returns (GeneralResponse) {} // Forward port with verbose output
+    rpc RemoveForwarding(GeneralRequest) returns (GeneralResponse) {} // Remove port forwarding
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    uint32 portNumber = 1;
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1;
+}
+
+/* END RESPONSES */
