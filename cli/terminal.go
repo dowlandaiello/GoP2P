@@ -15,6 +15,7 @@ import (
 	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
 	handlerProto "github.com/mitsukomegumi/GoP2P/rpc/proto/handler"
 	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
+	upnpProto "github.com/mitsukomegumi/GoP2P/rpc/proto/upnp"
 )
 
 // Terminal - absctract container holding set of variable with values (runtime only)
@@ -36,6 +37,7 @@ func NewTerminal() error {
 	nodeClient := nodeProto.NewNodeProtobufClient("http://localhost:8080", &http.Client{})                      // Init node client
 	handlerClient := handlerProto.NewHandlerProtobufClient("http://localhost:8080", &http.Client{})             // Init handler client
 	environmentClient := environmentProto.NewEnvironmentProtobufClient("http://localhost:8080", &http.Client{}) // Init environment client
+	upnpClient := upnpProto.NewUpnpProtobufClient("http://localhost:8080", &http.Client{})                      // Init upnp client
 
 	for {
 		fmt.Print("\n> ") // Print prompt
@@ -69,6 +71,12 @@ func NewTerminal() error {
 			}
 		case "environment":
 			err := handleEnvironment(&environmentClient, methodname, params) // Handle environment
+
+			if err != nil { // Check for errors
+				fmt.Println(err.Error()) // Log found error
+			}
+		case "upnp":
+			err := handleUpnp(&upnpClient, methodname, params) // Handle upnp
 
 			if err != nil { // Check for errors
 				fmt.Println(err.Error()) // Log found error
@@ -197,6 +205,43 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 	result := reflect.ValueOf(*environmentClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 	response := result[0].Interface().(*environmentProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		fmt.Println(result[1].Interface().(error).Error()) // Log error
+	} else {
+		fmt.Println(response.Message) // Log response
+	}
+
+	return nil // No error occurred, return nil
+}
+
+func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "GetGateway":
+		reflectParams = append(reflectParams, reflect.ValueOf(&handlerProto.GeneralRequest{})) // Append params
+	case "ForwardPortSilent", "ForwardPort", "RemoveForwarding":
+		if len(params) != 1 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires uint32)") // Return error
+		}
+
+		port, err := strconv.Atoi(params[0]) // Convert to int
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&handlerProto.GeneralRequest{Port: uint32(port)})) // Append params
+	default:
+		return errors.New("illegal method " + methodname) // Return error
+	}
+
+	result := reflect.ValueOf(*upnpClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*upnpProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
 		fmt.Println(result[1].Interface().(error).Error()) // Log error
