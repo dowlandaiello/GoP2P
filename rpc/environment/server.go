@@ -65,6 +65,10 @@ func (server *Server) QueryType(ctx context.Context, req *environmentProto.Gener
 
 	marshaledVal, err := json.Marshal(foundVariable) // Marshal found value
 
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
+
 	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // No error occurred, return output
 }
 
@@ -95,6 +99,10 @@ func (server *Server) QueryValue(ctx context.Context, req *environmentProto.Gene
 	}
 
 	marshaledVal, err := json.Marshal(foundVariable) // Marshal found value
+
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
 
 	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // No error occurred, return output
 }
@@ -132,6 +140,10 @@ func (server *Server) NewVariable(ctx context.Context, req *environmentProto.Gen
 	}
 
 	marshaledVal, err := json.Marshal(variable) // Marshal initialized variable
+
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
 
 	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // No error occurred, return output
 }
