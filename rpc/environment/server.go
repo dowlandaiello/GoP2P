@@ -161,3 +161,47 @@ func (server *Server) AddVariable(ctx context.Context, req *environmentProto.Gen
 
 	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nAdded variable %v to Environment", *variable)}, nil // No error occurred, return output
 }
+
+// WriteToMemory - environment.WriteToMemory RPC handler
+func (server *Server) WriteToMemory(ctx context.Context, req *environmentProto.GeneralRequest) (*environmentProto.GeneralResponse, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch current directory
+
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
+
+	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment from memory
+
+	if err != nil { // Check for errors
+		env, err = environment.NewEnvironment() // Init environment
+
+		if err != nil { // Check for errors
+			return &environmentProto.GeneralResponse{}, err // Return found error
+		}
+	}
+
+	err = env.WriteToMemory(req.Path) // Save for persistency
+
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nWrote environment %s to path %s", env, req.Path)}, nil // No error occurred, return output
+}
+
+// ReadFromMemory - environment.ReadEnvironmentFromMemory RPC handler
+func (server *Server) ReadFromMemory(ctx context.Context, req *environmentProto.GeneralRequest) (*environmentProto.GeneralResponse, error) {
+	env, err := environment.ReadEnvironmentFromMemory(req.Path) // Attempt to read environment from memory
+
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = env.WriteToMemory(req.Path) // Save for persistency
+
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nRead environment %s from path %s", env, req.Path)}, nil // No error occurred, return output
+}
