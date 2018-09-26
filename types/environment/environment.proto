@@ -8,6 +8,8 @@ service Environment {
     rpc QueryValue(GeneralRequest) returns (GeneralResponse) {} // Query value
     rpc NewVariable(GeneralRequest) returns (GeneralResponse) {} // New Variable
     rpc AddVariable(GeneralRequest) returns (GeneralResponse) {} // Add Variable
+    rpc WriteToMemory(GeneralRequest) returns (GeneralResponse) {} // Write environment to memory
+    rpc ReadFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read environment from memory
 }
 
 /* BEGIN REQUESTS */
