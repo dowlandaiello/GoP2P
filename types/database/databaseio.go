@@ -37,6 +37,10 @@ func ReadDatabaseFromMemory(env *environment.Environment) (*NodeDatabase, error)
 
 	decoded, err := common.InterfaceFromBytes(variable.VariableData, &database) // Fetch value
 
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
 	db := decoded.(*NodeDatabase)
 
 	return db, nil // No error occurred, return nil error, db
