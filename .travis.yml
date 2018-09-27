@@ -22,6 +22,11 @@ before_script:
   - go get github.com/fzipp/gocyclo
   - go get github.com/nebulouslabs/go-upnp
   - go get github.com/tatsushid/go-fastping
+  - go get github.com/twitchtv/twirp
+  - go get golang.org/x/crypto
+  - go get golang.org/x/text
+  - go get github.com/apaxa-go/eval
+  - go get github.com/apaxa-go/helper
 
 script:
   - test -z $(gofmt -s -l $GO_FILES)  # Fail if a .go file hasn't been formatted with gofmt
