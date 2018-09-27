@@ -70,4 +70,5 @@ func startNode() {
 /* TODO:
 - Add custom RPC addresses
 - On attachment, make sure to write changes to a discovered node's db.
+- Add receiver usage in RPC client
 */

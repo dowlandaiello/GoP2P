@@ -110,7 +110,7 @@ func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) 
 	case "WriteToMemory", "ReadFromMemory":
 		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{Path: params[0]})) // Append params
 	default:
-		return errors.New("illegal method " + methodname) // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: NewNode(), StartListener(), WriteToMemory(), ReadFromMemory()") // Return error
 	}
 
 	result := reflect.ValueOf(*nodeClient).MethodByName(methodname).Call(reflectParams) // Call method
@@ -141,7 +141,7 @@ func handleHandler(handlerClient *handlerProto.Handler, methodname string, param
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&handlerProto.GeneralRequest{Port: uint32(port)})) // Append params
 	default:
-		return errors.New("illegal method " + methodname) // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: StartHandler()") // Return error
 	}
 
 	result := reflect.ValueOf(*handlerClient).MethodByName(methodname).Call(reflectParams) // Call method
@@ -199,7 +199,7 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{Path: pathVal})) // Append path request
 	default:
-		return errors.New("illegal method " + methodname) // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: NewEnvironment(), QueryType(), QueryValue(), NewVariable(), AddVariable(), WriteToMemory(), ReadFromMemory()") // Return error
 	}
 
 	result := reflect.ValueOf(*environmentClient).MethodByName(methodname).Call(reflectParams) // Call method
@@ -236,7 +236,7 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&upnpProto.GeneralRequest{PortNumber: uint32(port)})) // Append params
 	default:
-		return errors.New("illegal method " + methodname) // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: GetGateway(), ForwardPortSilent(), ForwardPort(), RemoveForwarding()") // Return error
 	}
 
 	result := reflect.ValueOf(*upnpClient).MethodByName(methodname).Call(reflectParams) // Call method
