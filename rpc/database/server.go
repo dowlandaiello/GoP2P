@@ -50,6 +50,12 @@ func (server *Server) NewDatabase(ctx context.Context, req *databaseProto.Genera
 	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
 }
 
+// AddNode - database.AddNode RPC handler
+func (server *Server) AddNode(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
+	marshaledVal := ""
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
+}
+
 /* BEGIN INTERNAL METHODS */
 
 func getIP() (string, error) {
