@@ -24,8 +24,6 @@ before_script:
   - go get github.com/tatsushid/go-fastping
   - go get github.com/twitchtv/twirp
   - go get golang.org/x/crypto/sha3
-  - go get github.com/apaxa-go/eval
-  - go get github.com/apaxa-go/helper
 
 script:
   - test -z $(gofmt -s -l $GO_FILES)  # Fail if a .go file hasn't been formatted with gofmt
