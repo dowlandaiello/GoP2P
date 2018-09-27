@@ -52,7 +52,34 @@ func (server *Server) NewDatabase(ctx context.Context, req *databaseProto.Genera
 
 // AddNode - database.AddNode RPC handler
 func (server *Server) AddNode(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
-	marshaledVal := ""
+	currentDir, err := common.GetCurrentDir() // Fetch current dir
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	env, err := getLocalEnvironment(currentDir) // Attempt to read environment from current directory
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	database, err := database.ReadDatabaseFromMemory(env) // Attempt to read database from environment
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	node, err := getLocalNode(currentDir) // Fetch local node
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	database.AddNode(node) // Add node to database
+
+	marshaledVal, err := json.Marshal((*database.Nodes)[len(*database.Nodes)-1]) // Marshal added node
+
 	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
 }
 
@@ -76,13 +103,23 @@ func getIP() (string, error) {
 }
 
 func getLocalEnvironment(path string) (*environment.Environment, error) {
-	env, err := environment.ReadEnvironmentFromMemory(path) // Attempt to read from memory
+	node, err := node.ReadNodeFromMemory(path) // Read node from memory
 
 	if err != nil { // Check for errors
 		return &environment.Environment{}, err // Return found error
 	}
 
-	return env, nil // No error occurred, return found environment
+	return node.Environment, nil // No error occurred, return found environment
+}
+
+func getLocalNode(path string) (*node.Node, error) {
+	foundNode, err := node.ReadNodeFromMemory(path) // Read node from memory
+
+	if err != nil { // Check for errors
+		return &node.Node{}, err // Return found error
+	}
+
+	return foundNode, nil // No error occurred, return found node
 }
 
 /* END INTERNAL METHODS */

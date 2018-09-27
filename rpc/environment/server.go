@@ -9,6 +9,7 @@ import (
 	"github.com/mitsukomegumi/GoP2P/common"
 	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
+	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
 // Server - GoP2P RPC server
@@ -22,7 +23,7 @@ func (server *Server) NewEnvironment(ctx context.Context, req *environmentProto.
 		return &environmentProto.GeneralResponse{}, err // Return found error
 	}
 
-	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment from memory
+	env, err := getLocalEnvironment(currentDir) // Attempt to read environment from memory
 
 	if err != nil { // Check for errors
 		env, err = environment.NewEnvironment() // Init environment
@@ -51,7 +52,7 @@ func (server *Server) QueryType(ctx context.Context, req *environmentProto.Gener
 		return &environmentProto.GeneralResponse{}, err // Return found error
 	}
 
-	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment from memory
+	env, err := getLocalEnvironment(currentDir) // Attempt to read environment from memory
 
 	if err != nil { // Check for errors
 		env, err = environment.NewEnvironment() // Init environment
@@ -86,7 +87,7 @@ func (server *Server) QueryValue(ctx context.Context, req *environmentProto.Gene
 		return &environmentProto.GeneralResponse{}, err // Return found error
 	}
 
-	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment from memory
+	env, err := getLocalEnvironment(currentDir) // Attempt to read environment from memory
 
 	if err != nil { // Check for errors
 		env, err = environment.NewEnvironment() // Init environment
@@ -121,7 +122,7 @@ func (server *Server) NewVariable(ctx context.Context, req *environmentProto.Gen
 		return &environmentProto.GeneralResponse{}, err // Return found error
 	}
 
-	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment from memory
+	env, err := getLocalEnvironment(currentDir) // Attempt to read environment from memory
 
 	if err != nil { // Check for errors
 		env, err = environment.NewEnvironment() // Init environment
@@ -162,7 +163,7 @@ func (server *Server) AddVariable(ctx context.Context, req *environmentProto.Gen
 		return &environmentProto.GeneralResponse{}, err // Return found error
 	}
 
-	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment from memory
+	env, err := getLocalEnvironment(currentDir) // Attempt to read environment from memory
 
 	if err != nil { // Check for errors
 		env, err = environment.NewEnvironment() // Init environment
@@ -195,7 +196,7 @@ func (server *Server) WriteToMemory(ctx context.Context, req *environmentProto.G
 		return &environmentProto.GeneralResponse{}, err // Return found error
 	}
 
-	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment from memory
+	env, err := getLocalEnvironment(currentDir) // Attempt to read environment from memory
 
 	if err != nil { // Check for errors
 		env, err = environment.NewEnvironment() // Init environment
@@ -216,7 +217,7 @@ func (server *Server) WriteToMemory(ctx context.Context, req *environmentProto.G
 
 // ReadFromMemory - environment.ReadEnvironmentFromMemory RPC handler
 func (server *Server) ReadFromMemory(ctx context.Context, req *environmentProto.GeneralRequest) (*environmentProto.GeneralResponse, error) {
-	env, err := environment.ReadEnvironmentFromMemory(req.Path) // Attempt to read environment from memory
+	env, err := getLocalEnvironment(req.Path) // Attempt to read environment from memory
 
 	if err != nil { // Check for errors
 		return &environmentProto.GeneralResponse{}, err // Return found error
@@ -236,3 +237,17 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *environmentProto.
 
 	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // No error occurred, return output
 }
+
+/* BEGIN INTERNAL METHODS */
+
+func getLocalEnvironment(path string) (*environment.Environment, error) {
+	node, err := node.ReadNodeFromMemory(path) // Read node from path
+
+	if err != nil { // Check for errors
+		return &environment.Environment{}, err // Return found error
+	}
+
+	return node.Environment, nil // No error occurred, return environment
+}
+
+/* END INTERNAL METHODS */
