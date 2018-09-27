@@ -17,9 +17,7 @@ notifications:
   email: false
 
 before_script:
-  - pwd
-  - ls -a
-  - GO_FILES=$(find . -iname '*.go' -type f | grep -v /vendor/ /.vendor-new/) # All the .go files, excluding vendor/
+  - GO_FILES=$(find . -iname '*.go' -type f | grep -v -a /vendor/ /.vendor-new/) # All the .go files, excluding vendor/
   - go get github.com/golang/lint/golint                        # Linter
   - go get github.com/fzipp/gocyclo
   - go get github.com/nebulouslabs/go-upnp
