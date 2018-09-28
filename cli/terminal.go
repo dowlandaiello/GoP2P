@@ -261,6 +261,39 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 }
 
 func handleDatabase(databaseClient *databaseProto.Database, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "NewDatabase":
+		if len(params) != 2 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string, uint32)") // Return error
+		}
+
+		path := params[0] // Fetch path
+
+		acceptableTimeout, err := strconv.Atoi(params[1]) // Fetch acceptable timeout
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{DataPath: path, AcceptableTimeout: uint32(acceptableTimeout)})) // Append params
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: GetGateway(), ForwardPortSilent(), ForwardPort(), RemoveForwarding()") // Return error
+	}
+
+	result := reflect.ValueOf(*databaseClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*databaseProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		fmt.Println(result[1].Interface().(error).Error()) // Log error
+	} else {
+		fmt.Println(response.Message) // Log response
+	}
+
 	return nil // No error occurred, return nil
 }
 
