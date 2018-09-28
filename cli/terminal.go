@@ -280,8 +280,10 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{DataPath: path, AcceptableTimeout: uint32(acceptableTimeout)})) // Append params
+	case "AddNode":
+		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{})) // Append nil params
 	default:
-		return errors.New("illegal method: " + methodname + ", available methods: GetGateway(), ForwardPortSilent(), ForwardPort(), RemoveForwarding()") // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: NewDatabase(), AddNode(), RemoveNode(), QueryForAddress(), WriteToMemory(), ReadFromMemory(), FromBytes()") // Return error
 	}
 
 	result := reflect.ValueOf(*databaseClient).MethodByName(methodname).Call(reflectParams) // Call method
