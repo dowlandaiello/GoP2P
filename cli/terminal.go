@@ -290,6 +290,8 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 		address := params[0] // Fetch removal address
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{Address: address})) // Append params
+	case "WriteToMemory", "ReadFromMemory":
+
 	default:
 		return errors.New("illegal method: " + methodname + ", available methods: NewDatabase(), AddNode(), RemoveNode(), QueryForAddress(), WriteToMemory(), ReadFromMemory(), FromBytes()") // Return error
 	}
