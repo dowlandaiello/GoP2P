@@ -110,6 +110,39 @@ func (server *Server) RemoveNode(ctx context.Context, req *databaseProto.General
 	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\nRemoved node %s from database", req.Address)}, nil // Return response
 }
 
+// QueryAddress - database.QueryForAddress RPC handler
+func (server *Server) QueryAddress(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch current dir
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	env, err := getLocalEnvironment(currentDir) // Attempt to read environment from current directory
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	database, err := database.ReadDatabaseFromMemory(env) // Attempt to read database from environment
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	nodeIndex, err := database.QueryForAddress(req.Address) // Query for address
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	foundNode := (*database.Nodes)[nodeIndex] // Fetch node at index
+
+	marshaledVal, err := json.Marshal(foundNode) // Marshal found node
+
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
+}
+
 /* END EXPORTED METHODS */
 
 /* BEGIN INTERNAL METHODS */
