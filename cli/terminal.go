@@ -282,6 +282,14 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{DataPath: path, AcceptableTimeout: uint32(acceptableTimeout)})) // Append params
 	case "AddNode":
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{})) // Append nil params
+	case "RemoveNode", "QueryForAddress":
+		if len(params) != 1 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		address := params[0] // Fetch removal address
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{Address: address})) // Append params
 	default:
 		return errors.New("illegal method: " + methodname + ", available methods: NewDatabase(), AddNode(), RemoveNode(), QueryForAddress(), WriteToMemory(), ReadFromMemory(), FromBytes()") // Return error
 	}
