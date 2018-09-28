@@ -221,6 +221,41 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *databaseProto.Gen
 	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\nRead database %s from environment memory at path %s", string(marshaledVal), req.DataPath)}, nil // Return response
 }
 
+// FromBytes - database.FromBytes RPC handler
+func (server *Server) FromBytes(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch current dir
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment from request path
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	database, err := database.FromBytes(req.ByteVal) // Fetch from byte value
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = database.WriteToMemory(env) // Write to environment memory
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	marshaledVal, err := json.Marshal(database) // Marshal found node
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
+}
+
 /* END EXPORTED METHODS */
 
 /* BEGIN INTERNAL METHODS */
