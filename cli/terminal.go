@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/mitsukomegumi/GoP2P/common"
+	databaseProto "github.com/mitsukomegumi/GoP2P/rpc/proto/database"
 	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
 	handlerProto "github.com/mitsukomegumi/GoP2P/rpc/proto/handler"
 	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
@@ -38,6 +39,7 @@ func NewTerminal() error {
 	handlerClient := handlerProto.NewHandlerProtobufClient("http://localhost:8080", &http.Client{})             // Init handler client
 	environmentClient := environmentProto.NewEnvironmentProtobufClient("http://localhost:8080", &http.Client{}) // Init environment client
 	upnpClient := upnpProto.NewUpnpProtobufClient("http://localhost:8080", &http.Client{})                      // Init upnp client
+	databaseClient := databaseProto.NewDatabaseProtobufClient("http://localhost:8080", &http.Client{})          // Init database client
 
 	for {
 		fmt.Print("\n> ") // Print prompt
@@ -77,6 +79,12 @@ func NewTerminal() error {
 			}
 		case "upnp":
 			err := handleUpnp(&upnpClient, methodname, params) // Handle upnp
+
+			if err != nil { // Check for errors
+				fmt.Println(err.Error()) // Log found error
+			}
+		case "database":
+			err := handleDatabase(&databaseClient, methodname, params) // Handle database
 
 			if err != nil { // Check for errors
 				fmt.Println(err.Error()) // Log found error
@@ -249,6 +257,10 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 		fmt.Println(response.Message) // Log response
 	}
 
+	return nil // No error occurred, return nil
+}
+
+func handleDatabase(databaseClient *databaseProto.Database, methodname string, params []string) error {
 	return nil // No error occurred, return nil
 }
 
