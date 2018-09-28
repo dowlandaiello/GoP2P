@@ -6,9 +6,11 @@ import (
 
 	"github.com/mitsukomegumi/GoP2P/cli"
 	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/rpc/database"
 	"github.com/mitsukomegumi/GoP2P/rpc/environment"
 	handler "github.com/mitsukomegumi/GoP2P/rpc/handler"
 	node "github.com/mitsukomegumi/GoP2P/rpc/node"
+	databaseProto "github.com/mitsukomegumi/GoP2P/rpc/proto/database"
 	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
 	handlerProto "github.com/mitsukomegumi/GoP2P/rpc/proto/handler"
 	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
@@ -47,6 +49,7 @@ func startRPCServer() {
 	handlerHandler := handlerProto.NewHandlerServer(&handler.Server{}, nil)                 // Init handler
 	environmentHandler := environmentProto.NewEnvironmentServer(&environment.Server{}, nil) // Init handler
 	upnpHandler := upnpProto.NewUpnpServer(&upnpServer.Server{}, nil)                       // Init handler
+	databaseHandler := databaseProto.NewDatabaseServer(&database.Server{}, nil)             // Init handler
 
 	mux := http.NewServeMux() // Init mux
 
@@ -54,6 +57,7 @@ func startRPCServer() {
 	mux.Handle(handlerProto.HandlerPathPrefix, handlerHandler)             // Start mux handler handler
 	mux.Handle(environmentProto.EnvironmentPathPrefix, environmentHandler) // Start mux environment handler
 	mux.Handle(upnpProto.UpnpPathPrefix, upnpHandler)                      // Start mux upnp handler
+	mux.Handle(databaseProto.DatabasePathPrefix, databaseHandler)          // Start mux database handler
 
 	go http.ListenAndServe(":8080", mux) // Start server
 }
