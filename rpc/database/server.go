@@ -19,13 +19,19 @@ type Server struct{}
 
 // NewDatabase - database.NewDatabase RPC handler
 func (server *Server) NewDatabase(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
-	env, err := getLocalEnvironment(req.DataPath) // Fetch local environment
+	currentDir, err := common.GetCurrentDir() // Fetch current directory
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	node, err := getLocalNode(req.DataPath) // Attempt to read node from memory
+	env, err := getLocalEnvironment(currentDir) // Fetch local environment
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	node, err := getLocalNode(currentDir) // Attempt to read node from memory
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -38,6 +44,12 @@ func (server *Server) NewDatabase(ctx context.Context, req *databaseProto.Genera
 	}
 
 	err = db.WriteToMemory(env) // Write environment
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = env.WriteToMemory(currentDir) // Write environment to current dir
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
