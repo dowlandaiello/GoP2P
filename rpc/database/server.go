@@ -23,7 +23,7 @@ func (server *Server) NewDatabase(ctx context.Context, req *databaseProto.Genera
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	node, err := node.ReadNodeFromMemory(req.DataPath) // Attempt to read node from memory
+	node, err := getLocalNode(req.DataPath) // Attempt to read node from memory
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
