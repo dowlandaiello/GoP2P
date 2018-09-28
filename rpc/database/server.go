@@ -15,6 +15,8 @@ import (
 // Server - GoP2P RPC server
 type Server struct{}
 
+/* BEGIN EXPORTED METHODS */
+
 // NewDatabase - database.NewDatabase RPC handler
 func (server *Server) NewDatabase(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
 	env, err := getLocalEnvironment(req.DataPath) // Fetch local environment
@@ -82,6 +84,33 @@ func (server *Server) AddNode(ctx context.Context, req *databaseProto.GeneralReq
 
 	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
 }
+
+// RemoveNode - database.RemoveNode RPC handler
+func (server *Server) RemoveNode(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch current dir
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	env, err := getLocalEnvironment(currentDir) // Attempt to read environment from current directory
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	database, err := database.ReadDatabaseFromMemory(env) // Attempt to read database from environment
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	database.RemoveNode(req.Address) // Add node to database
+
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\nRemoved node %s from database", req.Address)}, nil // Return response
+}
+
+/* END EXPORTED METHODS */
 
 /* BEGIN INTERNAL METHODS */
 
