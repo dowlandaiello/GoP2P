@@ -206,7 +206,7 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *databaseProto.Gen
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	env, err := environment.ReadEnvironmentFromMemory(req.DataPath) // Attempt to read environment from request path
+	env, err := getLocalEnvironment(req.DataPath) // Attempt to read environment from request path
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
