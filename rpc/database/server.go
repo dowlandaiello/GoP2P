@@ -114,8 +114,8 @@ func (server *Server) RemoveNode(ctx context.Context, req *databaseProto.General
 	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\nRemoved node %s from database", req.Address)}, nil // Return response
 }
 
-// QueryAddress - database.QueryForAddress RPC handler
-func (server *Server) QueryAddress(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
+// QueryForAddress - database.QueryForAddress RPC handler
+func (server *Server) QueryForAddress(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
 	currentDir, err := common.GetCurrentDir() // Fetch current dir
 
 	if err != nil { // Check for errors
