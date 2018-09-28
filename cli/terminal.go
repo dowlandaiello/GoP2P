@@ -291,7 +291,21 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{Address: address})) // Append params
 	case "WriteToMemory", "ReadFromMemory":
+		if len(params) != 1 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
 
+		path := params[0] // Fetch path
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{DataPath: path})) // Append params
+	case "FromBytes":
+		if len(params) != 1 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires []byte)") // Return error
+		}
+
+		byteVal := []byte(params[0]) // Fetch byte val
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{ByteVal: byteVal})) // Append params
 	default:
 		return errors.New("illegal method: " + methodname + ", available methods: NewDatabase(), AddNode(), RemoveNode(), QueryForAddress(), WriteToMemory(), ReadFromMemory(), FromBytes()") // Return error
 	}
