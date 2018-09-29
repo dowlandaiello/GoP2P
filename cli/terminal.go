@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/mitsukomegumi/GoP2P/common"
+	commonProto "github.com/mitsukomegumi/GoP2P/rpc/proto/common"
 	databaseProto "github.com/mitsukomegumi/GoP2P/rpc/proto/database"
 	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
 	handlerProto "github.com/mitsukomegumi/GoP2P/rpc/proto/handler"
@@ -40,6 +41,7 @@ func NewTerminal() error {
 	environmentClient := environmentProto.NewEnvironmentProtobufClient("http://localhost:8080", &http.Client{}) // Init environment client
 	upnpClient := upnpProto.NewUpnpProtobufClient("http://localhost:8080", &http.Client{})                      // Init upnp client
 	databaseClient := databaseProto.NewDatabaseProtobufClient("http://localhost:8080", &http.Client{})          // Init database client
+	commonClient := commonProto.NewCommonProtobufClient("http://localhost:8080", &http.Client{})                // Init common client
 
 	for {
 		fmt.Print("\n> ") // Print prompt
@@ -85,6 +87,12 @@ func NewTerminal() error {
 			}
 		case "database":
 			err := handleDatabase(&databaseClient, methodname, params) // Handle database
+
+			if err != nil { // Check for errors
+				fmt.Println(err.Error()) // Log found error
+			}
+		case "common":
+			err := handleCommon(&commonClient, methodname, params) // Handle common
 
 			if err != nil { // Check for errors
 				fmt.Println(err.Error()) // Log found error
@@ -311,6 +319,55 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 	result := reflect.ValueOf(*databaseClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 	response := result[0].Interface().(*databaseProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		fmt.Println(result[1].Interface().(error).Error()) // Log error
+	} else {
+		fmt.Println(response.Message) // Log response
+	}
+
+	return nil // No error occurred, return nil
+}
+
+func handleCommon(commonClient *commonProto.Common, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "ParseStringMethodCall", "ParseStringParams", "StringStripReceiverCall", "StringStripParentheses", "StringFetchCallReceiver", "CheckAddress":
+		if len(params) != 1 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{Input: params[0]})) // Append params
+	case "ConvertStringToReflectValues":
+		if len(params) < 1 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{Inputs: params})) // Append params
+	case "SHA256":
+		if len(params) != 1 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string)")
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{ByteInput: []byte(params[0])})) // Append params
+	case "SendBytes":
+		if len(params) != 2 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires []byte, string)")
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{ByteInput: []byte(params[0]), Input: params[1]})) // Append params
+	case "GetExtIPAddrWithUpnp", "GetExtIPAddrWithoutUpnp", "GetCurrentTime", "GetCurrentDir":
+		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{})) // Append empty params
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: ParseStringMethodCall(), ParseStringParams(), StringStripReceiverCall(), StringStripParentheses(), StringFetchCallReceiver(), CheckAddress(), ConvertStringToReflectValues(), SHA256(), SendBytes(), GetExtIPAddrWithUpnp(), GetExtIPAddrWithoutUpnp(), GetCurrentTime(), GetCurrentDir()") // Return error
+	}
+
+	result := reflect.ValueOf(*commonClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*commonProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
 		fmt.Println(result[1].Interface().(error).Error()) // Log error
