@@ -33,13 +33,13 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 
 // handleConnection - attempt to fetch connection metadata, handle it respectively (stack or singular)
 func handleConnection(node *node.Node, conn net.Conn) error {
-	fmt.Printf("\n-- CONNECTION -- address: %s", conn.RemoteAddr().String())
-
 	data, err := ioutil.ReadAll(conn) // Attempt to read from connection
 
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
+
+	fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), string(data)) // Log connection
 
 	readConnection, err := connection.FromBytes(data) // Attempt to decode data
 
