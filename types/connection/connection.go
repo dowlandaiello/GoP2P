@@ -75,6 +75,10 @@ func (connection *Connection) Attempt() error {
 	return connection.attemptStack() // Found connection stack, handle respectively
 }
 
+/* END EXPORTED METHODS */
+
+/* BEGIN INTERNAL METHODS */
+
 // attempt - attempt singular connection
 func (connection *Connection) attempt() error {
 	fmt.Println("-- CONNECTION -- attempting connection")
@@ -113,6 +117,4 @@ func (connection *Connection) attemptStack() error {
 	return nil // No error occurred, return nil
 }
 
-/*
-	END EXPORTED METHODS
-*/
+/* END INTERNAL METHODS */
