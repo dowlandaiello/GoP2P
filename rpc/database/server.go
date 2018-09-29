@@ -115,7 +115,11 @@ func (server *Server) RemoveNode(ctx context.Context, req *databaseProto.General
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	database.RemoveNode(req.Address) // Add node to database
+	err = database.RemoveNode(req.Address) // Add node to database
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
 
 	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\nRemoved node %s from database", req.Address)}, nil // Return response
 }
