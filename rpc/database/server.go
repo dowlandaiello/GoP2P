@@ -84,6 +84,18 @@ func (server *Server) AddNode(ctx context.Context, req *databaseProto.GeneralReq
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
+	err = database.WriteToMemory(env) // Write to environment memory
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = node.WriteToMemory(currentDir) // Write node to memory
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
 	database.AddNode(node) // Add node to database
 
 	marshaledVal, err := json.Marshal((*database.Nodes)[len(*database.Nodes)-1]) // Marshal added node
@@ -103,7 +115,7 @@ func (server *Server) RemoveNode(ctx context.Context, req *databaseProto.General
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	env, err := getLocalEnvironment(currentDir) // Attempt to read environment from current directory
+	node, env, err := getLocalNodeEnvironment(currentDir) // Attempt to read environment from current directory
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -116,6 +128,18 @@ func (server *Server) RemoveNode(ctx context.Context, req *databaseProto.General
 	}
 
 	err = database.RemoveNode(req.Address) // Add node to database
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = database.WriteToMemory(env) // Write to environment memory
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = node.WriteToMemory(currentDir) // Write node to memory
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
