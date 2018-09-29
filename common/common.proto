@@ -13,7 +13,7 @@ service Common {
     rpc GetExtIPAddrWithUpNP(GeneralRequest) returns (GeneralResponse) {} // Retrieve the external IP address of the current machine via upnp
     rpc GetExtIPAddrWithoutUpNP(GeneralRequest) returns (GeneralResponse) {} // Retrieve the external IP address of the current machine w/o upnp
     rpc GetCurrentTime(GeneralRequest) returns (GeneralResponse) {} // Get current time in the UTC format
-    rpc GetCurrentDir(GeneralRequest) returns (GeneralRequest) {} // Returns current execution directory
+    rpc GetCurrentDir(GeneralRequest) returns (GeneralResponse) {} // Returns current execution directory
     rpc SHA256(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array
     rpc SendBytes(GeneralRequest) returns (GeneralResponse) {} // Attempt to send specified bytes to given address
 }
