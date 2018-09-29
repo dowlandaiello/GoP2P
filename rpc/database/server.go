@@ -25,13 +25,7 @@ func (server *Server) NewDatabase(ctx context.Context, req *databaseProto.Genera
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	env, err := getLocalEnvironment(currentDir) // Fetch local environment
-
-	if err != nil { // Check for errors
-		return &databaseProto.GeneralResponse{}, err // Return found error
-	}
-
-	node, err := getLocalNode(currentDir) // Attempt to read node from memory
+	node, env, err := getLocalNodeEnvironment(currentDir) // Fetch local environment
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -49,13 +43,21 @@ func (server *Server) NewDatabase(ctx context.Context, req *databaseProto.Genera
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
+	marshaledVal, err := json.Marshal(*env) // Marshal initialized database
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	fmt.Printf("\n%s", string(marshaledVal))
+
 	err = node.WriteToMemory(currentDir) // Write environment to current dir
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	marshaledVal, err := json.Marshal(db) // Marshal initialized database
+	marshaledVal, err = json.Marshal(db) // Marshal initialized database
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
