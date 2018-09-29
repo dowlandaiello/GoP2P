@@ -16,7 +16,7 @@ func (db *NodeDatabase) WriteToMemory(env *environment.Environment) error {
 		return err // Return error
 	}
 
-	err = env.AddVariable(variable, true) // Attempt to add specified variable
+	err = env.AddVariable(variable, false) // Attempt to add specified variable
 
 	if err != nil { // Check for errors
 		return err // Return found error

@@ -171,7 +171,7 @@ func (server *Server) WriteToMemory(ctx context.Context, req *databaseProto.Gene
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	env, err := getLocalEnvironment(currentDir) // Attempt to read environment from current directory
+	node, env, err := getLocalNodeEnvironment(currentDir) // Attempt to read environment from current directory
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -183,7 +183,7 @@ func (server *Server) WriteToMemory(ctx context.Context, req *databaseProto.Gene
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	err = env.WriteToMemory(req.DataPath) // Write to data path
+	err = node.WriteToMemory(req.DataPath) // Write to data path
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -206,7 +206,7 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *databaseProto.Gen
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	env, err := getLocalEnvironment(req.DataPath) // Attempt to read environment from request path
+	node, env, err := getLocalNodeEnvironment(req.DataPath) // Attempt to read environment from request path
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -218,7 +218,7 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *databaseProto.Gen
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	err = env.WriteToMemory(currentDir) // Write to current path
+	err = node.WriteToMemory(currentDir) // Write to current path
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -287,6 +287,16 @@ func getIP() (string, error) {
 	}
 
 	return address, nil // Return found address
+}
+
+func getLocalNodeEnvironment(path string) (*node.Node, *environment.Environment, error) {
+	node, err := node.ReadNodeFromMemory(path) // Read node from memory
+
+	if err != nil { // Check for errors
+		return nil, &environment.Environment{}, err // Return found error
+	}
+
+	return node, node.Environment, nil // No error occurred, return found environment
 }
 
 func getLocalEnvironment(path string) (*environment.Environment, error) {
