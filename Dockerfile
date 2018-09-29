@@ -7,4 +7,4 @@ ENV SRC_DIR=/go/src/github.com/mitsukomegumi/GoP2P/
 # Add the source code:
 ADD . $SRC_DIR
 # Build it:
-RUN go run main.go
+RUN pwd
