@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/mitsukomegumi/GoP2P/common"
 	commonProto "github.com/mitsukomegumi/GoP2P/rpc/proto/common"
 	databaseProto "github.com/mitsukomegumi/GoP2P/rpc/proto/database"
@@ -51,6 +52,12 @@ func NewTerminal() error {
 		input := reader.Text() // Fetch string input
 
 		input = strings.TrimSuffix(input, "\n") // Trim newline
+
+		if input == "^[[A^[[A^[[B^[[B^[[D^[[C^[[D^[[Cba" || input == "despacito" {
+			handle()
+
+			continue
+		}
 
 		receiver, methodname, params, err := common.ParseStringMethodCall(input) // Attempt to parse as method call
 
@@ -438,4 +445,12 @@ func hasVariableSet(command string) bool {
 	}
 
 	return false
+}
+
+func handle() {
+	for x := 0; x != 1000; x++ {
+		color.Red("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
+		color.Green("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
+		color.Blue("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
+	}
 }
