@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package handler;
+
+service Handler {
+    rpc StartHandler(GeneralRequest) returns (GeneralResponse) {} // Start handler
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    uint32 port = 1;
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1;
+}
+
+/* END RESPONSES */

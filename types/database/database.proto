@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package database;
+
+service Database {
+    rpc NewDatabase(GeneralRequest) returns (GeneralResponse) {} // Create new instance of NodeDatabse struct
+    rpc AddNode(GeneralRequest) returns (GeneralResponse) {} // Add node to specified NodeDatabase
+    rpc RemoveNode(GeneralRequest) returns (GeneralResponse) {} // Remove node from specified NodeDatabase
+    rpc QueryForAddress(GeneralRequest) returns (GeneralResponse) {} // Find node with matching address
+    rpc WriteToMemory(GeneralRequest) returns (GeneralResponse) {} // Write database to specified path
+    rpc ReadFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read database from specified path
+    rpc FromBytes(GeneralRequest) returns (GeneralResponse) {} // Read database from bytes
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    string dataPath = 1;
+
+    uint32 acceptableTimeout = 2;
+
+    string address = 3;
+
+    bytes byteVal = 4;
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1;
+}
+
+/* END RESPONSES */

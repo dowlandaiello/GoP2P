@@ -50,6 +50,18 @@
   version = "v1.0"
 
 [[projects]]
+  digest = "1:69148993c8baff35dbb0b5ec92eccb6b75b2b7255a4ad1257be38f51fff8f267"
+  name = "github.com/golang/protobuf"
+  packages = [
+    "jsonpb",
+    "proto",
+    "ptypes/struct",
+  ]
+  pruneopts = "UT"
+  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
+  version = "v1.2.0"
+
+[[projects]]
   digest = "1:c658e84ad3916da105a761660dcaeb01e63416c8ec7bc62256a9b411a05fcd67"
   name = "github.com/mattn/go-colorable"
   packages = ["."]
@@ -80,6 +92,18 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "d7bb493dee3e090e2ffb6914adddf17c1e7c026c"
+
+[[projects]]
+  digest = "1:bc5f818bb50c42b55721ab0ea9af6c28cad7d9e31db43eaa78d2ca487c9897ac"
+  name = "github.com/twitchtv/twirp"
+  packages = [
+    ".",
+    "ctxsetters",
+    "internal/contextkeys",
+  ]
+  pruneopts = "UT"
+  revision = "8ad347ff7c94521ec5cc9e7a6c578d335fd676a5"
+  version = "v5.4.2"
 
 [[projects]]
   branch = "master"
@@ -151,8 +175,12 @@
     "github.com/NebulousLabs/go-upnp",
     "github.com/briandowns/spinner",
     "github.com/fatih/structs",
+    "github.com/golang/protobuf/jsonpb",
+    "github.com/golang/protobuf/proto",
     "github.com/mitchellh/mapstructure",
     "github.com/tatsushid/go-fastping",
+    "github.com/twitchtv/twirp",
+    "github.com/twitchtv/twirp/ctxsetters",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

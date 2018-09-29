@@ -1,0 +1,14 @@
+*
+!main.go
+!main_test.go
+!vendor
+!upnp
+!types/command
+!types/connection
+!types/database
+!types/environment
+!types/handler
+!types/node
+!rpc
+!common
+!cli

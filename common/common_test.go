@@ -5,7 +5,62 @@ import (
 	"testing"
 )
 
-// TestCheckAddress - test functionality of CheckAddress() function.
+// TestParseStringMethodCall - test functionality of ParseStringMethodCall() function
+func TestParseStringMethodCall(t *testing.T) {
+	input := "node.NewNode(localhost, 3000)" // Init input
+
+	receiver, methodName, params, err := ParseStringMethodCall(input) // Parse string method call
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("found parsed method call %s, %s, %s, %s", receiver, methodName, params[0], params[1]) // Log success
+}
+
+// TestParseStringParams - test functionality of ParseStringParams() function
+func TestParseStringParams(t *testing.T) {
+	input := "node.NewNode(localhost, 3000)" // Init input
+
+	params, err := ParseStringParams(input) // Parse string params
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("found parsed params %s, %s", params[0], params[1]) // Log success
+}
+
+// TestStringStripReceiverCall - test functionality of StripReceiverCall() function
+func TestStringStripReceiverCall(t *testing.T) {
+	input := "node.NewNode(localhost, 3000)" // Init input
+
+	stripped := StringStripReceiverCall(input) // Parse string params
+
+	t.Logf("found stripped %s", stripped) // Log success
+}
+
+// TestStringStripParentheses - test functionality of StringStripParentheses() function
+func TestStringStripParentheses(t *testing.T) {
+	input := "node.NewNode(localhost, 3000)" // Init input
+
+	stripped := StringStripParentheses(input) // Strip parentheses
+
+	t.Logf("found value %s", stripped) // Log success
+}
+
+// TestStringFetchCallReceiver - test functionality of StringFetchCallReceiver() method
+func TestStringFetchCallReceiver(t *testing.T) {
+	input := "node.NewNode(localhost, 3000)" // Init input
+
+	receiver := StringFetchCallReceiver(input) // Fetch receiver
+
+	t.Logf("found receiver %s", receiver) // Log success
+}
+
+// TestCheckAddress - test functionality of CheckAddress() function
 func TestCheckAddress(t *testing.T) {
 	err := CheckAddress("72.21.215.90") // Attempt to check the address of S3
 

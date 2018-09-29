@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package common;
+
+service Common {
+    rpc ParseStringMethodCall(GeneralRequest) returns (GeneralResponse) {} // Attempt to parse string as method call, returning receiver, method name, and params
+    rpc ParseStringParams(GeneralRequest) returns (GeneralResponse) {} // Attempt to fetch string parameters from (..., ..., ...) style call
+    rpc ConvertStringToReflectValues(GeneralRequest) returns (GeneralResponse) {} // Convert string to []reflect.Value
+    rpc StringStripReceiverCall(GeneralRequest) returns (GeneralResponse) {} // Strip receiver from string method call
+    rpc StringStripParentheses(GeneralRequest) returns (GeneralResponse) {} // Strip parantheses from string
+    rpc StringFetchCallReceiver(GeneralRequest) returns (GeneralResponse) {} // Attempt to fetch receiver from string, as if it were a x.y(..., ..., ...) style method call
+    rpc CheckAddress(GeneralRequest) returns (GeneralResponse) {} // Check that specified IP address can be pinged, and is available on specified port
+    rpc GetExtIPAddrWithUpNP(GeneralRequest) returns (GeneralResponse) {} // Retrieve the external IP address of the current machine via upnp
+    rpc GetExtIPAddrWithoutUpNP(GeneralRequest) returns (GeneralResponse) {} // Retrieve the external IP address of the current machine w/o upnp
+    rpc GetCurrentTime(GeneralRequest) returns (GeneralResponse) {} // Get current time in the UTC format
+    rpc GetCurrentDir(GeneralRequest) returns (GeneralResponse) {} // Returns current execution directory
+    rpc SHA256(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array
+    rpc SendBytes(GeneralRequest) returns (GeneralResponse) {} // Attempt to send specified bytes to given address
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    string input = 1;
+
+    bytes byteInput = 2;
+
+    repeated string inputs = 3;
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1;
+}
+
+/* END RESPONSES */

@@ -15,7 +15,7 @@ func (term *Terminal) handleNewConnectionCommand(address string, port int) {
 	output, err := term.handleNewConnection(address, port) // Attempt to init, attempt
 
 	if err != nil { // Check for errors
-		fmt.Println("-- ERROR -- " + err.Error()) // Log error
+		fmt.Println("Error: " + err.Error()) // Log error
 	} else {
 		fmt.Println(output) // Log success
 	}

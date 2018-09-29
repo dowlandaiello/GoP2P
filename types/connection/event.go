@@ -56,6 +56,10 @@ func (event *Event) Attempt() error {
 	return event.attempt() // attempt
 }
 
+/* END EXPORTED METHODS */
+
+/* BEGIN INTERNAL METHODS */
+
 // attempt - wrapper
 func (event *Event) attempt() error {
 	serializedEvent, err := common.SerializeToBytes(event) // Serialize event
@@ -73,6 +77,4 @@ func (event *Event) attempt() error {
 	return nil // No error occurred, return nil
 }
 
-/*
-	END EXPORTED METHODS
-*/
+/* END INTERNAL METHODS */

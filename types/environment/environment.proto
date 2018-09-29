@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package environment;
+
+service Environment {
+    rpc NewEnvironment(GeneralRequest) returns (GeneralResponse) {} // Init environment
+    rpc QueryType(GeneralRequest) returns (GeneralResponse) {} // Query type
+    rpc QueryValue(GeneralRequest) returns (GeneralResponse) {} // Query value
+    rpc NewVariable(GeneralRequest) returns (GeneralResponse) {} // New Variable
+    rpc AddVariable(GeneralRequest) returns (GeneralResponse) {} // Add Variable
+    rpc WriteToMemory(GeneralRequest) returns (GeneralResponse) {} // Write environment to memory
+    rpc ReadFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read environment from memory
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    string variableType = 1;
+
+    string value = 2;
+
+    string variableName = 3;
+
+    bool replaceExisting = 4;
+
+    string path = 5;
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1;
+}
+
+/* END RESPONSES */

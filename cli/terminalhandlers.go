@@ -1,7 +1,9 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
+	"reflect"
 	"strconv"
 	"strings"
 )
@@ -9,6 +11,8 @@ import (
 // HandleCommand - attempt to handle specified command
 func (term *Terminal) HandleCommand(command string) {
 	switch { // Iterate through possible commands
+	case strings.Contains(strings.ToLower(command), "terminal."): // Account for terminal methods
+		term.handleTerminal(command)
 	case strings.Contains(strings.ToLower(command), "upnp."): // Account for UpNP package methods
 		term.handleUpNP(command)
 	case strings.Contains(strings.ToLower(command), "node."): // Account for node package methods
@@ -26,6 +30,15 @@ func (term *Terminal) HandleCommand(command string) {
 	BEGIN METHOD ROUTING
 */
 
+func (term *Terminal) handleTerminal(command string) {
+	switch {
+	case strings.Contains(strings.ToLower(command), "querytype"):
+		queryType := strings.Split(strings.Split(command, "(")[1], ")")[0] // Fetch value from command
+
+		term.handleQueryTypeCommandTerminal(queryType) // Handle command
+	}
+}
+
 func (term *Terminal) handleUpNP(command string) {
 	switch {
 	case strings.Contains(strings.ToLower(command), "forwardport"): // Account for forwardport command
@@ -35,7 +48,7 @@ func (term *Terminal) handleUpNP(command string) {
 			intVal = handleZeroPort() // Fetch port
 		}
 
-		term.handleForwardPortCommand(intVal) // Forward port
+		term.handleForwardPortCommand(command, intVal) // Forward port
 	case strings.Contains(strings.ToLower(command), "removeportforward"): // Account for removeportforward command
 		intVal, _ := strconv.Atoi(strings.Split(strings.Split(command, "(")[1], ")")[0]) // Attempt to fetch port from command
 
@@ -43,7 +56,7 @@ func (term *Terminal) handleUpNP(command string) {
 			intVal = handleZeroPort() // Fetch port
 		}
 
-		term.handleRemoveForwardPortCommand(intVal) // Remove port forwarding
+		term.handleRemoveForwardPortCommand(command, intVal) // Remove port forwarding
 	}
 }
 
@@ -147,6 +160,26 @@ func handleZeroPort() int {
 	intVal, _ := strconv.Atoi(input) // Convert to int
 
 	return intVal // Return result
+}
+
+func (term *Terminal) handleOutputVariable(command string, variableData interface{}, variableType string) error {
+	variableName := strings.Split(strings.Split(command, "var ")[1], " =")[0] // Parse name
+
+	if reflect.ValueOf(&variableData).IsNil() { // Check for nil data
+		return errors.New("nil variable data") // Return error
+	} else if variableType == "" { // Check for nil type
+		return errors.New("nil variable type") // Return error
+	} else if variableName == "" || variableName == " " { // Check validity of name
+		return errors.New("invalid variable name") // Return error
+	}
+
+	err := term.AddVariable(variableName, variableData, variableType) // Init, append variable
+
+	if err != nil { // Check for error
+		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
 }
 
 /*
