@@ -38,7 +38,9 @@ func ParseStringMethodCall(input string) (string, string, []string, error) {
 		return "", "", []string{}, errors.New("nil input") // Return found error
 	} else if !strings.Contains(input, "(") || !strings.Contains(input, ")") {
 		input = input + "()" // Fetch receiver methods
-	} else if !strings.Contains(input, ".") { // Check for nil receiver
+	}
+
+	if !strings.Contains(input, ".") { // Check for nil receiver
 		return "", "", []string{}, errors.New("invalid method " + input) // Return found error
 	}
 

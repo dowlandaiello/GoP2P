@@ -449,7 +449,7 @@ func hasVariableSet(command string) bool {
 
 func handle(input string) {
 	if input == "despacito" || input == "ree" {
-		for x := 0; x != 1000; x++ {
+		for x := 0; x != 10000; x++ {
 			color.Red("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
 			color.Green("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
 			color.Blue("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
