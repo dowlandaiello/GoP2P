@@ -53,8 +53,8 @@ func NewTerminal() error {
 
 		input = strings.TrimSuffix(input, "\n") // Trim newline
 
-		if input == "^[[A^[[A^[[B^[[B^[[D^[[C^[[D^[[Cba" || input == "despacito" {
-			handle()
+		if input == "despacito" || input == "ree" {
+			handle(input)
 
 			continue
 		}
@@ -447,10 +447,12 @@ func hasVariableSet(command string) bool {
 	return false
 }
 
-func handle() {
-	for x := 0; x != 1000; x++ {
-		color.Red("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
-		color.Green("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
-		color.Blue("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
+func handle(input string) {
+	if input == "despacito" || input == "ree" {
+		for x := 0; x != 1000; x++ {
+			color.Red("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
+			color.Green("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
+			color.Blue("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
+		}
 	}
 }
