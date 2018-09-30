@@ -111,7 +111,8 @@ func CheckAddress(address string) error {
 		return errors.New("nil address") // Return error
 	}
 
-	p := fastping.NewPinger()                          // Create new pinger
+	p := fastping.NewPinger() // Create new pinger
+
 	ipAddress, err := net.ResolveIPAddr("ip", address) // Resolve address
 
 	if err != nil {
@@ -171,7 +172,9 @@ func GetExtIPAddrWithoutUpNP() (string, error) {
 		return "", err // Return error
 	}
 
-	return string(ip[:]), nil // Return ip
+	stringVal := string(ip[:]) // Fetch string value
+
+	return strings.TrimSpace(stringVal), nil // Return ip
 }
 
 // GetCurrentTime - get current time in the UTC format

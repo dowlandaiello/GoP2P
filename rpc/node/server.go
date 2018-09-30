@@ -10,6 +10,7 @@ import (
 	"github.com/mitsukomegumi/GoP2P/common"
 	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
 	"github.com/mitsukomegumi/GoP2P/types/node"
+	"github.com/mitsukomegumi/GoP2P/upnp"
 )
 
 // Server - GoP2P RPC server
@@ -17,7 +18,23 @@ type Server struct{}
 
 // NewNode - node.NewNode RPC handler
 func (server *Server) NewNode(ctx context.Context, req *nodeProto.GeneralRequest) (*nodeProto.GeneralResponse, error) {
+	if req.Address == "localhost" { // Check for invalid address
+		address, err := common.GetExtIPAddrWithoutUpNP()
+
+		if err != nil { // Check for errors
+			return &nodeProto.GeneralResponse{}, err // Return found error
+		}
+
+		req.Address = address // Set to request value
+	}
+
 	node, err := node.NewNode(req.Address, req.IsBootstrap) // Init node
+
+	if err != nil { // Check for errors
+		return &nodeProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = upnp.ForwardPortSilent(3000) // Forward node port
 
 	if err != nil { // Check for errors
 		return &nodeProto.GeneralResponse{}, err // Return found error
