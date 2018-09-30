@@ -109,6 +109,16 @@ func (server *Server) AddNode(ctx context.Context, req *databaseProto.GeneralReq
 
 // RemoveNode - database.RemoveNode RPC handler
 func (server *Server) RemoveNode(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
+	if req.Address == "localhost" { // Check for invalid address
+		address, err := common.GetExtIPAddrWithoutUpNP()
+
+		if err != nil { // Check for errors
+			return &databaseProto.GeneralResponse{}, err // Return found error
+		}
+
+		req.Address = address // Set to request value
+	}
+
 	currentDir, err := common.GetCurrentDir() // Fetch current dir
 
 	if err != nil { // Check for errors
