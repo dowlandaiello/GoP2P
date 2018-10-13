@@ -18,7 +18,7 @@ notifications:
 
 before_script:
   - GO_FILES=$(find . -iname '*.go' -type f | grep -v -r ./vendor/ ./.vendor-new/) # All the .go files, excluding vendor/, .vendor-new/
-  - go get github.com/golang/lint/golint                        # Linter
+  - go get -u golang.org/x/lint/golint
   - go get github.com/fzipp/gocyclo
   - go get github.com/nebulouslabs/go-upnp
   - go get github.com/tatsushid/go-fastping
