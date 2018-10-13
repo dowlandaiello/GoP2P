@@ -309,8 +309,6 @@ func getIP() (string, error) {
 	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
 
 	if err != nil || address == "" { // Check for errors
-		err = nil // Reset error
-
 		address, err = common.GetExtIPAddrWithoutUpNP() // Attempt to fetch address without UpNP
 
 		if err != nil { // Check second try for errors

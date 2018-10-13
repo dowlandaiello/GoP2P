@@ -185,6 +185,10 @@ func (server *Server) AddVariable(ctx context.Context, req *environmentProto.Gen
 
 	err = env.AddVariable(variable, true) // Attempt to add variable
 
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
+
 	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nAdded variable %v to Environment", *variable)}, nil // No error occurred, return output
 }
 
