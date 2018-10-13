@@ -144,8 +144,8 @@ func (server *Server) GetCurrentDir(ctx context.Context, req *commonProto.Genera
 }
 
 // SHA256 - common.SHA256 RPC handler
-func (server *Server) SHA256(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
-	hash := common.SHA256(req.ByteInput) // Hash
+func (server *Server) Keccak256(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
+	hash := common.Keccak256(req.ByteInput) // Hash
 
 	return &commonProto.GeneralResponse{Message: fmt.Sprintf("\n%s", hash)}, nil // Return response
 }

@@ -360,7 +360,7 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{Inputs: params})) // Append params
-	case "SHA256":
+	case "Keccak256":
 		if len(params) != 1 { // Check for invalid parameters
 			return errors.New("invalid parameters (requires string)")
 		}
@@ -375,7 +375,7 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 	case "GetExtIPAddrWithUpNP", "GetExtIPAddrWithoutUpNP", "GetCurrentTime", "GetCurrentDir":
 		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{})) // Append empty params
 	default:
-		return errors.New("illegal method: " + methodname + ", available methods: ParseStringMethodCall(), ParseStringParams(), StringStripReceiverCall(), StringStripParentheses(), StringFetchCallReceiver(), CheckAddress(), ConvertStringToReflectValues(), SHA256(), SendBytes(), GetExtIPAddrWithUpnp(), GetExtIPAddrWithoutUpnp(), GetCurrentTime(), GetCurrentDir()") // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: ParseStringMethodCall(), ParseStringParams(), StringStripReceiverCall(), StringStripParentheses(), StringFetchCallReceiver(), CheckAddress(), ConvertStringToReflectValues(), Keccak256(), SendBytes(), GetExtIPAddrWithUpnp(), GetExtIPAddrWithoutUpnp(), GetCurrentTime(), GetCurrentDir()") // Return error
 	}
 
 	result := reflect.ValueOf(*commonClient).MethodByName(methodname).Call(reflectParams) // Call method

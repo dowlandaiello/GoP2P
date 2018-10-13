@@ -90,7 +90,7 @@ func NewVariable(variableType string, variableData interface{}) (*Variable, erro
 		return &Variable{}, err // Return error
 	}
 
-	variable.VariableIdentifier = common.SHA256(serializedVariable) // Add hash to variable contents
+	variable.VariableIdentifier = common.Keccak256(serializedVariable) // Add hash to variable contents
 
 	return &variable, nil // Return variable
 }

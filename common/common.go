@@ -1,7 +1,6 @@
 package common
 
 import (
-	"crypto/sha256"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -16,6 +15,7 @@ import (
 
 	upnp "github.com/NebulousLabs/go-upnp"
 	fastping "github.com/tatsushid/go-fastping"
+	"golang.org/x/crypto/sha3"
 )
 
 const (
@@ -207,10 +207,10 @@ func GetCurrentDir() (string, error) {
 	return currentDir, nil
 }
 
-// SHA256 - hash specified byte array
-func SHA256(b []byte) string {
-	hash := sha256.Sum256(b)                          // Hash it
-	return base64.StdEncoding.EncodeToString(hash[:]) // Return it
+// Keccak256 - hash specified byte array
+func Keccak256(b []byte) string {
+	hash := sha3.New256().Sum(b)                      // Hash
+	return base64.StdEncoding.EncodeToString(hash[:]) // Return hash
 }
 
 /*
