@@ -34,7 +34,7 @@ var (
 
 // SeedAddress - generated shard address from seed
 func SeedAddress(seed string, shardID string) (string, error) {
-	if len(seed) == 0 || len(shardID) == 0 {
+	if len(seed) == 0 || len(shardID) == 0 || len(shardID) < len(seed) {
 		return "", errors.New("invalid input") // Return found error
 	}
 

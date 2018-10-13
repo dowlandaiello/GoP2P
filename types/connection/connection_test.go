@@ -36,12 +36,14 @@ func TestAttemptConnection(t *testing.T) {
 
 	err = connection.Attempt() // Attempt connection
 
-	if err != nil && !strings.Contains(err.Error(), "socket") && !strings.Contains(err.Error(), "connection refused") { // Check for errors
+	if err != nil && !strings.Contains(err.Error(), "socket") && !strings.Contains(err.Error(), "connection refused") && !strings.Contains(err.Error(), "timed out") { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	} else if err != nil && strings.Contains(err.Error(), "socket") {
 		t.Logf("WARNING: socket actions require sudo privileges.") // Log warning
 	} else if err != nil && strings.Contains(err.Error(), "connection refused") {
+		t.Logf("WARNING: connection testing requires a running handler") // Log warning
+	} else if err != nil && strings.Contains(err.Error(), "timed out") {
 		t.Logf("WARNING: connection testing requires a running handler") // Log warning
 	}
 }
