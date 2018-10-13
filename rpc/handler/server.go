@@ -32,7 +32,7 @@ func (server *Server) StartHandler(ctx context.Context, req *handlerProto.Genera
 	listener, err := node.StartListener(int(req.Port)) // Start Listener on specified port
 
 	if err != nil { // Check for errors
-		return &handlerProto.GeneralResponse{}, errors.New("Node not attached") // Return found error
+		return &handlerProto.GeneralResponse{}, err // Return found error
 	}
 
 	go handler.StartHandler(node, listener) // Start node handler on port

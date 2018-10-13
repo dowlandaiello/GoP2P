@@ -34,11 +34,7 @@ func (server *Server) NewNode(ctx context.Context, req *nodeProto.GeneralRequest
 		return &nodeProto.GeneralResponse{}, err // Return found error
 	}
 
-	err = upnp.ForwardPortSilent(3000) // Forward node port
-
-	if err != nil { // Check for errors
-		return &nodeProto.GeneralResponse{}, err // Return found error
-	}
+	go upnp.ForwardPortSilent(3000) // Forward node port
 
 	currentDir, err := common.GetCurrentDir() // Fetch working directory
 

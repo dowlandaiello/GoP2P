@@ -32,7 +32,7 @@ func ForwardPortSilent(portNumber uint) error { // Returns error if forward fail
 		return err // Return error
 	}
 
-	err = GatewayDevice.Forward(uint16(portNumber), "resourceforwarding") // Attempts to forward
+	GatewayDevice.Forward(uint16(portNumber), "resourceforwarding") // Attempts to forward
 
 	if err != nil { // Checks if error occurred
 		return err // Return error
