@@ -3,6 +3,7 @@ syntax = "proto3";
 package common;
 
 service Common {
+    rpc SeedAddress(GeneralRequest) returns (GeneralResponse) {} // Generated shard address from seed
     rpc ParseStringMethodCall(GeneralRequest) returns (GeneralResponse) {} // Attempt to parse string as method call, returning receiver, method name, and params
     rpc ParseStringParams(GeneralRequest) returns (GeneralResponse) {} // Attempt to fetch string parameters from (..., ..., ...) style call
     rpc ConvertStringToReflectValues(GeneralRequest) returns (GeneralResponse) {} // Convert string to []reflect.Value
@@ -23,9 +24,11 @@ service Common {
 message GeneralRequest {
     string input = 1;
 
-    bytes byteInput = 2;
+    string secondInput = 2;
 
-    repeated string inputs = 3;
+    bytes byteInput = 3;
+
+    repeated string inputs = 4;
 }
 
 /* END REQUESTS */

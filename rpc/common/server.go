@@ -13,6 +13,17 @@ import (
 // Server - GoP2P RPC server
 type Server struct{}
 
+// SeedAddress - common.SeedAddress RPC handler
+func (server *Server) SeedAddress(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
+	seededAddress, err := common.SeedAddress(req.Input, req.SecondInput) // Seed address
+
+	if err != nil { // Check for errors
+		return &commonProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &commonProto.GeneralResponse{Message: seededAddress}, nil // Return response
+}
+
 // ParseStringMethodCall - common.ParseStringMethodCall RPC handler
 func (server *Server) ParseStringMethodCall(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
 	receiver, methodName, params, err := common.ParseStringMethodCall(req.Input) // Parse string method call

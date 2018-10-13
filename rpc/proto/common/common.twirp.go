@@ -33,6 +33,8 @@ import url "net/url"
 // ================
 
 type Common interface {
+	SeedAddress(context.Context, *GeneralRequest) (*GeneralResponse, error)
+
 	ParseStringMethodCall(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
 	ParseStringParams(context.Context, *GeneralRequest) (*GeneralResponse, error)
@@ -66,14 +68,15 @@ type Common interface {
 
 type commonProtobufClient struct {
 	client HTTPClient
-	urls   [13]string
+	urls   [14]string
 }
 
 // NewCommonProtobufClient creates a Protobuf client that implements the Common interface.
 // It communicates using Protobuf and can be configured with a custom HTTPClient.
 func NewCommonProtobufClient(addr string, client HTTPClient) Common {
 	prefix := urlBase(addr) + CommonPathPrefix
-	urls := [13]string{
+	urls := [14]string{
+		prefix + "SeedAddress",
 		prefix + "ParseStringMethodCall",
 		prefix + "ParseStringParams",
 		prefix + "ConvertStringToReflectValues",
@@ -100,12 +103,24 @@ func NewCommonProtobufClient(addr string, client HTTPClient) Common {
 	}
 }
 
+func (c *commonProtobufClient) SeedAddress(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "common")
+	ctx = ctxsetters.WithServiceName(ctx, "Common")
+	ctx = ctxsetters.WithMethodName(ctx, "SeedAddress")
+	out := new(GeneralResponse)
+	err := doProtobufRequest(ctx, c.client, c.urls[0], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *commonProtobufClient) ParseStringMethodCall(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "common")
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "ParseStringMethodCall")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[0], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[1], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +132,7 @@ func (c *commonProtobufClient) ParseStringParams(ctx context.Context, in *Genera
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "ParseStringParams")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[1], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[2], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +144,7 @@ func (c *commonProtobufClient) ConvertStringToReflectValues(ctx context.Context,
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "ConvertStringToReflectValues")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[2], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[3], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +156,7 @@ func (c *commonProtobufClient) StringStripReceiverCall(ctx context.Context, in *
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "StringStripReceiverCall")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[3], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[4], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +168,7 @@ func (c *commonProtobufClient) StringStripParentheses(ctx context.Context, in *G
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "StringStripParentheses")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[4], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[5], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +180,7 @@ func (c *commonProtobufClient) StringFetchCallReceiver(ctx context.Context, in *
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "StringFetchCallReceiver")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[5], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[6], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +192,7 @@ func (c *commonProtobufClient) CheckAddress(ctx context.Context, in *GeneralRequ
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "CheckAddress")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[6], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[7], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -189,7 +204,7 @@ func (c *commonProtobufClient) GetExtIPAddrWithUpNP(ctx context.Context, in *Gen
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithUpNP")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[7], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[8], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +216,7 @@ func (c *commonProtobufClient) GetExtIPAddrWithoutUpNP(ctx context.Context, in *
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithoutUpNP")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[8], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[9], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -213,7 +228,7 @@ func (c *commonProtobufClient) GetCurrentTime(ctx context.Context, in *GeneralRe
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "GetCurrentTime")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[9], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[10], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -225,7 +240,7 @@ func (c *commonProtobufClient) GetCurrentDir(ctx context.Context, in *GeneralReq
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "GetCurrentDir")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[10], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[11], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -237,7 +252,7 @@ func (c *commonProtobufClient) SHA256(ctx context.Context, in *GeneralRequest) (
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "SHA256")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[11], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[12], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -249,7 +264,7 @@ func (c *commonProtobufClient) SendBytes(ctx context.Context, in *GeneralRequest
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "SendBytes")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[12], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[13], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -262,14 +277,15 @@ func (c *commonProtobufClient) SendBytes(ctx context.Context, in *GeneralRequest
 
 type commonJSONClient struct {
 	client HTTPClient
-	urls   [13]string
+	urls   [14]string
 }
 
 // NewCommonJSONClient creates a JSON client that implements the Common interface.
 // It communicates using JSON and can be configured with a custom HTTPClient.
 func NewCommonJSONClient(addr string, client HTTPClient) Common {
 	prefix := urlBase(addr) + CommonPathPrefix
-	urls := [13]string{
+	urls := [14]string{
+		prefix + "SeedAddress",
 		prefix + "ParseStringMethodCall",
 		prefix + "ParseStringParams",
 		prefix + "ConvertStringToReflectValues",
@@ -296,12 +312,24 @@ func NewCommonJSONClient(addr string, client HTTPClient) Common {
 	}
 }
 
+func (c *commonJSONClient) SeedAddress(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "common")
+	ctx = ctxsetters.WithServiceName(ctx, "Common")
+	ctx = ctxsetters.WithMethodName(ctx, "SeedAddress")
+	out := new(GeneralResponse)
+	err := doJSONRequest(ctx, c.client, c.urls[0], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *commonJSONClient) ParseStringMethodCall(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "common")
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "ParseStringMethodCall")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[0], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[1], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -313,7 +341,7 @@ func (c *commonJSONClient) ParseStringParams(ctx context.Context, in *GeneralReq
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "ParseStringParams")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[1], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[2], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -325,7 +353,7 @@ func (c *commonJSONClient) ConvertStringToReflectValues(ctx context.Context, in 
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "ConvertStringToReflectValues")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[2], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[3], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -337,7 +365,7 @@ func (c *commonJSONClient) StringStripReceiverCall(ctx context.Context, in *Gene
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "StringStripReceiverCall")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[3], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[4], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -349,7 +377,7 @@ func (c *commonJSONClient) StringStripParentheses(ctx context.Context, in *Gener
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "StringStripParentheses")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[4], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[5], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -361,7 +389,7 @@ func (c *commonJSONClient) StringFetchCallReceiver(ctx context.Context, in *Gene
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "StringFetchCallReceiver")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[5], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[6], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -373,7 +401,7 @@ func (c *commonJSONClient) CheckAddress(ctx context.Context, in *GeneralRequest)
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "CheckAddress")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[6], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[7], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -385,7 +413,7 @@ func (c *commonJSONClient) GetExtIPAddrWithUpNP(ctx context.Context, in *General
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithUpNP")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[7], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[8], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -397,7 +425,7 @@ func (c *commonJSONClient) GetExtIPAddrWithoutUpNP(ctx context.Context, in *Gene
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithoutUpNP")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[8], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[9], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -409,7 +437,7 @@ func (c *commonJSONClient) GetCurrentTime(ctx context.Context, in *GeneralReques
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "GetCurrentTime")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[9], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[10], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -421,7 +449,7 @@ func (c *commonJSONClient) GetCurrentDir(ctx context.Context, in *GeneralRequest
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "GetCurrentDir")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[10], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[11], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -433,7 +461,7 @@ func (c *commonJSONClient) SHA256(ctx context.Context, in *GeneralRequest) (*Gen
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "SHA256")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[11], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[12], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -445,7 +473,7 @@ func (c *commonJSONClient) SendBytes(ctx context.Context, in *GeneralRequest) (*
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "SendBytes")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[12], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[13], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -500,6 +528,9 @@ func (s *commonServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	switch req.URL.Path {
+	case "/twirp/common.Common/SeedAddress":
+		s.serveSeedAddress(ctx, resp, req)
+		return
 	case "/twirp/common.Common/ParseStringMethodCall":
 		s.serveParseStringMethodCall(ctx, resp, req)
 		return
@@ -545,6 +576,150 @@ func (s *commonServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 		s.writeError(ctx, resp, err)
 		return
 	}
+}
+
+func (s *commonServer) serveSeedAddress(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveSeedAddressJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveSeedAddressProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *commonServer) serveSeedAddressJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "SeedAddress")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	reqContent := new(GeneralRequest)
+	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
+	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request json")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.Common.SeedAddress(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling SeedAddress. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	var buf bytes.Buffer
+	marshaler := &jsonpb.Marshaler{OrigName: true}
+	if err = marshaler.Marshal(&buf, respContent); err != nil {
+		err = wrapErr(err, "failed to marshal json response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.WriteHeader(http.StatusOK)
+
+	respBytes := buf.Bytes()
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *commonServer) serveSeedAddressProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "SeedAddress")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		err = wrapErr(err, "failed to read request body")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+	reqContent := new(GeneralRequest)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request proto")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.Common.SeedAddress(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling SeedAddress. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		err = wrapErr(err, "failed to marshal proto response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
 }
 
 func (s *commonServer) serveParseStringMethodCall(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
@@ -2848,28 +3023,30 @@ func callError(ctx context.Context, h *twirp.ServerHooks, err twirp.Error) conte
 }
 
 var twirpFileDescriptor0 = []byte{
-	// 366 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x94, 0x4f, 0x6f, 0xda, 0x40,
-	0x10, 0xc5, 0x4b, 0x51, 0x8d, 0x3c, 0xa2, 0xad, 0xba, 0xa2, 0x80, 0x2a, 0x0e, 0x88, 0x13, 0x52,
-	0x25, 0x0e, 0x54, 0xed, 0xa5, 0x52, 0x25, 0x70, 0x0b, 0x25, 0xff, 0xe4, 0x18, 0x92, 0x5c, 0x72,
-	0x59, 0xec, 0x09, 0xb6, 0x62, 0xef, 0x3a, 0xbb, 0x63, 0x14, 0xbe, 0x5a, 0x3e, 0x5d, 0x64, 0x1b,
-	0x02, 0x49, 0x6e, 0x9b, 0x8b, 0xa5, 0x37, 0xde, 0xfd, 0xcd, 0x7b, 0xa3, 0xdd, 0x85, 0xba, 0x2f,
-	0x93, 0x44, 0x8a, 0x41, 0xaa, 0x24, 0x49, 0x66, 0x95, 0xaa, 0x77, 0x0d, 0x9f, 0xa6, 0x28, 0x50,
-	0xf1, 0xd8, 0xc3, 0xbb, 0x0c, 0x35, 0xb1, 0x06, 0x7c, 0x88, 0x44, 0x9a, 0x51, 0xbb, 0xd2, 0xad,
-	0xf4, 0x6d, 0xaf, 0x14, 0xac, 0x03, 0xf6, 0x72, 0x43, 0x38, 0x2b, 0xfe, 0xbc, 0xef, 0x56, 0xfa,
-	0x75, 0x6f, 0x5f, 0x60, 0x4d, 0xb0, 0x8a, 0x65, 0xba, 0x5d, 0xed, 0x56, 0xfb, 0xb6, 0xb7, 0x55,
-	0xbd, 0xef, 0xf0, 0xf9, 0x89, 0xae, 0x53, 0x29, 0x34, 0xb2, 0x36, 0xd4, 0x12, 0xd4, 0x9a, 0xaf,
-	0x70, 0xdb, 0x60, 0x27, 0x87, 0x0f, 0x35, 0xb0, 0x9c, 0xc2, 0x15, 0x3b, 0x82, 0xaf, 0x2e, 0x57,
-	0x1a, 0xe7, 0xa4, 0x22, 0xb1, 0x3a, 0x45, 0x0a, 0x65, 0xe0, 0xf0, 0x38, 0x66, 0xcd, 0xc1, 0x36,
-	0xc5, 0x73, 0xd3, 0xdf, 0x5a, 0xaf, 0xea, 0x65, 0xbb, 0xde, 0x3b, 0x36, 0x81, 0x2f, 0x07, 0x2c,
-	0x97, 0x2b, 0x9e, 0x68, 0x13, 0xce, 0x39, 0x74, 0x1c, 0x29, 0xd6, 0xa8, 0xa8, 0x24, 0x2d, 0xa4,
-	0x87, 0x37, 0x31, 0xfa, 0x74, 0xc9, 0xe3, 0x0c, 0x8d, 0x90, 0x27, 0xd0, 0x2a, 0x59, 0xf9, 0x37,
-	0xf5, 0xd0, 0xc7, 0x68, 0x8d, 0xca, 0x34, 0xe8, 0x31, 0x34, 0x0f, 0x68, 0x2e, 0x57, 0x28, 0x28,
-	0x44, 0xfd, 0x46, 0x6b, 0x13, 0x24, 0x3f, 0xcc, 0x2d, 0xed, 0xec, 0x99, 0xd0, 0x46, 0x50, 0x77,
-	0x42, 0xf4, 0x6f, 0x47, 0x41, 0xa0, 0x50, 0x1b, 0x19, 0x9a, 0x41, 0x63, 0x8a, 0xf4, 0xef, 0x9e,
-	0x66, 0x6e, 0x4e, 0xb9, 0x8a, 0x28, 0xbc, 0x48, 0xcf, 0x5c, 0xc3, 0x6c, 0x2f, 0x51, 0x32, 0x23,
-	0x53, 0x9a, 0x93, 0xdf, 0x20, 0x72, 0x32, 0x95, 0xcf, 0x7b, 0x11, 0x25, 0x68, 0x02, 0x19, 0xc3,
-	0xc7, 0x3d, 0xe4, 0x6f, 0x64, 0x34, 0xe4, 0xdf, 0x60, 0xcd, 0xff, 0x8f, 0x86, 0x3f, 0x7f, 0x99,
-	0x6c, 0xfe, 0x03, 0xf6, 0x1c, 0x45, 0x30, 0xde, 0x90, 0xd1, 0x79, 0x59, 0x5a, 0xc5, 0xb3, 0xf2,
-	0xe3, 0x31, 0x00, 0x00, 0xff, 0xff, 0xff, 0x80, 0xdd, 0x17, 0x66, 0x04, 0x00, 0x00,
+	// 385 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x94, 0xcf, 0xaf, 0xd2, 0x40,
+	0x10, 0xc7, 0x45, 0xb4, 0xa4, 0x03, 0x6a, 0xdc, 0x20, 0x10, 0xc3, 0xa1, 0xe1, 0x44, 0x62, 0xc2,
+	0x01, 0xa3, 0x17, 0x13, 0x23, 0x54, 0x41, 0xfc, 0x95, 0xda, 0xa2, 0x9e, 0x97, 0x76, 0xa4, 0x8d,
+	0xed, 0x6e, 0xdd, 0x9d, 0x12, 0xb9, 0xf8, 0x97, 0x7b, 0x30, 0x6d, 0xe1, 0xc1, 0x7b, 0xef, 0xb6,
+	0x5c, 0x9a, 0x7c, 0x67, 0xd2, 0xcf, 0x7c, 0xbf, 0x93, 0x69, 0xa1, 0x13, 0xca, 0x2c, 0x93, 0x62,
+	0x92, 0x2b, 0x49, 0x92, 0x59, 0xb5, 0x1a, 0xfd, 0x85, 0x87, 0x4b, 0x14, 0xa8, 0x78, 0xea, 0xe3,
+	0xef, 0x02, 0x35, 0xb1, 0x2e, 0xdc, 0x4f, 0x44, 0x5e, 0xd0, 0xa0, 0xe1, 0x34, 0xc6, 0xb6, 0x5f,
+	0x0b, 0xe6, 0x40, 0x5b, 0x63, 0x28, 0x45, 0xb4, 0xaa, 0x7a, 0x77, 0xab, 0xde, 0x79, 0x89, 0x0d,
+	0xc1, 0xde, 0xec, 0x09, 0xeb, 0x7e, 0xd3, 0x69, 0x8c, 0x3b, 0xfe, 0xa9, 0xc0, 0x7a, 0x60, 0x55,
+	0x20, 0x3d, 0xb8, 0xe7, 0x34, 0xc7, 0xb6, 0x7f, 0x50, 0xa3, 0x67, 0xf0, 0xe8, 0x6a, 0xbe, 0xce,
+	0xa5, 0xd0, 0xc8, 0x06, 0xd0, 0xca, 0x50, 0x6b, 0xbe, 0xc5, 0x83, 0x85, 0xa3, 0x9c, 0xfe, 0x6b,
+	0x81, 0xe5, 0x56, 0xbe, 0xd9, 0x1b, 0x68, 0x07, 0x88, 0xd1, 0x2c, 0x8a, 0x14, 0x6a, 0xcd, 0x7a,
+	0x93, 0x43, 0xba, 0xeb, 0x61, 0x9e, 0xf6, 0x6f, 0xd5, 0xeb, 0x21, 0xa3, 0x3b, 0xec, 0x03, 0x3c,
+	0xf1, 0xb8, 0xd2, 0x18, 0x90, 0x4a, 0xc4, 0xf6, 0x33, 0x52, 0x2c, 0x23, 0x97, 0xa7, 0xa9, 0x09,
+	0x6b, 0x01, 0x8f, 0xcf, 0x58, 0x1e, 0x57, 0x3c, 0x33, 0xf2, 0xf4, 0x15, 0x86, 0xae, 0x14, 0x3b,
+	0x54, 0x54, 0x93, 0xd6, 0xd2, 0xc7, 0x9f, 0x29, 0x86, 0xf4, 0x9d, 0xa7, 0x05, 0x1a, 0x21, 0x3f,
+	0x41, 0xbf, 0x66, 0x95, 0xcf, 0xdc, 0xc7, 0x10, 0x93, 0x1d, 0x2a, 0xd3, 0xa0, 0x1f, 0xa1, 0x77,
+	0x46, 0xf3, 0xb8, 0x42, 0x41, 0x31, 0xea, 0x0b, 0xad, 0x2d, 0x90, 0xc2, 0xb8, 0xb4, 0x74, 0xb4,
+	0x67, 0x42, 0x9b, 0x41, 0xc7, 0x8d, 0x31, 0xfc, 0x75, 0xc1, 0x49, 0xac, 0xa0, 0xbb, 0x44, 0x7a,
+	0xf7, 0x87, 0x56, 0x5e, 0x49, 0xf9, 0x91, 0x50, 0xfc, 0x2d, 0xff, 0xe2, 0x19, 0x66, 0xbb, 0x89,
+	0x92, 0x05, 0x99, 0xd2, 0xdc, 0xf2, 0x2b, 0x25, 0xb7, 0x50, 0xe5, 0xbe, 0xd7, 0x49, 0x86, 0x26,
+	0x90, 0x39, 0x3c, 0x38, 0x41, 0xde, 0x26, 0x46, 0x4b, 0x7e, 0x05, 0x56, 0xf0, 0x7e, 0x36, 0x7d,
+	0xf1, 0xd2, 0xe4, 0xe5, 0xd7, 0x60, 0x07, 0x28, 0xa2, 0xf9, 0x9e, 0x8c, 0xee, 0x65, 0x63, 0x55,
+	0xbf, 0xae, 0xe7, 0xff, 0x03, 0x00, 0x00, 0xff, 0xff, 0x20, 0xe7, 0xf1, 0x6c, 0xca, 0x04, 0x00,
+	0x00,
 }
