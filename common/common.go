@@ -4,7 +4,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -212,7 +211,7 @@ func GetCurrentDir() (string, error) {
 func Sha3(b []byte) string {
 	hash := sha3.New256() // Hash
 
-	io.WriteString(hash, "despacito")
+	hash.Write(b) // Write hash
 
 	return hex.EncodeToString(hash.Sum(nil)) // Return hash
 }
