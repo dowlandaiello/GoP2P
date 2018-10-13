@@ -10,7 +10,7 @@ import (
 
 // NodeDatabase - database containing list of node addresses, as well as bootstrap addresses
 type NodeDatabase struct {
-	Nodes *[]node.Node `json:" nodes"` // Nodes - primary list of nodes
+	Nodes *[]node.Node `json:"nodes"` // Nodes - primary list of nodes
 
 	AcceptableTimeout uint `json:"db-wide timeout"` // AcceptableTimeout - database-wide definition for operation timeout
 }
@@ -31,6 +31,8 @@ func NewDatabase(bootstrapNode *node.Node, acceptableTimeout uint) (NodeDatabase
 
 	return db, nil // No error occurred, return database
 }
+
+/* BEGIN NODE METHODS */
 
 // AddNode - adds node to specified nodedatabase, after checking address of node
 func (db *NodeDatabase) AddNode(destNode *node.Node) error {
@@ -75,6 +77,8 @@ func (db *NodeDatabase) QueryForAddress(address string) (uint, error) {
 
 	return 0, errors.New("no value found") // Could not find index of address, return new error
 }
+
+/* END NODE METHODS */
 
 /*
 	END EXPORTED METHODS

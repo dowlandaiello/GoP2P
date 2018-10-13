@@ -32,6 +32,20 @@ var (
 	BEGIN EXPORTED METHODS:
 */
 
+// SeedAddress - generated shard address from seed
+func SeedAddress(seed string, shardID string) (string, error) {
+	if len(seed) == 0 || len(shardID) == 0 {
+		return "", errors.New("invalid input") // Return found error
+	}
+	for i := range seed { // Iterate over seed
+		if i%3 == 0 { // Check is third
+			seed = seed[:i] + string(shardID[i]) + seed[i+1:] // Replace with ID at string
+		}
+	}
+
+	return seed, nil // Return seed
+}
+
 // ParseStringMethodCall - attempt to parse string as method call, returning receiver, method name, and params
 func ParseStringMethodCall(input string) (string, string, []string, error) {
 	if input == "" { // Check for errors
