@@ -143,7 +143,7 @@ func (server *Server) GetCurrentDir(ctx context.Context, req *commonProto.Genera
 	return &commonProto.GeneralResponse{Message: fmt.Sprintf("\n%s", dir)}, nil // Return response
 }
 
-// SHA256 - common.SHA256 RPC handler
+// Sha3 - common.Sha3 RPC handler
 func (server *Server) Sha3(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
 	hash := common.Sha3(req.ByteInput) // Hash
 

@@ -53,12 +53,6 @@ func NewTerminal() error {
 
 		input = strings.TrimSuffix(input, "\n") // Trim newline
 
-		if input == "despacito" || input == "ree" {
-			handle(input)
-
-			continue
-		}
-
 		receiver, methodname, params, err := common.ParseStringMethodCall(input) // Attempt to parse as method call
 
 		if err != nil { // Check for errors
