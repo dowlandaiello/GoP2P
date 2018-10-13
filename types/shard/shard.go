@@ -32,7 +32,7 @@ func NewShard(initializingNode *node.Node) (*Shard, error) {
 		return nil, err // Return found error
 	}
 
-	shard.ID = common.Keccak256(serialized)                                     // Set shard ID
+	shard.ID = common.Sha3(serialized)                                          // Set shard ID
 	shard.Address, err = common.SeedAddress(initializingNode.Address, shard.ID) // Generate, set address
 
 	if err != nil { // Check for errors

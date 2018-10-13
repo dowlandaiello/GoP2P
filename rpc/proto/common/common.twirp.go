@@ -57,7 +57,7 @@ type Common interface {
 
 	GetCurrentDir(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
-	Keccak256(context.Context, *GeneralRequest) (*GeneralResponse, error)
+	Sha3(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
 	SendBytes(context.Context, *GeneralRequest) (*GeneralResponse, error)
 }
@@ -247,7 +247,7 @@ func (c *commonProtobufClient) GetCurrentDir(ctx context.Context, in *GeneralReq
 	return out, nil
 }
 
-func (c *commonProtobufClient) Keccak256(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *commonProtobufClient) Sha3(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "common")
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "SHA256")
@@ -456,7 +456,7 @@ func (c *commonJSONClient) GetCurrentDir(ctx context.Context, in *GeneralRequest
 	return out, nil
 }
 
-func (c *commonJSONClient) Keccak256(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *commonJSONClient) Sha3(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "common")
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
 	ctx = ctxsetters.WithMethodName(ctx, "SHA256")
@@ -565,7 +565,7 @@ func (s *commonServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 		s.serveGetCurrentDir(ctx, resp, req)
 		return
 	case "/twirp/common.Common/SHA256":
-		s.serveKeccak256(ctx, resp, req)
+		s.serveSha3(ctx, resp, req)
 		return
 	case "/twirp/common.Common/SendBytes":
 		s.serveSendBytes(ctx, resp, req)
@@ -2306,7 +2306,7 @@ func (s *commonServer) serveGetCurrentDirProtobuf(ctx context.Context, resp http
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *commonServer) serveKeccak256(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *commonServer) serveSha3(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
 	if i == -1 {
@@ -2351,7 +2351,7 @@ func (s *commonServer) serveSHA256JSON(ctx context.Context, resp http.ResponseWr
 				panic(r)
 			}
 		}()
-		respContent, err = s.Common.Keccak256(ctx, reqContent)
+		respContent, err = s.Common.Sha3(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -2418,7 +2418,7 @@ func (s *commonServer) serveSHA256Protobuf(ctx context.Context, resp http.Respon
 				panic(r)
 			}
 		}()
-		respContent, err = s.Common.Keccak256(ctx, reqContent)
+		respContent, err = s.Common.Sha3(ctx, reqContent)
 	}()
 
 	if err != nil {

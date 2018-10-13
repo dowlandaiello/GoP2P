@@ -22,7 +22,7 @@ func TestNewEnvironment(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	envID := common.Keccak256(serializedEnv) // Get hash value of environment
+	envID := common.Sha3(serializedEnv) // Get hash value of environment
 
 	t.Logf("created environment with ID %s", envID) // Log success
 }

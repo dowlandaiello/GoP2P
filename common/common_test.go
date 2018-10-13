@@ -8,7 +8,7 @@ import (
 // TestSeedAddress - test functionality of SeedAddress() function
 func TestSeedAddress(t *testing.T) {
 	seed := "despacito"
-	shardID := Keccak256([]byte("despacito"))
+	shardID := Sha3([]byte("despacito"))
 
 	address, err := SeedAddress(seed, shardID) // Seed address
 
@@ -111,9 +111,9 @@ func TestGetExtIPAddrWithoutUpNP(t *testing.T) {
 	t.Logf("found address %s", ip) // Log found address
 }
 
-// TestSHA256 - test functionality of Keccak256() function
-func TestKeccak256(t *testing.T) {
-	shaVal := Keccak256([]byte("test")) // Create hashed value
+// TestSHA256 - test functionality of Sha3() function
+func TestSha3(t *testing.T) {
+	shaVal := Sha3([]byte("test")) // Create hashed value
 
 	if string(shaVal) == "test" { // Check for errors
 		t.Errorf("SHA failed with value %s", shaVal) // Log error

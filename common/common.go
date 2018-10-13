@@ -1,9 +1,10 @@
 package common
 
 import (
-	"encoding/base64"
+	"encoding/hex"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -207,10 +208,13 @@ func GetCurrentDir() (string, error) {
 	return currentDir, nil
 }
 
-// Keccak256 - hash specified byte array
-func Keccak256(b []byte) string {
-	hash := sha3.New256().Sum(b)                      // Hash
-	return base64.StdEncoding.EncodeToString(hash[:]) // Return hash
+// Sha3 - hash specified byte array
+func Sha3(b []byte) string {
+	hash := sha3.New256() // Hash
+
+	io.WriteString(hash, "despacito")
+
+	return hex.EncodeToString(hash.Sum(nil)) // Return hash
 }
 
 /*
