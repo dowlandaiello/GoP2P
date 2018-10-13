@@ -107,9 +107,12 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f0b918a9d2a0d3dcd073cbb908d81b0166af14b8bc765039673d1120c71e17cc"
+  digest = "1:639218d427f9b9f6158eb48e936b0541d393cfed00707f0e51bd038524af80ea"
   name = "golang.org/x/crypto"
-  packages = ["blake2b"]
+  packages = [
+    "blake2b",
+    "sha3",
+  ]
   pruneopts = "UT"
   revision = "56440b844dfe139a8ac053f4ecac0b20b79058f4"
 
@@ -174,6 +177,7 @@
   input-imports = [
     "github.com/NebulousLabs/go-upnp",
     "github.com/briandowns/spinner",
+    "github.com/fatih/color",
     "github.com/fatih/structs",
     "github.com/golang/protobuf/jsonpb",
     "github.com/golang/protobuf/proto",
@@ -181,6 +185,7 @@
     "github.com/tatsushid/go-fastping",
     "github.com/twitchtv/twirp",
     "github.com/twitchtv/twirp/ctxsetters",
+    "golang.org/x/crypto/sha3",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
