@@ -1,6 +1,7 @@
 package connection
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -9,9 +10,11 @@ import (
 func TestFromBytes(t *testing.T) {
 	connection, err := generateConnection() // Create connection
 
-	if err != nil { // Check for errors
+	if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
+	} else if err != nil && strings.Contains(err.Error(), "socket") {
+		t.Logf("WARNING: socket actions require sudo privileges.") // Log warning
 	}
 
 	serializedConnection, err := common.SerializeToBytes(connection) // Serialize connection

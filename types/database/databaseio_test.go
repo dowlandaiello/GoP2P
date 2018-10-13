@@ -3,108 +3,77 @@ package database
 import (
 	"strings"
 	"testing"
-
-	"github.com/mitsukomegumi/GoP2P/common"
-	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
 // TestWriteToMemory - test functionality of WriteToMemory() function
 func TestWriteToMemory(t *testing.T) {
-	address := ""                                 // Initialize address value
-	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
+	node, err := newNodeSafe() // Initialize node
 
-	if err != nil || address == "" { // Check for errors
-		err = nil // Reset error
-
-		address, err = common.GetExtIPAddrWithoutUpNP() // Attempt to fetch address without UpNP
-
-		if err != nil { // Check second try for errors
-			t.Errorf(err.Error()) // Return found error
-			t.FailNow()
-		}
-	}
-
-	node, err := node.NewNode(address, true) // Attempt to create new node
-
-	if err != nil && !strings.Contains(err.Error(), "root") { // Check for errors
-		t.Errorf(err.Error()) // Return found error
-		t.FailNow()
-	} else if err != nil { // Check that an error did indeed occur
-		t.Logf(err.Error()) // Log invalid error
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
 	}
 
 	if err == nil {
-		db, err := NewDatabase(&node, 10) // Create new database with bootstrap node, and acceptable timeout
+		db, err := NewDatabase(node, 10) // Create new database with bootstrap node, and acceptable timeout
 
-		if err != nil { // Check for errors
+		if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
 			t.Errorf(err.Error()) // Fail with errors
 			t.FailNow()
+		} else if err != nil && strings.Contains(err.Error(), "socket") {
+			t.Logf("WARNING: IP checking requires sudo privileges")
+		} else {
+			t.Logf("node database created successfully with bootstrap node %s", (*db.Nodes)[0].Address) // Print success
+
+			err = db.WriteToMemory(node.Environment) // Attempt to write database to memory
+
+			if err != nil { // Check for errors
+				t.Errorf(err.Error()) // Log error
+				t.FailNow()           // Panic
+			}
+
+			t.Logf("wrote database to memory") // Log success
 		}
-
-		t.Logf("node database created successfully with bootstrap node %s", (*db.Nodes)[0].Address) // Print success
-
-		err = db.WriteToMemory(node.Environment) // Attempt to write database to memory
-
-		if err != nil { // Check for errors
-			t.Errorf(err.Error()) // Log error
-			t.FailNow()           // Panic
-		}
-
-		t.Logf("wrote database to memory") // Log success
 	}
 }
 
 // TestReadFromMemory - test functionality of ReadFromMemory() function
 func TestReadFromMemory(t *testing.T) {
-	address := ""                                 // Initialize address value
-	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
+	node, err := newNodeSafe() // Initialize node
 
-	if err != nil || address == "" { // Check for errors
-		err = nil // Reset error
-
-		address, err = common.GetExtIPAddrWithoutUpNP() // Attempt to fetch address without UpNP
-
-		if err != nil { // Check second try for errors
-			t.Errorf(err.Error()) // Return found error
-			t.FailNow()
-		}
-	}
-
-	node, err := node.NewNode(address, true) // Attempt to create new node
-
-	if err != nil && !strings.Contains(err.Error(), "root") { // Check for errors
-		t.Errorf(err.Error()) // Return found error
-		t.FailNow()
-	} else if err != nil { // Check that an error did indeed occur
-		t.Logf(err.Error()) // Log invalid error
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
 	}
 
 	if err == nil {
-		db, err := NewDatabase(&node, 10) // Create new database with bootstrap node, and acceptable timeout
+		db, err := NewDatabase(node, 10) // Create new database with bootstrap node, and acceptable timeout
 
-		if err != nil { // Check for errors
+		if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
 			t.Errorf(err.Error()) // Fail with errors
 			t.FailNow()
+		} else if err != nil && strings.Contains(err.Error(), "socket") {
+			t.Logf("WARNING: IP checking requires sudo privileges")
+		} else {
+			t.Logf("node database created successfully with bootstrap node %s", (*db.Nodes)[0].Address) // Print success
+
+			err = db.WriteToMemory(node.Environment) // Attempt to write database to memory
+
+			if err != nil { // Check for errors
+				t.Errorf(err.Error()) // Log error
+				t.FailNow()           // Panic
+			}
+
+			t.Logf("wrote database to memory") // Log success
+
+			readDb, err := ReadDatabaseFromMemory(node.Environment) // Attempt to read database from memory
+
+			if err != nil { // Check for errors
+				t.Errorf(err.Error()) // Log error
+				t.FailNow()           // Panic
+			}
+
+			t.Logf("read database from memory with bootstrap node %s", (*readDb.Nodes)[0].Address) // Log success
 		}
-
-		t.Logf("node database created successfully with bootstrap node %s", (*db.Nodes)[0].Address) // Print success
-
-		err = db.WriteToMemory(node.Environment) // Attempt to write database to memory
-
-		if err != nil { // Check for errors
-			t.Errorf(err.Error()) // Log error
-			t.FailNow()           // Panic
-		}
-
-		t.Logf("wrote database to memory") // Log success
-
-		readDb, err := ReadDatabaseFromMemory(node.Environment) // Attempt to read database from memory
-
-		if err != nil { // Check for errors
-			t.Errorf(err.Error()) // Log error
-			t.FailNow()           // Panic
-		}
-
-		t.Logf("read database from memory with bootstrap node %s", (*readDb.Nodes)[0].Address) // Log success
 	}
 }

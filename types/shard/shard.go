@@ -23,8 +23,8 @@ type Shard struct {
 }
 
 // NewShard - initialize new shard
-func NewShard(initializingNode node.Node) (*Shard, error) {
-	shard := Shard{Nodes: &[]node.Node{initializingNode}, Origin: time.Now().UTC(), Address: initializingNode.Address} // Initialize shard
+func NewShard(initializingNode *node.Node) (*Shard, error) {
+	shard := Shard{Nodes: &[]node.Node{*initializingNode}, Origin: time.Now().UTC(), Address: initializingNode.Address} // Initialize shard
 
 	serialized, err := common.SerializeToBytes(shard) // Serialize shard
 

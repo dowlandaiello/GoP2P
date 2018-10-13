@@ -1,7 +1,6 @@
-package handler
+package shard
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -9,33 +8,23 @@ import (
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
-func TestStartHandler(t *testing.T) {
-	node, err := newNodeSafe() // Attempt to create new node
-
-	if err != nil && !strings.Contains(err.Error(), "root") { // Check for errors
-		t.Errorf(err.Error()) // Log found error
-		t.FailNow()           // Panic
-	} else if err != nil { // Account for special case
-		t.Logf(err.Error()) // Log found error
-	}
-
-	ln, err := node.StartListener(3000) // Start listener
+// TestNewShard - test functionality of shard initializer
+func TestNewShard(t *testing.T) {
+	node, err := newNodeSafe() // Initialize shard node
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	}
 
-	go func() {
-		err = StartHandler(node, ln) // Attempt to start handler
+	shard, err := NewShard(node) // Init shard
 
-		if err != nil { // Check for error
-			t.Errorf(err.Error()) // Log found error
-			t.FailNow()           // Panic
-		}
-	}()
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
 
-	t.Logf("started handler with listener address %s", (*ln).Addr()) // Log success
+	t.Logf("Found new shard with address %s", shard.Address) // Log new shard
 }
 
 func newNodeSafe() (*node.Node, error) {

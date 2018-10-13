@@ -1,10 +1,16 @@
 package cli
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/types/environment"
+	"github.com/mitsukomegumi/GoP2P/types/node"
+)
 
 // TestNewNode - test functionality of newnode wrapper method
 func TestNewNode(t *testing.T) {
-	node, err := NewNode() // Attempt to create new node
+	node, err := newNodeSafe() // Attempt to create new node
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -16,12 +22,21 @@ func TestNewNode(t *testing.T) {
 
 // TestAttach - test functionality of readNode wrapper method
 func TestAttach(t *testing.T) {
-	node, err := NewNode() // Attempt to create new node
+	node, err := newNodeSafe() // Attempt to create new node
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	}
+
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	node.WriteToMemory(currentDir) // Write node to memory
 
 	node, err = AttachNode() // Attempt to read serialized node
 
@@ -31,4 +46,22 @@ func TestAttach(t *testing.T) {
 	}
 
 	t.Logf("found node with address %s", node.Address) // Log success
+}
+
+func newNodeSafe() (*node.Node, error) {
+	ip, err := common.GetExtIPAddrWithoutUpNP() // Fetch IP address
+
+	if err != nil { // Check for errors
+		return &node.Node{}, err // Return found error
+	}
+
+	environment, _ := environment.NewEnvironment() // Create new environment
+
+	if err != nil { // Check for errors
+		return &node.Node{}, err // Return found error
+	}
+
+	node := node.Node{Address: ip, Reputation: 0, IsBootstrap: false, Environment: environment} // Creates new node instance with specified address
+
+	return &node, nil // Return initialized node
 }

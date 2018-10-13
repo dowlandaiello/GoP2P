@@ -79,9 +79,11 @@ func TestStringFetchCallReceiver(t *testing.T) {
 func TestCheckAddress(t *testing.T) {
 	err := CheckAddress("72.21.215.90") // Attempt to check the address of S3
 
-	if err != nil && !strings.Contains(err.Error(), "root") { // Check for errors
+	if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
 		t.Errorf(err.Error()) // Log errors
 		t.FailNow()           // Panic
+	} else if strings.Contains(err.Error(), "socket") {
+		t.Logf("WARNING: checking addresses requires sudo privileges") // Log warning
 	}
 }
 
