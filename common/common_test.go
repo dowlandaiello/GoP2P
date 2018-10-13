@@ -5,6 +5,21 @@ import (
 	"testing"
 )
 
+// TestSeedAddress - test functionality of SeedAddress() function
+func TestSeedAddress(t *testing.T) {
+	seed := "despacito"
+	shardID := SHA256([]byte("despacito"))
+
+	address, err := SeedAddress(seed, shardID) // Seed address
+
+	if err != nil {
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("seeded address %s", address) // Log success
+}
+
 // TestParseStringMethodCall - test functionality of ParseStringMethodCall() function
 func TestParseStringMethodCall(t *testing.T) {
 	input := "node.NewNode(localhost, 3000)" // Init input
