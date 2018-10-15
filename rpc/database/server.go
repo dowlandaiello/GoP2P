@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/mitsukomegumi/GoP2P/common"
 	databaseProto "github.com/mitsukomegumi/GoP2P/rpc/proto/database"
@@ -263,6 +264,31 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *databaseProto.Gen
 	}
 
 	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\nRead database %s from environment memory at path %s", string(marshaledVal), req.DataPath)}, nil // Return response
+}
+
+// UpdateRemoteDatabase - database.UpdateRemoteDatabase RPC handler
+func (server *Server) UpdateRemoteDatabase(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch current dir
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	env, err := environment.ReadEnvironmentFromMemory(currentDir) // Attempt to read environment from request path
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	database, err := database.ReadDatabaseFromMemory(env, req.NetworkName) // Attempt to read database from environment
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	database.UpdateRemoteDatabase() // Update remote database instances
+
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("Updating instances of database with network alias %s and ID %s", database.NetworkAlias, strconv.Itoa(int(database.NetworkID)))}, nil
 }
 
 // FromBytes - database.FromBytes RPC handler

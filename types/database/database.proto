@@ -9,6 +9,7 @@ service Database {
     rpc QueryForAddress(GeneralRequest) returns (GeneralResponse) {} // Find node with matching address
     rpc WriteToMemory(GeneralRequest) returns (GeneralResponse) {} // Write database to specified path
     rpc ReadFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read database from specified path
+    rpc UpdateRemoteDatabase(GeneralRequest) returns (GeneralResponse) {} // Update remote database instances
     rpc FromBytes(GeneralRequest) returns (GeneralResponse) {} // Read database from bytes
 }
 
