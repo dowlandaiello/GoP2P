@@ -46,9 +46,7 @@ func TestReadFromMemory(t *testing.T) {
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
-	}
-
-	if err == nil {
+	} else {
 		db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10) // Create new database with bootstrap node, and acceptable timeout
 
 		if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors

@@ -24,7 +24,7 @@ type NodeDatabase struct {
 
 // NewDatabase - attempts creates new instance of the NodeDatabase struct
 func NewDatabase(bootstrapNode *node.Node, networkName string, networkID uint, acceptableTimeout uint) (NodeDatabase, error) {
-	db := NodeDatabase{AcceptableTimeout: acceptableTimeout} // Create empty database with specified timeout
+	db := NodeDatabase{AcceptableTimeout: acceptableTimeout, NetworkAlias: networkName, NetworkID: networkID} // Create empty database with specified timeout
 
 	err := db.AddNode(bootstrapNode) // Attempt to add bootstrapnode
 
