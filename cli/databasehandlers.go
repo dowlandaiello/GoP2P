@@ -351,7 +351,7 @@ func (term *Terminal) handleAttachDatabase() (string, error) {
 		return "", errors.New("node not attached") // Log found error
 	}
 
-	db, err := database.ReadDatabaseFromMemory(foundNode.Environment) // Attempt to read database from node environment memory
+	db, err := database.ReadDatabaseFromMemory(foundNode.Environment, "GoP2P_TestNet") // Attempt to read database from node environment memory
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
@@ -430,7 +430,7 @@ func (term *Terminal) findDatabase() (*database.NodeDatabase, error) {
 		return &database.NodeDatabase{}, errors.New("node not attached") // Log found error
 	}
 
-	db, err := database.ReadDatabaseFromMemory(foundNode.Environment) // Attempt to read database from node environment memory
+	db, err := database.ReadDatabaseFromMemory(foundNode.Environment, "GoP2P_TestNet") // Attempt to read database from node environment memory
 
 	if err != nil { // Check for errors
 		return &database.NodeDatabase{}, err // Return found error

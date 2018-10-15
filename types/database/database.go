@@ -51,6 +51,8 @@ func (db *NodeDatabase) AddNode(destNode *node.Node) error {
 		*db.Nodes = append(*db.Nodes, *destNode) // Append node to node list
 	}
 
+	go db.UpdateRemoteDatabase() // Update remote database instances
+
 	return nil // No error occurred, return nil
 }
 
@@ -79,6 +81,21 @@ func (db *NodeDatabase) QueryForAddress(address string) (uint, error) {
 	}
 
 	return 0, errors.New("no value found") // Could not find index of address, return new error
+}
+
+// UpdateRemoteDatabase - push database changes to remote network nodes
+func (db *NodeDatabase) UpdateRemoteDatabase() error {
+	serializedDb, err := common.SerializeToBytes(*db) // Serialize database to bytes
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	for node := range *db.Nodes { // Iterate over nodes
+		go common.SendBytes(serializedDb, (*db.Nodes)[node].Address) // Send database to node
+	}
+
+	return nil // No error occurred, return nil
 }
 
 /* END NODE METHODS */

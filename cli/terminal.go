@@ -290,23 +290,27 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{NetworkName: params[0], NetworkID: uint32(networkID), AcceptableTimeout: uint32(acceptableTimeout)})) // Append params
 	case "AddNode":
-		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{})) // Append nil params
-	case "RemoveNode", "QueryForAddress":
-		if len(params) != 1 { // Check for invalid parameters
+		if len(params) != 1 {
 			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{NetworkName: params[0]})) // Append nil params
+	case "RemoveNode", "QueryForAddress":
+		if len(params) != 2 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string, string)") // Return error
 		}
 
 		address := params[0] // Fetch removal address
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{Address: address})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{Address: address, NetworkName: params[1]})) // Append params
 	case "WriteToMemory", "ReadFromMemory":
-		if len(params) != 1 { // Check for invalid parameters
-			return errors.New("invalid parameters (requires string)") // Return error
+		if len(params) != 2 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string, string)") // Return error
 		}
 
 		path := params[0] // Fetch path
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{DataPath: path})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{DataPath: path, NetworkName: params[1]})) // Append params
 	case "FromBytes":
 		if len(params) != 1 { // Check for invalid parameters
 			return errors.New("invalid parameters (requires []byte)") // Return error

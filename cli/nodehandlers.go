@@ -122,7 +122,7 @@ func (term *Terminal) handleAttachNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	db, err := database.ReadDatabaseFromMemory(env) // Attempt to read database from memory
+	db, err := database.ReadDatabaseFromMemory(env, "GoP2P_TestNet") // Attempt to read database from memory
 
 	if err != nil { // Check for errors
 		return "", err // Return found error

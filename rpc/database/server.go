@@ -72,7 +72,7 @@ func (server *Server) AddNode(ctx context.Context, req *databaseProto.GeneralReq
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	database, err := database.ReadDatabaseFromMemory(env) // Attempt to read database from environment
+	database, err := database.ReadDatabaseFromMemory(env, req.NetworkName) // Attempt to read database from environment
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -131,7 +131,7 @@ func (server *Server) RemoveNode(ctx context.Context, req *databaseProto.General
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	database, err := database.ReadDatabaseFromMemory(env) // Attempt to read database from environment
+	database, err := database.ReadDatabaseFromMemory(env, req.NetworkName) // Attempt to read database from environment
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -172,7 +172,7 @@ func (server *Server) QueryForAddress(ctx context.Context, req *databaseProto.Ge
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	database, err := database.ReadDatabaseFromMemory(env) // Attempt to read database from environment
+	database, err := database.ReadDatabaseFromMemory(env, req.NetworkName) // Attempt to read database from environment
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -209,7 +209,7 @@ func (server *Server) WriteToMemory(ctx context.Context, req *databaseProto.Gene
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	database, err := database.ReadDatabaseFromMemory(env) // Attempt to read database from environment
+	database, err := database.ReadDatabaseFromMemory(env, req.NetworkName) // Attempt to read database from environment
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -244,7 +244,7 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *databaseProto.Gen
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	database, err := database.ReadDatabaseFromMemory(env) // Attempt to read database from environment
+	database, err := database.ReadDatabaseFromMemory(env, req.NetworkName) // Attempt to read database from environment
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error

@@ -10,7 +10,7 @@ import (
 
 // WriteToMemory - create serialized instance of specified NodeDatabase in specified path (string)
 func (db *NodeDatabase) WriteToMemory(env *environment.Environment) error {
-	variable, err := environment.NewVariable("NodeDatabase", *db)
+	variable, err := environment.NewVariable(db.NetworkAlias+"NodeDatabase", *db)
 
 	if err != nil { // Check for errors
 		return err // Return error
@@ -26,8 +26,8 @@ func (db *NodeDatabase) WriteToMemory(env *environment.Environment) error {
 }
 
 // ReadDatabaseFromMemory - read serialized object of specified node database from specified path
-func ReadDatabaseFromMemory(env *environment.Environment) (*NodeDatabase, error) {
-	variable, err := env.QueryType("NodeDatabase") // Attempt to fetch db
+func ReadDatabaseFromMemory(env *environment.Environment, networkAlias string) (*NodeDatabase, error) {
+	variable, err := env.QueryType(networkAlias + "NodeDatabase") // Attempt to fetch db
 
 	if err != nil { // Check for errors
 		return &NodeDatabase{}, err // Return found error

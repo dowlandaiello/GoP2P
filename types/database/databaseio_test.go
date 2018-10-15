@@ -68,7 +68,7 @@ func TestReadFromMemory(t *testing.T) {
 
 			t.Logf("wrote database to memory") // Log success
 
-			readDb, err := ReadDatabaseFromMemory(node.Environment) // Attempt to read database from memory
+			readDb, err := ReadDatabaseFromMemory(node.Environment, "GoP2P_TestNet") // Attempt to read database from memory
 
 			if err != nil { // Check for errors
 				t.Errorf(err.Error()) // Log error
