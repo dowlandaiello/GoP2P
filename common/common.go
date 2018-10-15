@@ -21,6 +21,9 @@ import (
 const (
 	// NodeAvailableRep - global definition for reputation value of node availability
 	NodeAvailableRep = 10
+
+	// GoP2PTestNetID - GoP2P testing network identifier
+	GoP2PTestNetID = 4519161392015
 )
 
 var (
@@ -43,6 +46,8 @@ func SeedAddress(seed string, shardID string) (string, error) {
 			seed = seed[:i] + string(shardID[i]) + seed[i+1:] // Replace with ID at string
 		}
 	}
+
+	seed = strings.Replace(seed, ".", ":", -1) // Remove IPv4 residue
 
 	return seed, nil // Return seed
 }

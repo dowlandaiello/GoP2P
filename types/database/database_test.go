@@ -22,7 +22,7 @@ func TestNewDatabase(t *testing.T) {
 	}
 
 	if err == nil {
-		db, err := NewDatabase(node, 10) // Create new database with bootstrap node, and acceptable timeout
+		db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10) // Create new database with bootstrap node, and acceptable timeout
 
 		if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
 			t.Errorf(err.Error()) // Fail with errors
@@ -44,7 +44,7 @@ func TestAddNode(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	db, err := NewDatabase(node, 10) // Create new node database with bootstrap node
+	db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10) // Create new node database with bootstrap node
 
 	if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
 		t.Errorf(err.Error()) // Fail with errors
@@ -72,7 +72,7 @@ func TestRemoveNode(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	db, err := NewDatabase(node, 10) // Create new node database with bootstrap node
+	db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10) // Create new node database with bootstrap node
 
 	if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
 		t.Errorf(err.Error()) // Fail with errors
@@ -99,7 +99,7 @@ func TestQueryForAddress(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	db, err := NewDatabase(node, 10) // Create new node database with bootstrap node
+	db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10) // Create new node database with bootstrap node
 
 	if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
 		t.Errorf(err.Error()) // Log found error

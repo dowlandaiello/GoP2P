@@ -7,12 +7,12 @@ import (
 
 // TestSeedAddress - test functionality of SeedAddress() function
 func TestSeedAddress(t *testing.T) {
-	seed := "despacito"
-	shardID := Sha3([]byte("despacito"))
+	seed := "192.178.1.1"                // Initialize seed
+	shardID := Sha3([]byte("despacito")) // Initialize test shardID
 
 	address, err := SeedAddress(seed, shardID) // Seed address
 
-	if err != nil {
+	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	}

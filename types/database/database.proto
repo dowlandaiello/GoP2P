@@ -17,11 +17,15 @@ service Database {
 message GeneralRequest {
     string dataPath = 1;
 
-    uint32 acceptableTimeout = 2;
+    string networkName = 2;
 
-    string address = 3;
+    uint32 networkID = 3;
 
-    bytes byteVal = 4;
+    uint32 acceptableTimeout = 4;
+
+    string address = 5;
+
+    bytes byteVal = 6;
 }
 
 /* END REQUESTS */

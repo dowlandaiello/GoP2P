@@ -12,6 +12,9 @@ import (
 type NodeDatabase struct {
 	Nodes *[]node.Node `json:"nodes"` // Nodes - primary list of nodes
 
+	NetworkAlias string `json:"network"`   // NetworkAlias - network 'name', used for identifying a common protocol
+	NetworkID    uint   `json:"networkID"` // NetworkID - integer used for identifying common network
+
 	AcceptableTimeout uint `json:"db-wide timeout"` // AcceptableTimeout - database-wide definition for operation timeout
 }
 
@@ -20,7 +23,7 @@ type NodeDatabase struct {
 */
 
 // NewDatabase - attempts creates new instance of the NodeDatabase struct
-func NewDatabase(bootstrapNode *node.Node, acceptableTimeout uint) (NodeDatabase, error) {
+func NewDatabase(bootstrapNode *node.Node, networkName string, networkID uint, acceptableTimeout uint) (NodeDatabase, error) {
 	db := NodeDatabase{AcceptableTimeout: acceptableTimeout} // Create empty database with specified timeout
 
 	err := db.AddNode(bootstrapNode) // Attempt to add bootstrapnode

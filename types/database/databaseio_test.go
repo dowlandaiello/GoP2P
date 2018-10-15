@@ -3,6 +3,8 @@ package database
 import (
 	"strings"
 	"testing"
+
+	"github.com/mitsukomegumi/GoP2P/common"
 )
 
 // TestWriteToMemory - test functionality of WriteToMemory() function
@@ -15,7 +17,7 @@ func TestWriteToMemory(t *testing.T) {
 	}
 
 	if err == nil {
-		db, err := NewDatabase(node, 10) // Create new database with bootstrap node, and acceptable timeout
+		db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10) // Create new database with bootstrap node, and acceptable timeout
 
 		if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
 			t.Errorf(err.Error()) // Fail with errors
@@ -47,7 +49,7 @@ func TestReadFromMemory(t *testing.T) {
 	}
 
 	if err == nil {
-		db, err := NewDatabase(node, 10) // Create new database with bootstrap node, and acceptable timeout
+		db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10) // Create new database with bootstrap node, and acceptable timeout
 
 		if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
 			t.Errorf(err.Error()) // Fail with errors

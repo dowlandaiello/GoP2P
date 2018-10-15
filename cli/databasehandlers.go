@@ -104,7 +104,7 @@ func (term *Terminal) handleNewDatabase() (string, error) {
 		return "", errors.New("node not attached") // Log found error
 	}
 
-	db, err := database.NewDatabase(&foundNode, 5) // Attempt to create new database
+	db, err := database.NewDatabase(&foundNode, "GoP2P_TestNet", common.GoP2PTestNetID, 5) // Attempt to create new database
 
 	if err != nil { // Check for errors
 		return "", err // Return found error
