@@ -276,17 +276,19 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 
 	switch methodname {
 	case "NewDatabase":
-		if len(params) != 1 { // Check for invalid parameters
-			return errors.New("invalid parameters (requires uint32)") // Return error
-		}
+		if len(params) != 3 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string, uint32, uint32)") // Return error
+		} // TODO: fix newdatabase handling
 
-		acceptableTimeout, err := strconv.Atoi(params[0]) // Fetch acceptable timeout
+		acceptableTimeout, err := strconv.Atoi(params[2]) // Fetch acceptable timeout
 
 		if err != nil { // Check for errors
 			return err // Return found error
 		}
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{AcceptableTimeout: uint32(acceptableTimeout)})) // Append params
+		networkID, err := strconv.Atoi(params[1]) // Fetch network id
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{NetworkName: params[0], NetworkID: uint32(networkID), AcceptableTimeout: uint32(acceptableTimeout)})) // Append params
 	case "AddNode":
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{})) // Append nil params
 	case "RemoveNode", "QueryForAddress":

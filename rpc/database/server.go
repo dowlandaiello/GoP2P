@@ -31,7 +31,7 @@ func (server *Server) NewDatabase(ctx context.Context, req *databaseProto.Genera
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	db, err := database.NewDatabase(node, uint(req.AcceptableTimeout)) // Create new database with bootstrap node, and acceptable timeout
+	db, err := database.NewDatabase(node, req.NetworkName, uint(req.NetworkID), uint(req.AcceptableTimeout)) // Create new database with bootstrap node, and acceptable timeout
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
