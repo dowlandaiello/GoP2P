@@ -147,6 +147,62 @@ func TestUpdateRemoteDatabase(t *testing.T) {
 	}
 }
 
+// TestJoinDatabase - test functionality of JoinDatabase method
+func TestJoinDatabase(t *testing.T) {
+	node, err := newNodeSafe() // Initialize node
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10) // Create new node database with bootstrap node
+
+	if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	} else if err != nil && strings.Contains(err.Error(), "socket") {
+		t.Logf("WARNING: IP checking requires sudo privileges") // Log warning
+	} else {
+		err = JoinDatabase(node.Address, 3000, "GoP2P_TestNet") // Join database
+
+		if err != nil { // Check for errors
+			t.Errorf(err.Error()) // Log found error
+			t.FailNow()           // Panic
+		}
+
+		t.Logf("Joined network with alias %s", db.NetworkAlias) // Log success
+	}
+}
+
+// TestFetchRemoteDatabase - test functionality of FetchRemoteDatabase method
+func TestFetchRemoteDatabase(t *testing.T) {
+	node, err := newNodeSafe() // Initialize node
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	_, err = NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10) // Create new node database with bootstrap node
+
+	if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	} else if err != nil && strings.Contains(err.Error(), "socket") {
+		t.Logf("WARNING: IP checking requires sudo privileges") // Log warning
+	} else {
+		fetchedDb, err := FetchRemoteDatabase(node.Address, 3000, "GoP2P_TestNet") // Fetch remote database
+
+		if err != nil { // Check for errors
+			t.Errorf(err.Error()) // Log found error
+			t.FailNow()           // Panic
+		}
+
+		t.Logf("Fetched remote database from network with alias %s", fetchedDb.NetworkAlias) // Log success
+	}
+}
+
 func newNodeSafe() (*node.Node, error) {
 	ip, err := common.GetExtIPAddrWithoutUpNP() // Fetch IP address
 
