@@ -91,6 +91,7 @@ func TestRemoveNode(t *testing.T) {
 	}
 }
 
+// TestQueryForAddress - test functionality of QueryForAddress method
 func TestQueryForAddress(t *testing.T) {
 	node, err := newNodeSafe() // Initialize node
 
@@ -115,6 +116,34 @@ func TestQueryForAddress(t *testing.T) {
 		}
 
 		t.Logf("found node at index %s", strconv.FormatUint(uint64(foundNodeIndex), 10)) // Log success
+	}
+}
+
+// TestUpdateRemoteDatabase - test functionality of UpdateRemoteDatabase method
+func TestUpdateRemoteDatabase(t *testing.T) {
+	node, err := newNodeSafe() // Initialize node
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10) // Create new node database with bootstrap node
+
+	if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	} else if err != nil && strings.Contains(err.Error(), "socket") {
+		t.Logf("WARNING: IP checking requires sudo privileges") // Log warning
+	} else {
+		err = db.UpdateRemoteDatabase() // Update remote instances
+
+		if err != nil { // Check for errors
+			t.Errorf(err.Error()) // Log error
+			t.FailNow()           // Panic
+		}
+
+		t.Logf("updated remote instances of database %s", db.NetworkAlias) // Log success
 	}
 }
 
