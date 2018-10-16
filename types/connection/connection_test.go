@@ -34,7 +34,7 @@ func TestAttemptConnection(t *testing.T) {
 		t.Logf("WARNING: socket actions require sudo privileges.") // Log warning
 	}
 
-	err = connection.Attempt() // Attempt connection
+	_, err = connection.Attempt() // Attempt connection
 
 	if err != nil && !strings.Contains(err.Error(), "socket") && !strings.Contains(err.Error(), "connection refused") && !strings.Contains(err.Error(), "timed out") { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -59,7 +59,7 @@ func TestAttemptConnectionWithCommand(t *testing.T) {
 		t.Logf("WARNING: socket actions require sudo privileges.") // Log warning
 	}
 
-	err = connection.Attempt() // Attempt connection
+	_, err = connection.Attempt() // Attempt connection
 
 	if err != nil && !strings.Contains(err.Error(), "socket") && !strings.Contains(err.Error(), "connection refused") { // Check for errors
 		t.Errorf(err.Error()) // Log found error

@@ -62,7 +62,7 @@ func (term *Terminal) handleNewConnection(address string, port int) (string, err
 		return "", err // Return found error
 	}
 
-	err = connection.Attempt() // Attempt connection
+	_, err = connection.Attempt() // Attempt connection
 
 	if err != nil { // Check for errors
 		return "", err // Return found error

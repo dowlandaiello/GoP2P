@@ -4,6 +4,10 @@ import (
 	"errors"
 	"reflect"
 
+	"github.com/mitsukomegumi/GoP2P/types/command"
+
+	"github.com/mitsukomegumi/GoP2P/types/connection"
+
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
@@ -71,13 +75,10 @@ func (db *NodeDatabase) RemoveNode(address string) error {
 
 // QueryForAddress - attempts to search specified node database for specified address, returns index of node
 func (db *NodeDatabase) QueryForAddress(address string) (uint, error) {
-	x := 0
-
-	for x != len(*db.Nodes) { // Wait until entire db has been queried
+	for x := 0; x != len(*db.Nodes); x++ { // Wait until entire db has been queried
 		if address == (*db.Nodes)[x].Address { // Check for match
 			return uint(x), nil // If provided value matches value of node in list, return index
 		}
-		x++ // Increment index
 	}
 
 	return 0, errors.New("no value found") // Could not find index of address, return new error
@@ -96,6 +97,94 @@ func (db *NodeDatabase) UpdateRemoteDatabase() error {
 	}
 
 	return nil // No error occurred, return nil
+}
+
+// JoinDatabase - attempt to insert local node data into remote database instance
+func JoinDatabase(bootstrapAddress string, databasePort uint, databaseAlias string) error {
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	localNode, err := node.ReadNodeFromMemory(currentDir) // Attempt to read node from current dir
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	db, err := FetchRemoteDatabase(bootstrapAddress, databasePort, databaseAlias) // Fetch remote database
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = db.AddNode(localNode) // Add local node
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = db.UpdateRemoteDatabase() // Update remote database instances
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// FetchRemoteDatabase - attempt to fetch working copy of remote database
+func FetchRemoteDatabase(bootstrapAddress string, databasePort uint, databaseAlias string) (*NodeDatabase, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
+	localNode, err := node.ReadNodeFromMemory(currentDir) // Attempt to read node from current dir
+
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
+	resolution, err := connection.NewResolution([]byte("dbFetchRequest"), "dbFetchRequest")
+
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
+	command, err := command.NewCommand("QueryType", command.NewModifierSet(databaseAlias+"NodeDatabase", nil, nil)) // Init command
+
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
+	event, err := connection.NewEvent("fetch", *resolution, command, &node.Node{Address: bootstrapAddress}, int(databasePort)) // Init event
+
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
+	connection, err := connection.NewConnection(localNode, &node.Node{Address: bootstrapAddress}, int(databasePort), []byte("dbFetchRequest"), "relay", []connection.Event{*event})
+
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
+	result, err := connection.Attempt() // Attempt connection
+
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
+	db, err := FromBytes(result) // Convert read bytes to database
+
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
+	return db, nil // No error occurred, return nil
 }
 
 /* END NODE METHODS */

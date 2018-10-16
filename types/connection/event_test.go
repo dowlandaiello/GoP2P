@@ -64,7 +64,7 @@ func TestAttemptEvent(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	err = event.Attempt() // Attempt event
+	_, err = event.Attempt() // Attempt event
 
 	if err != nil && !strings.Contains(err.Error(), "socket") && !strings.Contains(err.Error(), "timed out") && !strings.Contains(err.Error(), "connection refused") { // Check for errors
 		t.Errorf(err.Error()) // Log found error

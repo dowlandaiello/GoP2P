@@ -52,7 +52,7 @@ func NewEvent(eventType string, resolution Resolution, command *command.Command,
 }
 
 // Attempt - attempts to carry out event
-func (event *Event) Attempt() error {
+func (event *Event) Attempt() ([]byte, error) {
 	return event.attempt() // attempt
 }
 
@@ -61,20 +61,20 @@ func (event *Event) Attempt() error {
 /* BEGIN INTERNAL METHODS */
 
 // attempt - wrapper
-func (event *Event) attempt() error {
+func (event *Event) attempt() ([]byte, error) {
 	serializedEvent, err := common.SerializeToBytes(event) // Serialize event
 
 	if err != nil { // Check for errors
-		return err // Return found error
+		return nil, err // Return found error
 	}
 
-	err = common.SendBytes(serializedEvent, event.DestinationNode.Address+":"+strconv.Itoa(event.Port)) // Attempt to send event
+	result, err := common.SendBytesResult(serializedEvent, event.DestinationNode.Address+":"+strconv.Itoa(event.Port)) // Attempt to send event
 
 	if err != nil { // Check for errors
-		return err // Return found error
+		return nil, err // Return found error
 	}
 
-	return nil // No error occurred, return nil
+	return result, nil // No error occurred, return nil
 }
 
 /* END INTERNAL METHODS */

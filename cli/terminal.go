@@ -290,7 +290,7 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{NetworkName: params[0], NetworkID: uint32(networkID), AcceptableTimeout: uint32(acceptableTimeout)})) // Append params
 	case "AddNode", "UpdateRemoteDatabase":
-		if len(params) != 1 {
+		if len(params) != 1 { // Check for valid parameters
 			return errors.New("invalid parameters (requires string)") // Return error
 		}
 
