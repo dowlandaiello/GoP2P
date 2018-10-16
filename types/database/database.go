@@ -133,6 +133,12 @@ func JoinDatabase(bootstrapAddress string, databasePort uint, databaseAlias stri
 		return err // Return found error
 	}
 
+	err = db.WriteToMemory(localNode.Environment) // Write db to memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	return nil // No error occurred, return nil
 }
 
@@ -181,6 +187,12 @@ func FetchRemoteDatabase(bootstrapAddress string, databasePort uint, databaseAli
 	}
 
 	db, err := FromBytes(result) // Convert read bytes to database
+
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
+	err = db.WriteToMemory(localNode.Environment) // Write db to memory
 
 	if err != nil { // Check for errors
 		return &NodeDatabase{}, err // Return found error
