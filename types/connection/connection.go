@@ -69,7 +69,7 @@ func NewResolution(data []byte, guidingType interface{}) (*Resolution, error) {
 // Attempt - attempts to carry out connection, if event stack is provided, begins to iterate through list
 func (connection *Connection) Attempt() ([]byte, error) {
 	if len(connection.ConnectionStack) == 0 { // No connection stack, attempt connection
-		return connection.attempt()
+		return connection.attempt() // Return result
 	}
 
 	return connection.attemptStack() // Found connection stack, handle respectively
