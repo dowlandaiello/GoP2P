@@ -8,7 +8,12 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
 
-  config.vm.synced_folder ENV['GOPATH'], "ENV["HOME"] + "/go"
+  go_path = ENV["GOPATH"]
+  go_path ||= ENV["HOME"] + "/go"
+  project_path = Dir.pwd.sub(go_path, "")
+  full_path = "/home/ubuntu/go" + project_path
+
+  config.vm.synced_folder "./", full_path
 
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "4096"
