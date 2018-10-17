@@ -297,7 +297,7 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{NetworkName: params[0]})) // Append nil params
 	case "JoinDatabase", "FetchRemoteDatabase":
 		if len(params) != 3 { // Check for invalid parameters
-			return errors.New("invalid parameters (requires string, string)") // Return error
+			return errors.New("invalid parameters (requires string, uint32, string)") // Return error
 		}
 
 		intVal, err := strconv.Atoi(params[1]) // Convert port to uint
