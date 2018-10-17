@@ -99,8 +99,6 @@ func (db *NodeDatabase) UpdateRemoteDatabase() error {
 	return nil // No error occurred, return nil
 }
 
-// TODO: finish database join + fetch unit testing
-
 // JoinDatabase - attempt to insert local node data into remote database instance
 func JoinDatabase(bootstrapAddress string, databasePort uint, databaseAlias string) error {
 	currentDir, err := common.GetCurrentDir() // Fetch working directory
