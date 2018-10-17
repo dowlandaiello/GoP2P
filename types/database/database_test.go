@@ -158,20 +158,24 @@ func TestJoinDatabase(t *testing.T) {
 
 	db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10) // Create new node database with bootstrap node
 
-	if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
+	if err != nil && !strings.Contains(err.Error(), "socket") && !strings.Contains(err.Error(), "timed out") { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	} else if err != nil && strings.Contains(err.Error(), "socket") {
 		t.Logf("WARNING: IP checking requires sudo privileges") // Log warning
+	} else if err != nil && strings.Contains(err.Error(), "timed out") {
+		t.Logf("WARNING: connection testing requires at least two nodes") // Log warning
 	} else {
 		err = JoinDatabase(node.Address, 3000, "GoP2P_TestNet") // Join database
 
-		if err != nil { // Check for errors
+		if err != nil && !strings.Contains(err.Error(), "timed out") { // Check for errors
 			t.Errorf(err.Error()) // Log found error
 			t.FailNow()           // Panic
+		} else if err != nil && strings.Contains(err.Error(), "timed out") {
+			t.Logf("WARNING: connection testing requires at least two nodes") // Log warning
+		} else {
+			t.Logf("Joined network with alias %s", db.NetworkAlias) // Log success
 		}
-
-		t.Logf("Joined network with alias %s", db.NetworkAlias) // Log success
 	}
 }
 
@@ -191,15 +195,19 @@ func TestFetchRemoteDatabase(t *testing.T) {
 		t.FailNow()           // Panic
 	} else if err != nil && strings.Contains(err.Error(), "socket") {
 		t.Logf("WARNING: IP checking requires sudo privileges") // Log warning
+	} else if err != nil && strings.Contains(err.Error(), "timed out") {
+		t.Logf("WARNING: connection testing requires at least two nodes") // Log warning
 	} else {
 		fetchedDb, err := FetchRemoteDatabase(node.Address, 3000, "GoP2P_TestNet") // Fetch remote database
 
-		if err != nil { // Check for errors
+		if err != nil && !strings.Contains(err.Error(), "timed out") { // Check for errors
 			t.Errorf(err.Error()) // Log found error
 			t.FailNow()           // Panic
+		} else if err != nil && strings.Contains(err.Error(), "timed out") {
+			t.Logf("WARNING: connection testing requires at least two nodes") // Log warning
+		} else {
+			t.Logf("Fetched remote database from network with alias %s", fetchedDb.NetworkAlias) // Log success
 		}
-
-		t.Logf("Fetched remote database from network with alias %s", fetchedDb.NetworkAlias) // Log success
 	}
 }
 
