@@ -210,13 +210,25 @@ func newNodeSafe() (*node.Node, error) {
 		return &node.Node{}, err // Return found error
 	}
 
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return &node.Node{}, err // Return found error
+	}
+
 	environment, _ := environment.NewEnvironment() // Create new environment
 
 	if err != nil { // Check for errors
 		return &node.Node{}, err // Return found error
 	}
 
-	node := node.Node{Address: ip, Reputation: 0, IsBootstrap: false, Environment: environment} // Creates new node instance with specified address
+	localNode := node.Node{Address: ip, Reputation: 0, IsBootstrap: false, Environment: environment} // Creates new node instance with specified address
 
-	return &node, nil // Return initialized node
+	err = localNode.WriteToMemory(currentDir) // Write node to memory
+
+	if err != nil { // Check for errors
+		return &node.Node{}, err // Return found error
+	}
+
+	return &localNode, nil // Return initialized node
 }
