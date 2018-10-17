@@ -26,9 +26,11 @@ message GeneralRequest {
 
     uint32 acceptableTimeout = 4;
 
-    string address = 5;
+    uint32 port = 5;
 
-    bytes byteVal = 6;
+    string address = 6;
+
+    bytes byteVal = 7;
 }
 
 /* END REQUESTS */

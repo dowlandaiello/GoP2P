@@ -288,7 +288,35 @@ func (server *Server) UpdateRemoteDatabase(ctx context.Context, req *databasePro
 
 	database.UpdateRemoteDatabase() // Update remote database instances
 
-	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("Updating instances of database with network alias %s and ID %s", database.NetworkAlias, strconv.Itoa(int(database.NetworkID)))}, nil
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("Updating instances of database with network alias %s and ID %s", database.NetworkAlias, strconv.Itoa(int(database.NetworkID)))}, nil // Return response
+}
+
+// JoinDatabase - database.JoinDatabase RPC handler
+func (server *Server) JoinDatabase(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
+	err := database.JoinDatabase(req.Address, uint(req.Port), req.NetworkName) // Attempt to join network
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("Successfully joined network with alias %s", req.NetworkName)}, nil // Return response
+}
+
+// FetchRemoteDatabase - database.FetchRemoteDatabase RPC handler
+func (server *Server) FetchRemoteDatabase(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
+	db, err := database.FetchRemoteDatabase(req.Address, uint(req.Port), req.NetworkName) // Attempt to join network
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	marshaledVal, err := json.Marshal(*db) // Marshal found node
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
 }
 
 // FromBytes - database.FromBytes RPC handler
