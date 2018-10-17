@@ -542,4 +542,196 @@ rrent kernel...
 [   15.891523] cloud-init[904]: ci-info: |   0   |   0.0.0.0   | 10.0.2.2 |    0.0.0.0    |   enp0s3  |   UG  |
 [   15.892860] cloud-init[904]: ci-info: |   1   |   10.0.2.0  | 0.0.0.0  | 255.255.255.0 |   enp0s3  |   U   |
 [   15.893094] cloud-init[904]: ci-info: +-------+-------------+----------+---------------+-----------+-------+
-[   15.893526] cloud-init[904]: ci-info: +++++++++++++++++++Route IPv6 inf
+[   15.893526] cloud-init[904]: ci-info: +++++++++++++++++++Route IPv6 info+++++++++++++++++++
+         Starting iSCSI initiator daemon (iscsid)...
+[   15.894010] cloud-init[904]: ci-info: +-------+-------------+---------+-----------+-------+
+[   16.058231] cloud-init[904]: ci-info: | Route | Destination | Gateway | Interface | Flags |
+[[0;32m  OK  [0m] Reached target System Initialization.
+[   16.058494] cloud-init[904]: ci-info: +-------+-------------+---------+-----------+-------+
+[   16.220855] cloud-init[904]: ci-info: |   0   |  fe80::/64  |    ::   |   enp0s3  |   U   |
+[   16.221769] cloud-init[904]: ci-info: |   3   |   ff00::/8  |    ::   |   enp0s3  |   U   |
+[   16.223824] cloud-init[904]: ci-info: +-------+-------------+---------+-----------+-------+
+         Starting LXD - unix socket.
+[[   16.224505] cloud-init[904]: Generating public/private rsa key pair.
+[   16.291984] cloud-init[904]: Your identification has been saved in /etc/ssh/ssh_host_rsa_key.
+[   16.309303] cloud-init[904]: Your public key has been saved in /etc/ssh/ssh_host_rsa_key.pub.
+[   16.309360] cloud-init[904]: The key fingerprint is:
+[   16.309414] cloud-init[904]: SHA256:uhUI+omFmg6UxMV9K3EgD6ijtY+NSXVdbGJRXUoTAdc root@ubuntu-xenial
+[   16.309457] cloud-init[904]: The key's randomart image is:
+[   16.309497] cloud-init[904]: +---[RSA 2048]----+
+[   16.309537] cloud-init[904]: |  o+... .+oo*=.  |
+[   16.309576] cloud-init[904]: |....+o oo +o.oE  |
+[0;32m  OK  [0m] Listening on ACPID Listen Socket.
+[[   16.309616] cloud-init[904]: |.o  ..+o.+  .    |
+[   16.565142] cloud-init[904]: |+ oo.o.o.        |
+[   16.566592] cloud-init[904]: |.=oo..o S        |
+[   16.567228] cloud-init[904]: |ooo+ . . .       |
+[   16.567523] cloud-init[904]: |+..*o . .        |
+[   16.569476] cloud-init[904]: |o + o  o         |
+[   16.569896] cloud-init[904]: | .    .          |
+[0;32m  OK  [0m] Started Daily apt download activities.
+[[   16.571995] cloud-init[904]: +----[SHA256]-----+
+[   16.649817] cloud-init[904]: Generating public/private dsa key pair.
+[0;32m  OK  [0m] Started Daily apt upgrade and clean activities.
+[   16.650112] cloud-init[904]: Your identification has been saved in /etc/ssh/ssh_host_dsa_key.
+[   16.696640] cloud-init[904]: Your public key has been saved in /etc/ssh/ssh_host_dsa_key.pub.
+[   16.697189] cloud-init[904]: The key fingerprint is:
+[   16.697511] cloud-init[904]: SHA256:LUMgRV82fDwwGP8gKeBmTmKDzLAu3a/mIGSjboCxCHU root@ubuntu-xenial
+[   16.697942] cloud-init[904]: The key's randomart image is:
+[   16.698346] cloud-init[904]: +---[DSA 1024]----+
+[   16.698785] cloud-init[904]: |.   oo+ .+*o     |
+[   16.699173] cloud-init[904]: |+o..Eo o.=.o+    |
+[   16.699598] cloud-init[904]: |o++.= . = o. .   |
+[   16.700055] cloud-init[904]: |+o O   o o o     |
+[   16.700389] cloud-init[904]: |=B. o   S . .    |
+[   16.700771] cloud-init[904]: |X .  .   o       |
+[   16.701220] cloud-init[904]: |+ .   .          |
+[   16.701558] cloud-init[904]: |.o ...           |
+[   16.702327] cloud-init[904]: |.. oo            |
+[[0;32m  OK  [0m] Started Daily Cleanup of Temporary Directories.
+[   16.704667] cloud-init[904]: +----[SHA256]-----+
+[   16.992519] cloud-init[904]: Generating public/private ecdsa key pair.
+[[0;32m  OK  [0m] Listening on D-Bus System Message Bus Socket.
+[   16.993633] cloud-init[904]: Your identification has been saved in /etc/ssh/ssh_host_ecdsa_key.
+[   17.100810] cloud-init[904]: Your public key has been saved in /etc/ssh/ssh_host_ecdsa_key.pub.
+[   17.101811] cloud-init[904]: The key fingerprint is:
+[   17.102207] cloud-init[904]: SHA256:gGgiVp89j04tdVV8ELXTg6LOa93g/r9EKd8BfP4f5Yk root@ubuntu-xenial
+[   17.102547] cloud-init[904]: The key's randomart image is:
+[[0;32m  OK  [0m] Started ACPI Events Check.
+[   17.102991] cloud-init[904]: +---[ECDSA 256]---+
+[   17.184234] cloud-init[904]: |   .         .==.|
+[   17.184560] cloud-init[904]: |  ....o     o ..+|
+[   17.184905] cloud-init[904]: |o.o .o.o . o + =o|
+[   17.185266] cloud-init[904]: |oo     .* o . + +|
+[   17.185305] cloud-init[904]: |       +S+   . =.|
+[   17.185342] cloud-init[904]: |      o +  .  =.*|
+[   17.185379] cloud-init[904]: |       . oo oE =+|
+[[0;32m  OK  [0m] Reached target Paths.
+[[   17.193923] cloud-init[904]: |         ..o .. o|
+[   17.501653] cloud-init[904]: |        .......oo|
+[   17.502075] cloud-init[904]: +----[SHA256]-----+
+[0;32m  OK  [0m] Listening on UUID daemon activation socket.
+[   17.502447] cloud-init[904]: Generating public/private ed25519 key pair.
+[   17.568426] cloud-init[904]: Your identification has been saved in /etc/ssh/ssh_host_ed25519_key.
+[   17.569187] cloud-init[904]: Your public key has been saved in /etc/ssh/ssh_host_ed25519_key.pub.
+         Starting Socket activation for snappy daemon.
+[   17.569663] cloud-init[904]: The key fingerprint is:
+[[0;32m  OK  [0m] Reached target Timers.
+[   17.679677] cloud-init[904]: SHA256:uhHOoa2ZMAbEondRNan82E/+4I9bxQfd4vv5+gfn+Wk root@ubuntu-xenial
+[   17.833169] cloud-init[904]: The key's randomart image is:
+[   17.834136] cloud-init[904]: +--[ED25519 256]--+
+[   17.834648] cloud-init[904]: |      ..o.       |
+[   17.834702] cloud-init[904]: |.    .  ..     ..|
+[[0;32m  OK  [0m] Reached target Cloud-config availability.
+[   17.835033] cloud-init[904]: |.o  .. .      o o|
+[   18.008585] cloud-init[904]: |+    .o      o o |
+[   18.023394] cloud-init[904]: |o . . o+S     + .|
+[   18.024213] cloud-init[904]: | o . =.+o .  ..o.|
+[[0;32m  OK  [0m] Listening on LXD - unix socket.
+[   18.025232] cloud-init[904]: |  + . *  +. . .+.|
+[   18.080749] cloud-init[904]: | . o + o .o+   E=|
+[   18.083267] cloud-init[904]: |    + .   ++o o=O|
+[   18.083517] cloud-init[904]: +----[SHA256]-----+
+[[0;32m  OK  [0m] Listening on Socket activation for snappy daemon.
+[[0;32m  OK  [0m] Started iSCSI initiator daemon (iscsid).
+         Starting Login to default iSCSI targets...
+[[0;32m  OK  [0m] Reached target Sockets.
+[[0;32m  OK  [0m] Reached target Basic System.
+[[0;32m  OK  [0m] Started Deferred execution scheduler.
+[[0;32m  OK  [0m] Started D-Bus System Message Bus.
+         Starting Virtualbox guest utils...
+[[0;32m  OK  [0m] Started Unattended Upgrades Shutdown.
+         Starting Pollinate to seed the pseudo random number generator...
+[[0;32m  OK  [0m] Started Regular background program processing daemon.
+         Starting LSB: Record successful boot for GRUB...
+         Starting LXD - container startup/shutdown...
+         Starting Login Service...
+[[0;32m  OK  [0m] Started ACPI event daemon.
+         Starting LSB: MD monitoring daemon...
+         Starting /etc/rc.local Compatibility...
+         Starting Accounts Service...
+[[0;32m  OK  [0m] Started FUSE filesystem for LXC.
+         Starting System Logging Service...
+         Starting Snappy daemon...
+[[0;32m  OK  [0m] Started System Logging Service.
+[[0;32m  OK  [0m] Started LXD - container startup/shutdown.
+[[0;32m  OK  [0m] Started /etc/rc.local Compatibility.
+[[0;32m  OK  [0m] Started Login to default iSCSI targets.
+[[0;32m  OK  [0m] Started LSB: Record successful boot for GRUB.
+[[0;32m  OK  [0m] Started LSB: MD monitoring daemon.
+[[0;32m  OK  [0m] Started Virtualbox guest utils.
+[[0;32m  OK  [0m] Started Snappy daemon.
+[[0;32m  OK  [0m] Started Login Service.
+         Starting Authenticate and Authorize Users to Run Privileged Tasks...
+         Starting Wait until snapd is fully seeded...
+[[0;32m  OK  [0m] Reached target Remote File Systems (Pre).
+[[0;32m  OK  [0m] Reached target Remote File Systems.
+         Starting LSB: Set the CPU Frequency Scaling governor to "ondemand"...
+         Starting Permit User Sessions...
+         Starting LSB: daemon to balance interrupts for SMP systems...
+         Starting LSB: automatic crash report generation...
+[[0;32m  OK  [0m] Started Permit User Sessions.
+[[0;32m  OK  [0m] Started Authenticate and Authorize Users to Run Privileged Tasks.
+[[0;32m  OK  [0m] Started Accounts Service.
+[[0;32m  OK  [0m] Started Pollinate to seed the pseudo random number generator.
+[[0;32m  OK  [0m] Started LSB: Set the CPU Frequency Scaling governor to "ondemand".
+         Starting OpenBSD Secure Shell server...
+         Starting Terminate Plymouth Boot Screen...
+         Starting Hold until boot process finishes up...
+[[0;32m  OK  [0m] Started LSB: daemon to balance interrupts for SMP systems.
+[[0;32m  OK  [0m] Started LSB: automatic crash report generation.
+[[0;32m  OK  [0m] Started Terminate Plymouth Boot Screen.
+[[0;32m  OK  [0m] Started Hold until boot process finishes up.
+[[0;32m  OK  [0m] Started OpenBSD Secure Shell server.
+[[0;32m  OK  [0m] Started Serial Getty on ttyS0.
+[[0;32m  OK  [0m] Started Getty on tty1.
+[[0;32m  OK  [0m] Reached target Login Prompts.
+         Starting Set console scheme...
+[[0;32m  OK  [0m] Started Set console scheme.
+[[0;32m  OK  [0m] Started Wait until snapd is fully seeded.
+         Starting Apply the settings specified in cloud-config...
+[[0;32m  OK  [0m] Reached target Multi-User System.
+[[0;32m  OK  [0m] Reached target Graphical Interface.
+         Starting Update UTMP about System Runlevel Changes...
+[[0;32m  OK  [0m] Started Update UTMP about System Runlevel Changes.
+[[0;32m  OK  [0m] Created slice User Slice of vagrant.
+         Starting User Manager for UID 1000...
+[[0;32m  OK  [0m] Started Session 1 of user vagrant.
+[[0;32m  OK  [0m] Started User Manager for UID 1000.
+[   20.860943] cloud-init[1222]: Generating locales (this might take a while)...
+[   22.431690] cloud-init[1222]:   en_US.UTF-8... done
+[   22.461605] cloud-init[1222]: Generation complete.
+[   22.808689] cloud-init[1222]: Cloud-init v. 18.3-9-g2e62cb8a-0ubuntu1~16.04.2 running 'modules:config' at Wed, 17 Oct 2018 17:13:26 +0000. Up 20.71 seconds.
+[[0;32m  OK  [0m] Started Apply the settings specified in cloud-config.
+         Starting Execute cloud user/final scripts...
+         Stopping User Manager for UID 1000...
+[[0;32m  OK  [0m] Stopped User Manager for UID 1000.
+[[0;32m  OK  [0m] Removed slice User Slice of vagrant.
+ci-info: no authorized ssh keys fingerprints found for user ubuntu.
+<14>Oct 17 17:13:29 ec2: 
+<14>Oct 17 17:13:29 ec2: #############################################################
+<14>Oct 17 17:13:29 ec2: -----BEGIN SSH HOST KEY FINGERPRINTS-----
+<14>Oct 17 17:13:29 ec2: 1024 SHA256:LUMgRV82fDwwGP8gKeBmTmKDzLAu3a/mIGSjboCxCHU root@ubuntu-xenial (DSA)
+<14>Oct 17 17:13:29 ec2: 256 SHA256:gGgiVp89j04tdVV8ELXTg6LOa93g/r9EKd8BfP4f5Yk root@ubuntu-xenial (ECDSA)
+<14>Oct 17 17:13:29 ec2: 256 SHA256:uhHOoa2ZMAbEondRNan82E/+4I9bxQfd4vv5+gfn+Wk root@ubuntu-xenial (ED25519)
+<14>Oct 17 17:13:29 ec2: 2048 SHA256:uhUI+omFmg6UxMV9K3EgD6ijtY+NSXVdbGJRXUoTAdc root@ubuntu-xenial (RSA)
+<14>Oct 17 17:13:29 ec2: -----END SSH HOST KEY FINGERPRINTS-----
+<14>Oct 17 17:13:29 ec2: #############################################################
+-----BEGIN SSH HOST KEY KEYS-----
+ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLVYJR4hxY1VgCKym7IxBYZ0KNA5qUAwLjVzkcJW47yWvRFvQP3YHq2ReKVWgOXIFS172LHNRXRxky6H4IqtSjM= root@ubuntu-xenial
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINnSD84tZCcMHuCqjYHFXxiIHJIHrdliaKu6icI7Xpra root@ubuntu-xenial
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC8Gy2Vvm2kupVy1k933EnVLa11ZC74TbEVVHUOA5N4nXBPUZ5JeAnKCSKV7hp8JxPJpF7JYwu4ooQSzxB1oHTDJfkdBYxLPH17ugEmzwYQULzZiLrKh6ao7VWTUjWJ2XGNS0c0zgr+y3DDkUklORjdZ4xP3M4QR2T79rc+7EpHl4iM2tZco7bXx9P/EXIhaUYARl2MIgWTbYZ7zJet0KMY4Mf1dxj+zHQBB2VgnaTsQlF/T2y3uqagtJwHz8amJs6fWE3AmdYjKgygekX3+j5flyyD7YWRXgQ51MmUp8UW3l5ijhfIQF9/89YEXN+SdUcHlsDC5s70jEbMXDYM47hL root@ubuntu-xenial
+-----END SSH HOST KEY KEYS-----
+[[0;32m  OK  [0m] Created slice User Slice of vagrant.
+[   23.894533] cloud-init[1426]: Cloud-init v. 18.3-9-g2e62cb8a-0ubuntu1~16.04.2 running 'modules:final' at Wed, 17 Oct 2018 17:13:28 +0000. Up 23.11 seconds.
+[   24.003598]          Starting User Manager for UID 1000...
+[[0;32m  OK  [0m] Started User Manager for UID 1000.
+cloud-init[1426]: ci-info: no authorized ssh keys fingerprints found for user ubuntu.
+[[0;32m  OK  [0m] Started Execute cloud user/final scripts.
+[   24.038597] cloud-init[1426]: Cloud-init v. 18.3-9-g2e62cb8a-0ubuntu1~16.04.2 finished at Wed, 17 Oct 2018 17:13:29 +0000. Datasource DataSourceNoCloud [seed=/dev/sdb][dsmode=net].  Up 23.88 seconds
+[[0;32m  OK  [0m] Started Session 2 of user vagrant.
+[[0;32m  OK  [0m] Reached target Cloud-init target.
+
+Ubuntu 16.04.5 LTS ubuntu-xenial ttyS0
+
+ubuntu-xenial login: 
