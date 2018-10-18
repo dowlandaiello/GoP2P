@@ -22,8 +22,8 @@ import (
 )
 
 var (
-	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                   // Init term flag
-	upnpFlag     = flag.Bool("upnp", false, "launch GoP2P without automatic UPnP port forwarding") // Init upnp flag
+	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                      // Init term flag
+	upnpFlag     = flag.Bool("no-upnp", false, "launch GoP2P without automatic UPnP port forwarding") // Init upnp flag
 )
 
 func main() {
@@ -31,6 +31,7 @@ func main() {
 
 	if !*upnpFlag {
 		go upnp.ForwardPortSilent(8080) // Forward port 8080
+		go upnp.ForwardPortSilent(3000) // Forward port 3000
 	}
 
 	startRPCServer() // Start RPC server
