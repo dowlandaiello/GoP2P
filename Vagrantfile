@@ -14,8 +14,6 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "ubuntu/trusty64"
 
-  config.vm.synced_folder "src", "/home/vagrant/workspace/src"
-
   config.vm.provision :shell, :path => "vagrantSetup/install.sh"
 
   # Disable automatic box update checking. If you disable this, then
