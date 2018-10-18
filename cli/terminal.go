@@ -384,7 +384,7 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{ByteInput: []byte(params[0]), Input: params[1]})) // Append params
-	case "GetExtIPAddrWithUpNP", "GetExtIPAddrWithoutUpNP", "GetCurrentTime", "GetCurrentDir":
+	case "GetExtIPAddrWithUpnp", "GetExtIPAddrWithoutUpnp", "GetCurrentTime", "GetCurrentDir":
 		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{})) // Append empty params
 	default:
 		return errors.New("illegal method: " + methodname + ", available methods: ParseStringMethodCall(), ParseStringParams(), StringStripReceiverCall(), StringStripParentheses(), StringFetchCallReceiver(), CheckAddress(), ConvertStringToReflectValues(), Sha3(), SendBytes(), GetExtIPAddrWithUpnp(), GetExtIPAddrWithoutUpnp(), GetCurrentTime(), GetCurrentDir()") // Return error
