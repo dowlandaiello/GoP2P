@@ -25,7 +25,7 @@ echo "export PATH=$PATH:/usr/local/go/bin" >> /home/vagrant/.bash_profile
 echo `export GOPATH=/home/vagrant/workspace:$PATH` >> /home/vagrant/.bash_profile
 
 #install git
-sudo apt install git-all
+sudo apt-get install git
 
 export GOPATH=/home/vagrant/workspace
 
