@@ -1,4 +1,8 @@
-
+# GoP2P node i/o
 *.gob
 
+# VSCode preferences
 .vscode/
+
+# Vagrant logs
+ubuntu-xenial-16.04-cloudimg-console.log
