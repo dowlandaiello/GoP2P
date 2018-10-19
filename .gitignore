@@ -4,7 +4,7 @@
 # VSCode preferences
 .vscode/
 
-# Vagrant logs
+# Vagrant log files
 ubuntu-xenial-16.04-cloudimg-console.log
 ubuntu-xenial-16.04-cloudimg-console.log
 
