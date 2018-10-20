@@ -1,6 +1,8 @@
 package common
 
 import (
+	"bufio"
+	"io"
 	"io/ioutil"
 	"net"
 )
@@ -83,4 +85,27 @@ func SendBytesReusable(b []byte, address string) (*net.Conn, error) {
 	}
 
 	return &connection, nil // No error occurred, return nil
+}
+
+// ReadConnectionAsync - attempt to read entirety of specified connection in an asynchronous fashion, returning data byte value
+func ReadConnectionAsync(conn net.Conn, buffer chan []byte, finished chan bool, err chan error) {
+	connReader := bufio.NewReader(conn) // Init connection reader
+
+	for {
+		line, readError := connReader.ReadBytes('\n') // Read line
+
+		if readError != nil && readError != io.EOF { // Check for non-eof err
+			err <- readError // Set error
+
+			finished <- true // Set finished
+
+			return // Return
+		} else if readError != nil {
+			break // Found EOF, break
+		}
+
+		buffer <- append(<-buffer, line...) // Append read line
+	}
+
+	finished <- true // Set finished
 }
