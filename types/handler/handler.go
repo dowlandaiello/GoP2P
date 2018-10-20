@@ -33,7 +33,7 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 // handleConnection - attempt to fetch connection metadata, handle it respectively (stack or singular)
 func handleConnection(node *node.Node, conn net.Conn) error {
 	defer conn.Close() // Close connection on finish
-	
+
 	finished := make(chan bool)         // Init finished
 	readData := make(chan []byte, 2048) // Init buffer
 	readErr := make(chan error)         // Init error
@@ -58,11 +58,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
-<<<<<<< HEAD
-	fmt.Println("\n\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.") // Log read data
-=======
 	fmt.Println("\n\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.") // Log read connection
->>>>>>> ba3657a5b535a7f0ae9f444e0f7b4107d2b43bb8
 
 	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
 		val, err := handleSingular(node, readConnection) // Handle singular event
