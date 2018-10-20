@@ -1,8 +1,10 @@
 package common
 
 import (
+	"io"
 	"io/ioutil"
 	"net"
+	"time"
 )
 
 // SendBytes - attempt to send specified bytes to given address
@@ -83,4 +85,26 @@ func SendBytesReusable(b []byte, address string) (*net.Conn, error) {
 	}
 
 	return &connection, nil // No error occurred, return nil
+}
+
+// ReadConnectionBytes - attempt to read bytes from connection
+func ReadConnectionBytes(conn net.Conn) ([]byte, error) {
+	buffer := make([]byte, 0, 4096) // Init buffer
+	tmp := make([]byte, 256)        // Init temp buffer
+
+	conn.SetReadDeadline(time.Now().Add(5 * time.Second)) // Set read deadline
+
+	for { // Iterate through connection
+		n, err := conn.Read(tmp) // Read line
+
+		if err != nil { // Check for errors
+			if err != io.EOF { // Check for non-eof
+				return []byte{}, err // Return found error
+			}
+
+			return buffer, nil // Return read bytes
+		}
+
+		buffer = append(buffer, tmp[:n]...) // Append read data
+	}
 }

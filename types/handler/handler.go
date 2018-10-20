@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"reflect"
 	"strconv"
@@ -33,7 +32,9 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 
 // handleConnection - attempt to fetch connection metadata, handle it respectively (stack or singular)
 func handleConnection(node *node.Node, conn net.Conn) error {
-	data, err := ioutil.ReadAll(conn) // Attempt to read from connection
+	defer conn.Close() // Close connection on handling
+
+	data, err := common.ReadConnectionBytes(conn) // Read connection
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -47,7 +48,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
-	fmt.Println("\n\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.")
+	fmt.Println("\n\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.") // Log read data
 
 	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
 		val, err := handleSingular(node, readConnection) // Handle singular event
