@@ -1,7 +1,8 @@
 package common
 
 import (
-	"io"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"time"
@@ -87,24 +88,42 @@ func SendBytesReusable(b []byte, address string) (*net.Conn, error) {
 	return &connection, nil // No error occurred, return nil
 }
 
-// ReadConnectionBytes - attempt to read bytes from connection
-func ReadConnectionBytes(conn net.Conn) ([]byte, error) {
-	buffer := make([]byte, 0, 4096) // Init buffer
-	tmp := make([]byte, 256)        // Init temp buffer
+// ReadConnectionAsync - attempt to read entirety of specified connection in an asynchronous fashion, returning data byte value
+func ReadConnectionAsync(conn net.Conn, buffer chan []byte, finished chan bool, err chan error) {
+	go func(buffer chan []byte, err chan error) { // Read
+		for {
+			data := make([]byte, 512) // Init buffer
 
-	conn.SetReadDeadline(time.Now().Add(5 * time.Second)) // Set read deadline
+			_, readErr := conn.Read(data) // Read from connection
 
-	for { // Iterate through connection
-		n, err := conn.Read(tmp) // Read line
+			if readErr != nil { // Check for errors
+				err <- readErr // Write error
 
-		if err != nil { // Check for errors
-			if err != io.EOF { // Check for non-eof
-				return []byte{}, err // Return found error
+				return // Break
 			}
 
-			return buffer, nil // Return read bytes
+			buffer <- data // Write data
 		}
+	}(buffer, err)
 
-		buffer = append(buffer, tmp[:n]...) // Append read data
+	ticker := time.Tick(time.Second) // Init time
+
+	for {
+		select {
+		case data := <-buffer: // Read data from connection
+			buffer <- data // Set buffer
+
+			finished <- true // Set finished
+
+			fmt.Println(<-finished) // Log finished
+		case <-err: // Check for error
+			finished <- true // Set finished
+
+			break // Break loop
+		case <-ticker: // Timed out
+			err <- errors.New("connection timed out") // Set error
+
+			finished <- true // Set finished
+		}
 	}
 }

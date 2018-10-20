@@ -32,13 +32,23 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 
 // handleConnection - attempt to fetch connection metadata, handle it respectively (stack or singular)
 func handleConnection(node *node.Node, conn net.Conn) error {
-	defer conn.Close() // Close connection on handling
+	defer conn.Close() // Close connection on finish
+	
+	finished := make(chan bool)         // Init finished
+	readData := make(chan []byte, 2048) // Init buffer
+	readErr := make(chan error)         // Init error
 
-	data, err := common.ReadConnectionBytes(conn) // Read connection
+	go common.ReadConnectionAsync(conn, readData, finished, readErr) // Attempt to read from connection
 
-	if err != nil { // Check for errors
-		return err // Return found error
+	<-finished // Wait for finished
+
+	if <-readErr != nil { // Check for errors
+		return <-readErr // Return found error
 	}
+
+	data := <-readData // Read data
+
+	close(readData) // Close channel
 
 	fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), string(data)) // Log connection
 
@@ -48,7 +58,11 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
+<<<<<<< HEAD
 	fmt.Println("\n\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.") // Log read data
+=======
+	fmt.Println("\n\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.") // Log read connection
+>>>>>>> ba3657a5b535a7f0ae9f444e0f7b4107d2b43bb8
 
 	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
 		val, err := handleSingular(node, readConnection) // Handle singular event
@@ -57,9 +71,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 			return err // Return found error
 		}
 
-		response := connection.Response{Val: [][]byte{val}} // Initialize response
-
-		serializedResponse, err := common.SerializeToBytes(response) // Attempt to serialize response
+		serializedResponse, err := common.SerializeToBytes(connection.Response{Val: [][]byte{val}}) // Attempt to serialize response
 
 		if err != nil { // Check for errors
 			return err // Return found error
