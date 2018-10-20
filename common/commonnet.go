@@ -1,10 +1,11 @@
 package common
 
 import (
-	"bufio"
-	"io"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"net"
+	"time"
 )
 
 // SendBytes - attempt to send specified bytes to given address
@@ -89,23 +90,40 @@ func SendBytesReusable(b []byte, address string) (*net.Conn, error) {
 
 // ReadConnectionAsync - attempt to read entirety of specified connection in an asynchronous fashion, returning data byte value
 func ReadConnectionAsync(conn net.Conn, buffer chan []byte, finished chan bool, err chan error) {
-	connReader := bufio.NewReader(conn) // Init connection reader
+	go func(buffer chan []byte, err chan error) { // Read
+		for {
+			data := make([]byte, 512) // Init buffer
+
+			_, readErr := conn.Read(data) // Read from connection
+
+			if readErr != nil { // Check for errors
+				err <- readErr // Write error
+
+				return // Break
+			}
+
+			buffer <- data // Write data
+		}
+	}(buffer, err)
+
+	ticker := time.Tick(time.Second) // Init time
 
 	for {
-		line, readError := connReader.ReadBytes('\n') // Read line
-
-		if readError != nil && readError != io.EOF { // Check for non-eof err
-			err <- readError // Set error
+		select {
+		case data := <-buffer: // Read data from connection
+			buffer <- data // Set buffer
 
 			finished <- true // Set finished
 
-			return // Return
-		} else if readError != nil {
-			break // Found EOF, break
+			fmt.Println(<-finished) // Log finished
+		case <-err: // Check for error
+			finished <- true // Set finished
+
+			break // Break loop
+		case <-ticker: // Timed out
+			err <- errors.New("connection timed out") // Set error
+
+			finished <- true // Set finished
 		}
-
-		buffer <- append(<-buffer, line...) // Append read line
 	}
-
-	finished <- true // Set finished
 }
