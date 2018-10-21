@@ -250,21 +250,25 @@ func getIPFromProvider(provider string) (string, error) {
 }
 
 func getIPFromProviderAsync(provider string, buffer *[]string, finished chan bool) {
-	resp, err := http.Get(provider) // Attempt to check IP via provider
+	if len(*buffer) == 0 { // Check IP not already determined
+		resp, err := http.Get(provider) // Attempt to check IP via provider
 
-	if err != nil { // Check for errors
-		fmt.Println(err.Error()) // Log error
+		if err != nil { // Check for errors
+			fmt.Println(err.Error()) // Log error
+		} else {
+			defer resp.Body.Close() // Close connection
+
+			ip, _ := ioutil.ReadAll(resp.Body) // Read address
+
+			stringVal := string(ip[:]) // Fetch string value
+
+			if len(*buffer) == 0 { // Double check IP not already determined
+				*buffer = append(*buffer, strings.TrimSpace(stringVal)) // Set ip
+
+				finished <- true // Set finished
+			}
+		}
 	}
-
-	defer resp.Body.Close() // Close connection
-
-	ip, _ := ioutil.ReadAll(resp.Body) // Read address
-
-	stringVal := string(ip[:]) // Fetch string value
-
-	(*buffer) = append(*buffer, strings.TrimSpace(stringVal)) // Set ip
-
-	finished <- true // Set finished
 }
 
 func getNonNilInStringSlice(slice []string) string {
