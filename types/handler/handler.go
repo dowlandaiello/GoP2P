@@ -34,7 +34,19 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 func handleConnection(node *node.Node, conn net.Conn) error {
 	defer conn.Close() // Close connection on finish
 
-	data, err := common.ReadConnectionDelim(conn) // Read connection
+	dataBuffer := make(chan []byte, 2048) // Init data buffer
+	readErr := make(chan error)           // Init error
+	finished := make(chan bool)           // Init finished
+
+	go common.ReadConnectionAsync(conn, dataBuffer, finished, readErr) // Read connection
+
+	<-finished // Wait until finished
+
+	err := <-readErr     // Fetch error
+	data := <-dataBuffer // Fetch read data
+
+	close(readErr)  // Close error channel
+	close(finished) // Close finished
 
 	if err != nil { // Check for errors
 		return err // Return found error
