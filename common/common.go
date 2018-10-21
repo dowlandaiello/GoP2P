@@ -24,6 +24,9 @@ const (
 
 	// GoP2PTestNetID - GoP2P testing network identifier
 	GoP2PTestNetID = 4519161392015
+
+	// ConnectionDelimiter - GoP2P standard connection delimiter
+	ConnectionDelimiter = byte('\f')
 )
 
 var (
