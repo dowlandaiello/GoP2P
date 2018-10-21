@@ -280,17 +280,9 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 			return errors.New("invalid parameters (requires string, uint32, uint32)") // Return error
 		}
 
-		acceptableTimeout, err := strconv.Atoi(params[2]) // Fetch acceptable timeout
+		acceptableTimeout, _ := strconv.Atoi(params[2]) // Fetch acceptable timeout
 
-		if err != nil { // Check for errors
-			return err // Return found error
-		}
-
-		networkID, err := strconv.Atoi(params[1]) // Fetch network id
-
-		if err != nil { // Check for errors
-			return err // Return found error
-		}
+		networkID, _ := strconv.Atoi(params[1]) // Fetch network id
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{NetworkName: params[0], NetworkID: uint32(networkID), AcceptableTimeout: uint32(acceptableTimeout)})) // Append params
 	case "AddNode", "UpdateRemoteDatabase":
@@ -304,11 +296,7 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 			return errors.New("invalid parameters (requires string, uint32, string)") // Return error
 		}
 
-		intVal, err := strconv.Atoi(params[1]) // Convert port to uint
-
-		if err != nil { // Check for errors
-			return err // Return found error
-		}
+		intVal, _ := strconv.Atoi(params[1]) // Convert port to uint
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{Address: params[0], Port: uint32(intVal), NetworkName: params[2]})) // Append params
 	case "RemoveNode", "QueryForAddress":
