@@ -31,7 +31,7 @@ const (
 
 var (
 	// ExtIPProviders - preset macro defining list of available external IP checking services
-	ExtIPProviders = []string{"http://checkip.amazonaws.com/"}
+	ExtIPProviders = []string{"http://checkip.amazonaws.com/", "http://icanhazip.com/", "http://www.trackip.net/ip", "http://bot.whatismyipaddress.com/", "https://ipecho.net/plain", "http://myexternalip.com/raw"}
 )
 
 /*
@@ -182,22 +182,19 @@ func GetExtIPAddrWithUpNP() (string, error) {
 
 // GetExtIPAddrWithoutUpNP - retrieve the external IP address of the current machine w/o upnp
 func GetExtIPAddrWithoutUpNP() (string, error) {
-	resp, err := http.Get("http://checkip.amazonaws.com/") // Attempt to check IP via aws
-	if err != nil {                                        // Check for errors
-		return "", err // Return error
+	addresses := []string{} // Init address buffer
+
+	finished := make(chan bool) // Init finished
+
+	for _, provider := range ExtIPProviders { // Iterate through providers
+		go getIPFromProviderAsync(provider, &addresses, finished) // Fetch IP
 	}
 
-	defer resp.Body.Close() // Close connection
+	<-finished // Wait until finished
 
-	ip, err := ioutil.ReadAll(resp.Body) // Read address
+	close(finished) // Close channel
 
-	if err != nil { // Check for errors
-		return "", err // Return error
-	}
-
-	stringVal := string(ip[:]) // Fetch string value
-
-	return strings.TrimSpace(stringVal), nil // Return ip
+	return getNonNilInStringSlice(addresses), nil // Return valid address
 }
 
 // GetCurrentTime - get current time in the UTC format
@@ -226,4 +223,60 @@ func Sha3(b []byte) string {
 
 /*
 	END EXPORTED METHODS
+*/
+
+/*
+	BEGIN INTERNAL METHODS:
+*/
+
+func getIPFromProvider(provider string) (string, error) {
+	resp, err := http.Get(provider) // Attempt to check IP via provider
+
+	if err != nil { // Check for errors
+		return "", err // Return error
+	}
+
+	defer resp.Body.Close() // Close connection
+
+	ip, err := ioutil.ReadAll(resp.Body) // Read address
+
+	if err != nil { // Check for errors
+		return "", err // Return error
+	}
+
+	stringVal := string(ip[:]) // Fetch string value
+
+	return strings.TrimSpace(stringVal), nil // Return ip
+}
+
+func getIPFromProviderAsync(provider string, buffer *[]string, finished chan bool) {
+	resp, err := http.Get(provider) // Attempt to check IP via provider
+
+	if err != nil { // Check for errors
+		fmt.Println(err.Error()) // Log error
+	}
+
+	defer resp.Body.Close() // Close connection
+
+	ip, _ := ioutil.ReadAll(resp.Body) // Read address
+
+	stringVal := string(ip[:]) // Fetch string value
+
+	(*buffer) = append(*buffer, strings.TrimSpace(stringVal)) // Set ip
+
+	finished <- true // Set finished
+}
+
+func getNonNilInStringSlice(slice []string) string {
+	for _, entry := range slice { // Iterate through entries
+		if entry != "" { // Check for non-nil entry
+			return entry // Return valid entry
+		}
+	}
+
+	return "" // Couldn't find valid address, return nil
+}
+
+/*
+	END INTERNAL METHODS
 */
