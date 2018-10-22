@@ -116,6 +116,8 @@ func (connection *Connection) attemptStack() ([]byte, error) {
 		}
 	}
 
+	fmt.Println("test")
+
 	return result, nil // No error occurred, return nil
 }
 
