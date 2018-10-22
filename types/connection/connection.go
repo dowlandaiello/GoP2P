@@ -102,6 +102,8 @@ func (connection *Connection) attempt() ([]byte, error) {
 func (connection *Connection) attemptStack() ([]byte, error) {
 	fmt.Println("-- CONNECTION -- attempting stack") // Log connection
 
+	fmt.Println("test")
+
 	result := []byte{} // Init buffer
 
 	var err error // Init error buffer
