@@ -83,7 +83,7 @@ func (connection *Connection) Attempt() ([]byte, error) {
 func (connection *Connection) attempt() ([]byte, error) {
 	fmt.Println("-- CONNECTION -- attempting connection")
 
-	serializedConnection, err := common.SerializeToBytes(connection) // Serialize connection
+	serializedConnection, err := common.SerializeToBytes(*connection) // Serialize connection
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
