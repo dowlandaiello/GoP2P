@@ -102,20 +102,16 @@ func (connection *Connection) attempt() ([]byte, error) {
 func (connection *Connection) attemptStack() ([]byte, error) {
 	fmt.Println("-- CONNECTION -- attempting stack") // Log connection
 
-	x := 0 // Init iterator
-
 	result := []byte{} // Init buffer
 
 	var err error // Init error buffer
 
-	for x != len(connection.ConnectionStack) { // Iterate through connection stack
+	for x := 0; x != len(connection.ConnectionStack); x++ { // Iterate through connection stack
 		result, err = connection.ConnectionStack[x].Attempt() // Attempt event
 
 		if err != nil { // Check for errors
 			return nil, err // Return found error
 		}
-
-		x++ // Increment iterator
 	}
 
 	return result, nil // No error occurred, return nil
