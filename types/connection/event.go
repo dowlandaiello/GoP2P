@@ -2,7 +2,6 @@ package connection
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -68,8 +67,6 @@ func (event *Event) attempt() ([]byte, error) {
 	if err != nil { // Check for errors
 		return nil, err // Return found error
 	}
-
-	fmt.Println("sending event to address: " + event.DestinationNode.Address + ":" + strconv.Itoa(event.Port))
 
 	result, err := common.SendBytesResult(serializedEvent, event.DestinationNode.Address+":"+strconv.Itoa(event.Port)) // Attempt to send event
 

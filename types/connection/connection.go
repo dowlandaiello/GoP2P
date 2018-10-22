@@ -107,6 +107,8 @@ func (connection *Connection) attemptStack() ([]byte, error) {
 	var err error // Init error buffer
 
 	for x := 0; x != len(connection.ConnectionStack); x++ { // Iterate through connection stack
+		fmt.Println("attempting command " + connection.ConnectionStack[x].Command.Command)
+
 		result, err = connection.ConnectionStack[x].Attempt() // Attempt event
 
 		if err != nil { // Check for errors
