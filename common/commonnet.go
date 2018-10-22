@@ -43,13 +43,19 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 		return nil, err // Return found errors
 	}
 
+	result, err := ioutil.ReadAll(connection) // Read connection
+
+	if err != nil { // Check for errors
+		return nil, err // Return found errors
+	}
+
 	err = connection.Close() // Close connection
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
 	}
 
-	return []byte("test"), nil // No error occurred, return nil
+	return result, nil // No error occurred, return nil
 }
 
 // SendBytesWithConnection - attempt to send specified bytes to given address via given connection
