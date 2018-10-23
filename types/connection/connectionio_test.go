@@ -17,7 +17,7 @@ func TestFromBytes(t *testing.T) {
 		t.Logf("WARNING: socket actions require sudo privileges.") // Log warning
 	}
 
-	serializedConnection, err := common.SerializeToBytes(connection) // Serialize connection
+	serializedConnection, err := common.SerializeToBytes(*connection) // Serialize connection
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error

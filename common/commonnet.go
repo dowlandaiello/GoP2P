@@ -2,9 +2,15 @@ package common
 
 import (
 	"bufio"
+	"errors"
 	"io/ioutil"
 	"net"
+	"time"
 )
+
+/*
+	BEGIN EXPORTED METHODS
+*/
 
 // SendBytes - attempt to send specified bytes to given address
 func SendBytes(b []byte, address string) error {
@@ -43,7 +49,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 		return nil, err // Return found errors
 	}
 
-	result, err := ioutil.ReadAll(connection) // Read connection
+	result, err := ReadConnectionWaitAsync(connection) // Read connection
 
 	if err != nil { // Check for errors
 		return nil, err // Return found errors
@@ -116,3 +122,42 @@ func ReadConnectionAsync(conn net.Conn, buffer chan []byte, finished chan bool, 
 
 	return
 }
+
+// ReadConnectionWaitAsync - attempt to read from connection in an asynchronous fashion, after waiting for peer to write
+func ReadConnectionWaitAsync(conn net.Conn) ([]byte, error) {
+	data := make(chan []byte) // Init buffer
+	err := make(chan error)   // Init error buffer
+
+	go func(data chan []byte, err chan error) {
+		for {
+			readData := make([]byte, 2048) // Init read buffer
+
+			_, readErr := conn.Read(readData) // Read into buffer
+
+			if readErr != nil { // Check for errors
+				err <- readErr // Write found error
+
+				return // Return
+			}
+
+			data <- readData // Write read data
+		}
+	}(data, err)
+
+	ticker := time.Tick(time.Second) // Init ticker
+
+	for { // Continuously read from connection
+		select {
+		case readData := <-data: // Read data from connection
+			return readData, nil // Return read data
+		case readErr := <-err: // Error on read
+			return []byte{}, readErr // Return error
+		case <-ticker: // Timed out
+			return []byte{}, errors.New("timed out") // Return timed out error
+		}
+	}
+}
+
+/*
+	END EXPORTED METHODS
+*/
