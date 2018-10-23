@@ -45,7 +45,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
-	fmt.Println("\n\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.") // Log read connection
+	fmt.Println("\n\n-- CONNECTION " + conn.RemoteAddr().String() + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.") // Log read connection
 
 	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
 		val, err := handleSingular(node, readConnection) // Handle singular event
@@ -60,7 +60,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 			return err // Return found error
 		}
 
-		fmt.Println("\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- responding with data " + string(serializedResponse))
+		fmt.Println("\n-- CONNECTION " + conn.RemoteAddr().String() + " -- responding with data " + string(serializedResponse))
 
 		conn.Write(serializedResponse) // Write success
 
@@ -143,7 +143,7 @@ func handleCommand(node *node.Node, event *connection.Event) ([]byte, error) {
 
 	*node = *refreshedNode // Reset refreshed node
 
-	switch event.Command.Command {
+	switch event.Command.Command { // Check for commands
 	case "NewVariable":
 		return handleNewVariable(node, event) // Attempt command
 	case "QueryValue":

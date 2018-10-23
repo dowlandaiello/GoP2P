@@ -3,6 +3,7 @@ package common
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"time"
@@ -55,11 +56,15 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 		return nil, err // Return found errors
 	}
 
+	fmt.Println("\nAttempting to close connection...") // Log close
+
 	err = connection.Close() // Close connection
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
 	}
+
+	fmt.Println("\nSuccessfully closed connection") // Log close
 
 	return result, nil // No error occurred, return nil
 }
