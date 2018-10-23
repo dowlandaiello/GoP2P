@@ -3,11 +3,9 @@ package handler
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"reflect"
 	"strconv"
-	"strings"
 
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/connection"
@@ -33,15 +31,13 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 
 // handleConnection - attempt to fetch connection metadata, handle it respectively (stack or singular)
 func handleConnection(node *node.Node, conn net.Conn) error {
-	defer conn.Close() // Close connection on finish
-
-	data, err := ioutil.ReadAll(conn) // Read entire connection
+	data, err := common.ReadConnectionWaitAsync(conn) // Read entire connection
 
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
 
-	fmt.Printf("\n\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), string(data)) // Log connection
+	fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), string(data)) // Log connection
 
 	readConnection, err := connection.FromBytes(data) // Attempt to decode data
 
@@ -49,7 +45,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
-	fmt.Println("\n\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.") // Log read connection
+	fmt.Println("\n\n-- CONNECTION " + conn.RemoteAddr().String() + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.") // Log read connection
 
 	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
 		val, err := handleSingular(node, readConnection) // Handle singular event
@@ -64,7 +60,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 			return err // Return found error
 		}
 
-		fmt.Println("\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- responding with data " + string(serializedResponse))
+		fmt.Println("\n-- CONNECTION " + conn.RemoteAddr().String() + " -- responding with data " + string(serializedResponse))
 
 		conn.Write(serializedResponse) // Write success
 
@@ -128,7 +124,7 @@ func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, 
 	for x := 0; x != len(connection.ConnectionStack); x++ { // Iterate through stack
 		val, _ := handleCommand(node, &connection.ConnectionStack[x]) // Attempt to handle command
 
-		responses = append(responses, val)
+		responses = append(responses, val) // Append response
 	}
 
 	if len(responses) == 0 {
@@ -139,17 +135,25 @@ func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, 
 }
 
 func handleCommand(node *node.Node, event *connection.Event) ([]byte, error) {
-	switch {
-	case strings.Contains(event.Command.Command, "NewVariable"):
+	refreshedNode, err := refreshNode() // Refresh node
+
+	if err != nil { // Check for errors
+		return []byte{}, err // Return found error
+	}
+
+	*node = *refreshedNode // Reset refreshed node
+
+	switch event.Command.Command { // Check for commands
+	case "NewVariable":
 		return handleNewVariable(node, event) // Attempt command
-	case strings.Contains(event.Command.Command, "QueryValue"):
+	case "QueryValue":
 		return handleQueryValue(node, event) // Attempt command
-	case strings.Contains(event.Command.Command, "QueryType"):
+	case "QueryType":
 		return handleQueryType(node, event) // Attempt command
-	case strings.Contains(event.Command.Command, "AddVariable"):
+	case "AddVariable":
 		return handleAddVariable(node, event) // Attempt command
 	default:
-		return nil, nil // Return nil value
+		return nil, errors.New("invalid command " + event.Command.Command) // Return nil value
 	}
 }
 
@@ -223,4 +227,20 @@ func handleAddVariable(node *node.Node, event *connection.Event) ([]byte, error)
 	}
 
 	return serializedValue, nil // Return serialized value
+}
+
+func refreshNode() (*node.Node, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return &node.Node{}, err // return found error
+	}
+
+	readNode, err := node.ReadNodeFromMemory(currentDir) // Read node from working dir
+
+	if err != nil { // Check for errors
+		return &node.Node{}, err // return found error
+	}
+
+	return readNode, nil // Return found node
 }

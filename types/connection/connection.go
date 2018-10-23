@@ -68,22 +68,18 @@ func NewResolution(data []byte, guidingType interface{}) (*Resolution, error) {
 
 // Attempt - attempts to carry out connection, if event stack is provided, begins to iterate through list
 func (connection *Connection) Attempt() ([]byte, error) {
-	if len(connection.ConnectionStack) == 0 { // No connection stack, attempt connection
-		return connection.attempt() // Return result
-	}
-
-	return connection.attemptStack() // Found connection stack, handle respectively
+	return connection.attempt() // Found connection stack, handle respectively
 }
 
 /* END EXPORTED METHODS */
 
 /* BEGIN INTERNAL METHODS */
 
-// attempt - attempt singular connection
+// attempt - attempt connection
 func (connection *Connection) attempt() ([]byte, error) {
 	fmt.Println("-- CONNECTION -- attempting connection")
 
-	serializedConnection, err := common.SerializeToBytes(connection) // Serialize connection
+	serializedConnection, err := common.SerializeToBytes(*connection) // Serialize connection
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -93,29 +89,6 @@ func (connection *Connection) attempt() ([]byte, error) {
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
-	}
-
-	return result, nil // No error occurred, return nil
-}
-
-// attemptStack - iterate through connection stack, attempt each event
-func (connection *Connection) attemptStack() ([]byte, error) {
-	fmt.Println("-- CONNECTION -- attempting stack") // Log connection
-
-	x := 0 // Init iterator
-
-	result := []byte{} // Init buffer
-
-	var err error // Init error buffer
-
-	for x != len(connection.ConnectionStack) { // Iterate through connection stack
-		result, err = connection.ConnectionStack[x].Attempt() // Attempt event
-
-		if err != nil { // Check for errors
-			return nil, err // Return found error
-		}
-
-		x++ // Increment iterator
 	}
 
 	return result, nil // No error occurred, return nil

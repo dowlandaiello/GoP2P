@@ -4,11 +4,9 @@ import (
 	"errors"
 	"reflect"
 
-	"github.com/mitsukomegumi/GoP2P/types/command"
-
-	"github.com/mitsukomegumi/GoP2P/types/connection"
-
 	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/types/command"
+	"github.com/mitsukomegumi/GoP2P/types/connection"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -154,7 +152,7 @@ func FetchRemoteDatabase(bootstrapAddress string, databasePort uint, databaseAli
 		return &NodeDatabase{}, err // Return found error
 	}
 
-	resolution, err := connection.NewResolution([]byte("dbFetchRequest"), "dbFetchRequest")
+	resolution, err := connection.NewResolution([]byte("dbFetchRequest"), "dbFetchRequest") // Init resolution
 
 	if err != nil { // Check for errors
 		return &NodeDatabase{}, err // Return found error
@@ -172,7 +170,7 @@ func FetchRemoteDatabase(bootstrapAddress string, databasePort uint, databaseAli
 		return &NodeDatabase{}, err // Return found error
 	}
 
-	connection, err := connection.NewConnection(localNode, &node.Node{Address: bootstrapAddress}, int(databasePort), []byte("dbFetchRequest"), "relay", []connection.Event{*event})
+	connection, err := connection.NewConnection(localNode, &node.Node{Address: bootstrapAddress}, int(databasePort), []byte("dbFetchRequest"), "relay", []connection.Event{*event}) // Init connection
 
 	if err != nil { // Check for errors
 		return &NodeDatabase{}, err // Return found error

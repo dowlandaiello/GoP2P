@@ -62,7 +62,7 @@ func (event *Event) Attempt() ([]byte, error) {
 
 // attempt - wrapper
 func (event *Event) attempt() ([]byte, error) {
-	serializedEvent, err := common.SerializeToBytes(event) // Serialize event
+	serializedEvent, err := common.SerializeToBytes(*event) // Serialize event
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
