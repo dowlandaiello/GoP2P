@@ -2,7 +2,7 @@ version: "{build}"
 
 # Source Config
 
-clone_folder: c:\gopath\src\github.com\mitsukomegumi\gop2p
+clone_folder: c:\gopath\src\github.com\mitsukomegumi\GoP2P
 
 # Build host
 
@@ -30,5 +30,5 @@ build: false
 deploy: false
 
 test_script:
-  - go build github.com/mitsukomegumi/gop2p
-  - cd c:\gopath\src\github.com\mitsukomegumi\gop2p && go test ./...
+  - go build github.com/mitsukomegumi/GoP2P
+  - cd c:\gopath\src\github.com\mitsukomegumi\GoP2P && go test ./...
