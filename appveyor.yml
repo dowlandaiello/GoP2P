@@ -31,4 +31,3 @@ deploy: false
 
 test_script:
   - go build github.com/mitsukomegumi/GoP2P
-  - cd c:\gopath\src\github.com\mitsukomegumi\GoP2P && go test ./...
