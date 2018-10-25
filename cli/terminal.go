@@ -285,7 +285,7 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 		networkID, _ := strconv.Atoi(params[1]) // Fetch network id
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{NetworkName: params[0], NetworkID: uint32(networkID), AcceptableTimeout: uint32(acceptableTimeout)})) // Append params
-	case "AddNode", "UpdateRemoteDatabase":
+	case "AddNode", "UpdateRemoteDatabase", "LogDatabase":
 		if len(params) != 1 { // Check for valid parameters
 			return errors.New("invalid parameters (requires string)") // Return error
 		}

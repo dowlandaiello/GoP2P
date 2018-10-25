@@ -319,6 +319,31 @@ func (server *Server) FetchRemoteDatabase(ctx context.Context, req *databaseProt
 	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
 }
 
+// LogDatabase - database.LogDatabase RPC handler
+func (server *Server) LogDatabase(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	env, err := getLocalEnvironment(currentDir) // Fetch node, env from working directory
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	db, err := database.ReadDatabaseFromMemory(env, req.NetworkName) // Fetch database with alias
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	db.LogDatabase() // Log database
+
+	return &databaseProto.GeneralResponse{Message: ""}, nil // Return response
+}
+
 // FromBytes - database.FromBytes RPC handler
 func (server *Server) FromBytes(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
 	currentDir, err := common.GetCurrentDir() // Fetch current dir

@@ -12,6 +12,7 @@ service Database {
     rpc UpdateRemoteDatabase(GeneralRequest) returns (GeneralResponse) {} // Update remote database instances
     rpc JoinDatabase(GeneralRequest) returns (GeneralResponse) {} // Join remote database instance
     rpc FetchRemoteDatabase(GeneralRequest) returns (GeneralResponse) {} // Fetch remote database instance
+    rpc LogDatabase(GeneralRequest) returns (GeneralResponse) {} // Serialize and print contents of entire database
     rpc FromBytes(GeneralRequest) returns (GeneralResponse) {} // Read database from bytes
 }
 

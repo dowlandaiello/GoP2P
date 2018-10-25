@@ -1,7 +1,9 @@
 package database
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"reflect"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -211,6 +213,19 @@ func FetchRemoteDatabase(bootstrapAddress string, databasePort uint, databaseAli
 }
 
 /* END NODE METHODS */
+
+// LogDatabase - serialize and print contents of entire database
+func (db *NodeDatabase) LogDatabase() error {
+	marshaledVal, err := json.MarshalIndent(*db, "", "  ") // Marshal database
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	fmt.Println("\n" + string(marshaledVal)) // Log marshaled val
+
+	return nil // No error occurred, return nil
+}
 
 /*
 	END EXPORTED METHODS
