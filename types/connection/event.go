@@ -68,13 +68,13 @@ func (event *Event) attempt() ([]byte, error) {
 		return nil, err // Return found error
 	}
 
-	result, err := common.SendBytesResult(serializedEvent, event.DestinationNode.Address+":"+strconv.Itoa(event.Port)) // Attempt to send event
+	resultBytes, err := common.SendBytesResult(serializedEvent, event.DestinationNode.Address+":"+strconv.Itoa(event.Port)) // Attempt to send event
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
 	}
 
-	return result, nil // No error occurred, return nil
+	return resultBytes, nil // No error occurred, return nil
 }
 
 /* END INTERNAL METHODS */

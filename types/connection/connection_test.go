@@ -63,7 +63,8 @@ func TestAttemptConnectionWithCommand(t *testing.T) {
 
 // TestNewResolution - test functionality of resolution initializer
 func TestNewResolution(t *testing.T) {
-	val := []byte("test")                      // Create temporary testing value
+	val := []byte("test") // Create temporary testing value
+
 	resolution, err := NewResolution(val, val) // Attempt to create new resolution
 
 	if err != nil { // Check for errors

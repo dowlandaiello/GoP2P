@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -69,6 +70,23 @@ func NewResolution(data []byte, guidingType interface{}) (*Resolution, error) {
 // Attempt - attempts to carry out connection, if event stack is provided, begins to iterate through list
 func (connection *Connection) Attempt() ([]byte, error) {
 	return connection.attempt() // Found connection stack, handle respectively
+}
+
+// AttemptVariable - attempts to carry out connection, returning variable response
+func (connection *Connection) AttemptVariable() (*environment.Variable, error) {
+	response, err := connection.attempt() // Attempt connection
+
+	if err != nil { // Check for errors
+		return &environment.Variable{}, err // Return found error
+	}
+
+	decodedResponse, err := ResponseFromBytes(response) // Fetch decoded result
+
+	if err != nil { // Check for errors
+		return &environment.Variable{}, err // Return found error
+	}
+
+	return environment.VariableFromBytes(decodedResponse.Val[0]) // Return final decoded response
 }
 
 /* END EXPORTED METHODS */

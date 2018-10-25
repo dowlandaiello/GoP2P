@@ -1,7 +1,9 @@
 package environment
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -108,6 +110,27 @@ func (environment *Environment) AddVariable(variable *Variable, replaceExisting 
 	return environment.addVariable(variable)
 }
 
+// LogEnvironment - serialize and print contents of entire environment
+func (environment *Environment) LogEnvironment() error {
+	marshaledVal, err := json.MarshalIndent(*environment, "", "  ") // Marshal environment
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	fmt.Println("\n" + string(marshaledVal)) // Log marshaled val
+
+	return nil // No error occurred, return nil
+}
+
+/*
+	END EXPORTED METHODS
+*/
+
+/*
+	BEGIN INTERNAL METHODS
+*/
+
 func (environment *Environment) replaceVariable(variable *Variable) error {
 	foundVariable, err := environment.QueryType(variable.VariableType) // Query type
 
@@ -131,5 +154,5 @@ func (environment *Environment) addVariable(variable *Variable) error {
 }
 
 /*
-	END EXPORTED METHODS
+	BEGIN INTERNAL METHODS
 */

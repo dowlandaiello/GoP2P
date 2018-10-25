@@ -60,7 +60,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 			return err // Return found error
 		}
 
-		fmt.Println("\n-- CONNECTION " + conn.RemoteAddr().String() + " -- responding with data " + string(serializedResponse))
+		fmt.Println("\n-- CONNECTION " + conn.RemoteAddr().String() + " -- responding with data " + string(serializedResponse)[0:10] + "...")
 
 		conn.Write(serializedResponse) // Write success
 
@@ -81,7 +81,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
-	fmt.Println("\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- responding with data " + string(serializedResponse))
+	fmt.Println("\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- responding with data " + string(serializedResponse)[0:20] + "...")
 
 	conn.Write(serializedResponse) // Write success
 

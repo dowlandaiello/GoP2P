@@ -242,6 +242,29 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *environmentProto.
 	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // No error occurred, return output
 }
 
+// LogEnvironment - environment.LogEnvironment RPC handler
+func (server *Server) LogEnvironment(ctx context.Context, req *environmentProto.GeneralRequest) (*environmentProto.GeneralResponse, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
+
+	env, err := getLocalEnvironment(currentDir) // Attempt to read environment from memory
+
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = env.LogEnvironment() // Log environment
+
+	if err != nil { // Check for errors
+		return &environmentProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &environmentProto.GeneralResponse{Message: ""}, nil // No error occurred, return output
+}
+
 /* BEGIN INTERNAL METHODS */
 
 func getLocalEnvironment(path string) (*environment.Environment, error) {

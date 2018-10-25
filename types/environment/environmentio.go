@@ -1,6 +1,8 @@
 package environment
 
 import (
+	"bytes"
+	"encoding/json"
 	"path/filepath"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -28,4 +30,17 @@ func ReadEnvironmentFromMemory(path string) (*Environment, error) {
 	}
 
 	return tempEnv, nil // No error occurred, return nil error, env
+}
+
+// VariableFromBytes - attempt to decoded specified byte array into variable
+func VariableFromBytes(b []byte) (*Variable, error) {
+	object := Variable{} // Init buffer
+
+	err := json.NewDecoder(bytes.NewReader(b)).Decode(&object) // Decode into buffer
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return &object, nil // No error occurred, return read value
 }

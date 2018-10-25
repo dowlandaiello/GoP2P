@@ -180,7 +180,7 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
 
 	switch methodname {
-	case "NewEnvironment":
+	case "NewEnvironment", "LogEnvironment":
 		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{})) // Append empty request
 	case "QueryType":
 		if len(params) != 1 { // Check for errors

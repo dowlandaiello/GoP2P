@@ -10,6 +10,7 @@ service Environment {
     rpc AddVariable(GeneralRequest) returns (GeneralResponse) {} // Add Variable
     rpc WriteToMemory(GeneralRequest) returns (GeneralResponse) {} // Write environment to memory
     rpc ReadFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read environment from memory
+    rpc LogEnvironment(GeneralRequest) returns (GeneralResponse) {} // Serialize and print contents of entire environment
 }
 
 /* BEGIN REQUESTS */

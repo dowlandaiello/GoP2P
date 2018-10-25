@@ -7,6 +7,7 @@ import (
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/command"
 	"github.com/mitsukomegumi/GoP2P/types/connection"
+	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -170,19 +171,31 @@ func FetchRemoteDatabase(bootstrapAddress string, databasePort uint, databaseAli
 		return &NodeDatabase{}, err // Return found error
 	}
 
-	connection, err := connection.NewConnection(localNode, &node.Node{Address: bootstrapAddress}, int(databasePort), []byte("dbFetchRequest"), "relay", []connection.Event{*event}) // Init connection
+	conn, err := connection.NewConnection(localNode, &node.Node{Address: bootstrapAddress}, int(databasePort), []byte("dbFetchRequest"), "relay", []connection.Event{*event}) // Init connection
 
 	if err != nil { // Check for errors
 		return &NodeDatabase{}, err // Return found error
 	}
 
-	result, err := connection.Attempt() // Attempt connection
+	resultBytes, err := conn.Attempt() // Attempt connection
 
 	if err != nil { // Check for errors
 		return &NodeDatabase{}, err // Return found error
 	}
 
-	db, err := FromBytes(result) // Convert read bytes to database
+	decodedResponse, err := connection.ResponseFromBytes(resultBytes) // Fetch decoded result
+
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
+	decodedVariable, err := environment.VariableFromBytes(decodedResponse.Val[0]) // Attempt to decode response
+
+	if err != nil { // Check for errors
+		return &NodeDatabase{}, err // Return found error
+	}
+
+	db, err := FromBytes(decodedVariable.VariableData) // Convert read variable to database
 
 	if err != nil { // Check for errors
 		return &NodeDatabase{}, err // Return found error
