@@ -37,5 +37,5 @@ func (server *Server) StartHandler(ctx context.Context, req *handlerProto.Genera
 
 	go handler.StartHandler(node, listener) // Start node handler on port
 
-	return &handlerProto.GeneralResponse{Message: fmt.Sprintf("Started handler with host :%s", strconv.Itoa(int(req.Port)))}, nil // Return response
+	return &handlerProto.GeneralResponse{Message: fmt.Sprintf("\nStarted handler with host :%s", strconv.Itoa(int(req.Port)))}, nil // Return response
 }

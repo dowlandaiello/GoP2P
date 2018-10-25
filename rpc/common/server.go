@@ -21,7 +21,7 @@ func (server *Server) SeedAddress(ctx context.Context, req *commonProto.GeneralR
 		return &commonProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &commonProto.GeneralResponse{Message: seededAddress}, nil // Return response
+	return &commonProto.GeneralResponse{Message: fmt.Sprintf("\n%s", seededAddress)}, nil // Return response
 }
 
 // ParseStringMethodCall - common.ParseStringMethodCall RPC handler

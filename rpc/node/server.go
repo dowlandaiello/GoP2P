@@ -73,7 +73,7 @@ func (server *Server) StartListener(ctx context.Context, req *nodeProto.GeneralR
 
 	go node.StartListener(int(req.Port)) // Start Listener
 
-	return &nodeProto.GeneralResponse{Message: fmt.Sprintf("Started listener with host :%s", strconv.Itoa(int(req.Port)))}, nil // Return response
+	return &nodeProto.GeneralResponse{Message: fmt.Sprintf("\nStarted listener with host :%s", strconv.Itoa(int(req.Port)))}, nil // Return response
 }
 
 // LogNode - node.LogNode RPC handler
@@ -117,7 +117,7 @@ func (server *Server) WriteToMemory(ctx context.Context, req *nodeProto.GeneralR
 		return &nodeProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &nodeProto.GeneralResponse{Message: "Wrote to directory " + req.Path}, nil // Return response
+	return &nodeProto.GeneralResponse{Message: "\nWrote to directory " + req.Path}, nil // Return response
 }
 
 // ReadFromMemory - node.ReadFromMemory RPC handler
@@ -140,7 +140,7 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *nodeProto.General
 		return &nodeProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &nodeProto.GeneralResponse{Message: "Read from directory " + req.Path}, nil // Return response
+	return &nodeProto.GeneralResponse{Message: "\nRead from directory " + req.Path}, nil // Return response
 }
 
 /* END IO HANDLERS */

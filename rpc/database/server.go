@@ -288,7 +288,7 @@ func (server *Server) UpdateRemoteDatabase(ctx context.Context, req *databasePro
 
 	database.UpdateRemoteDatabase() // Update remote database instances
 
-	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("Updating instances of database with network alias %s and ID %s", database.NetworkAlias, strconv.Itoa(int(database.NetworkID)))}, nil // Return response
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\nUpdating instances of database with network alias %s and ID %s", database.NetworkAlias, strconv.Itoa(int(database.NetworkID)))}, nil // Return response
 }
 
 // JoinDatabase - database.JoinDatabase RPC handler
@@ -299,7 +299,7 @@ func (server *Server) JoinDatabase(ctx context.Context, req *databaseProto.Gener
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("Successfully joined network with alias %s", req.NetworkName)}, nil // Return response
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\nSuccessfully joined network with alias %s", req.NetworkName)}, nil // Return response
 }
 
 // FetchRemoteDatabase - database.FetchRemoteDatabase RPC handler
