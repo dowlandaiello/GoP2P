@@ -41,7 +41,7 @@ func TestStartListener(t *testing.T) {
 }
 
 func newNodeSafe() (*Node, error) {
-	ip, err := common.GetExtIPAddrWithoutUpNP() // Fetch IP address
+	ip, err := common.GetExtIPAddrWithoutUPnP() // Fetch IP address
 
 	if err != nil { // Check for errors
 		return &Node{}, err // Return found error

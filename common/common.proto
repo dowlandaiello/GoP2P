@@ -11,8 +11,8 @@ service Common {
     rpc StringStripParentheses(GeneralRequest) returns (GeneralResponse) {} // Strip parantheses from string
     rpc StringFetchCallReceiver(GeneralRequest) returns (GeneralResponse) {} // Attempt to fetch receiver from string, as if it were a x.y(..., ..., ...) style method call
     rpc CheckAddress(GeneralRequest) returns (GeneralResponse) {} // Check that specified IP address can be pinged, and is available on specified port
-    rpc GetExtIPAddrWithUpNP(GeneralRequest) returns (GeneralResponse) {} // Retrieve the external IP address of the current machine via upnp
-    rpc GetExtIPAddrWithoutUpNP(GeneralRequest) returns (GeneralResponse) {} // Retrieve the external IP address of the current machine w/o upnp
+    rpc GetExtIPAddrWithUPnP(GeneralRequest) returns (GeneralResponse) {} // Retrieve the external IP address of the current machine via upnp
+    rpc GetExtIPAddrWithoutUPnP(GeneralRequest) returns (GeneralResponse) {} // Retrieve the external IP address of the current machine w/o upnp
     rpc GetCurrentTime(GeneralRequest) returns (GeneralResponse) {} // Get current time in the UTC format
     rpc GetCurrentDir(GeneralRequest) returns (GeneralResponse) {} // Returns current execution directory
     rpc Sha3(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array

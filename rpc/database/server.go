@@ -111,7 +111,7 @@ func (server *Server) AddNode(ctx context.Context, req *databaseProto.GeneralReq
 // RemoveNode - database.RemoveNode RPC handler
 func (server *Server) RemoveNode(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
 	if req.Address == "localhost" { // Check for invalid address
-		address, err := common.GetExtIPAddrWithoutUpNP()
+		address, err := common.GetExtIPAddrWithoutUPnP()
 
 		if err != nil { // Check for errors
 			return &databaseProto.GeneralResponse{}, err // Return found error
@@ -385,10 +385,10 @@ func (server *Server) FromBytes(ctx context.Context, req *databaseProto.GeneralR
 
 func getIP() (string, error) {
 	address := ""                                 // Initialize address value
-	address, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch current external IP address
+	address, err := common.GetExtIPAddrWithUPnP() // Attempt to fetch current external IP address
 
 	if err != nil || address == "" { // Check for errors
-		address, err = common.GetExtIPAddrWithoutUpNP() // Attempt to fetch address without UpNP
+		address, err = common.GetExtIPAddrWithoutUPnP() // Attempt to fetch address without UPnP
 
 		if err != nil { // Check second try for errors
 			return "", err // Return found error

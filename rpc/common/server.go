@@ -103,9 +103,9 @@ func (server *Server) CheckAddress(ctx context.Context, req *commonProto.General
 	return &commonProto.GeneralResponse{Message: fmt.Sprintf("\nAddress %s verified", req.Input)}, nil // Return response
 }
 
-// GetExtIPAddrWithUpNP - common.GetExtIPAddrWithUpNP RPC handler
-func (server *Server) GetExtIPAddrWithUpNP(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
-	ip, err := common.GetExtIPAddrWithUpNP() // Attempt to fetch external IP address
+// GetExtIPAddrWithUPnP - common.GetExtIPAddrWithUPnP RPC handler
+func (server *Server) GetExtIPAddrWithUPnP(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
+	ip, err := common.GetExtIPAddrWithUPnP() // Attempt to fetch external IP address
 
 	if err != nil { // Check for errors
 		return &commonProto.GeneralResponse{}, err // Return found error
@@ -114,9 +114,9 @@ func (server *Server) GetExtIPAddrWithUpNP(ctx context.Context, req *commonProto
 	return &commonProto.GeneralResponse{Message: fmt.Sprintf("\n%s", ip)}, nil // Return response
 }
 
-// GetExtIPAddrWithoutUpNP - common.GetExtIPAddrWithoutUpNP RPC handler
-func (server *Server) GetExtIPAddrWithoutUpNP(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
-	ip, err := common.GetExtIPAddrWithoutUpNP() // Attempt to fetch external IP address
+// GetExtIPAddrWithoutUPnP - common.GetExtIPAddrWithoutUPnP RPC handler
+func (server *Server) GetExtIPAddrWithoutUPnP(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
+	ip, err := common.GetExtIPAddrWithoutUPnP() // Attempt to fetch external IP address
 
 	if err != nil { // Check for errors
 		return &commonProto.GeneralResponse{}, err // Return found error

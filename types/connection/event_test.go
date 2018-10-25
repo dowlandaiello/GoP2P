@@ -4,10 +4,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/command"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
-
-	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
@@ -79,7 +78,7 @@ func TestAttemptEvent(t *testing.T) {
 }
 
 func newNodeSafe() (*node.Node, error) {
-	ip, err := common.GetExtIPAddrWithoutUpNP() // Fetch IP address
+	ip, err := common.GetExtIPAddrWithoutUPnP() // Fetch IP address
 
 	if err != nil { // Check for errors
 		return &node.Node{}, err // Return found error

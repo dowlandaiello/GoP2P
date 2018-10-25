@@ -19,7 +19,7 @@ type Server struct{}
 // NewNode - node.NewNode RPC handler
 func (server *Server) NewNode(ctx context.Context, req *nodeProto.GeneralRequest) (*nodeProto.GeneralResponse, error) {
 	if req.Address == "localhost" { // Check for invalid address
-		address, err := common.GetExtIPAddrWithoutUpNP() // Fetch IP
+		address, err := common.GetExtIPAddrWithoutUPnP() // Fetch IP
 
 		if err != nil { // Check for errors
 			return &nodeProto.GeneralResponse{}, err // Return found error

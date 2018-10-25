@@ -8,6 +8,10 @@ import (
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
 
+/*
+	BEGIN EXPORTED METHODS
+*/
+
 // TestNewShard - test functionality of shard initializer
 func TestNewShard(t *testing.T) {
 	node, err := newNodeSafe() // Initialize shard node
@@ -24,11 +28,19 @@ func TestNewShard(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	t.Logf("Found new shard with address %s", shard.Address) // Log new shard
+	t.Logf("Initialized new shard with address %s", shard.Address) // Log new shard
 }
 
+/*
+	END EXPORTED METHODS
+*/
+
+/*
+	BEGIN INTERNAL METHODS
+*/
+
 func newNodeSafe() (*node.Node, error) {
-	ip, err := common.GetExtIPAddrWithoutUpNP() // Fetch IP address
+	ip, err := common.GetExtIPAddrWithoutUPnP() // Fetch IP address
 
 	if err != nil { // Check for errors
 		return &node.Node{}, err // Return found error
@@ -44,3 +56,7 @@ func newNodeSafe() (*node.Node, error) {
 
 	return &node, nil // Return initialized node
 }
+
+/*
+	END INTERNAL METHODS
+*/

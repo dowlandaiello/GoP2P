@@ -87,9 +87,9 @@ func TestCheckAddress(t *testing.T) {
 	}
 }
 
-// TestGetExtIPAddrWithUpNP - test functionality of GetExtIPAddrWithUpNP() function
-func TestGetExtIPAddrWithUpNP(t *testing.T) {
-	ip, err := GetExtIPAddrWithUpNP() // Attempt to fetch external IP address
+// TestGetExtIPAddrWithUPnP - test functionality of GetExtIPAddrWithUPnP() function
+func TestGetExtIPAddrWithUPnP(t *testing.T) {
+	ip, err := GetExtIPAddrWithUPnP() // Attempt to fetch external IP address
 
 	if err != nil && !strings.Contains(err.Error(), "gateway found") { // Check for errors
 		t.Errorf(err.Error()) // Log errors to console
@@ -99,9 +99,9 @@ func TestGetExtIPAddrWithUpNP(t *testing.T) {
 	t.Logf("found address %s", ip) // Log found address
 }
 
-// TestGetExtIPAddrWithoutUpNP - test functionality of GetExtIPAddrWithoutUpNP() function
-func TestGetExtIPAddrWithoutUpNP(t *testing.T) {
-	ip, err := GetExtIPAddrWithoutUpNP() // Attempt to fetch external IP address
+// TestGetExtIPAddrWithoutUPnP - test functionality of GetExtIPAddrWithoutUPnP() function
+func TestGetExtIPAddrWithoutUPnP(t *testing.T) {
+	ip, err := GetExtIPAddrWithoutUPnP() // Attempt to fetch external IP address
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log errors to console

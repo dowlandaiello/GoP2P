@@ -49,9 +49,9 @@ type Common interface {
 
 	CheckAddress(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
-	GetExtIPAddrWithUpNP(context.Context, *GeneralRequest) (*GeneralResponse, error)
+	GetExtIPAddrWithUPnP(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
-	GetExtIPAddrWithoutUpNP(context.Context, *GeneralRequest) (*GeneralResponse, error)
+	GetExtIPAddrWithoutUPnP(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
 	GetCurrentTime(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
@@ -84,8 +84,8 @@ func NewCommonProtobufClient(addr string, client HTTPClient) Common {
 		prefix + "StringStripParentheses",
 		prefix + "StringFetchCallReceiver",
 		prefix + "CheckAddress",
-		prefix + "GetExtIPAddrWithUpNP",
-		prefix + "GetExtIPAddrWithoutUpNP",
+		prefix + "GetExtIPAddrWithUPnP",
+		prefix + "GetExtIPAddrWithoutUPnP",
 		prefix + "GetCurrentTime",
 		prefix + "GetCurrentDir",
 		prefix + "SHA256",
@@ -199,10 +199,10 @@ func (c *commonProtobufClient) CheckAddress(ctx context.Context, in *GeneralRequ
 	return out, nil
 }
 
-func (c *commonProtobufClient) GetExtIPAddrWithUpNP(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *commonProtobufClient) GetExtIPAddrWithUPnP(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "common")
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
-	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithUpNP")
+	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithUPnP")
 	out := new(GeneralResponse)
 	err := doProtobufRequest(ctx, c.client, c.urls[8], in, out)
 	if err != nil {
@@ -211,10 +211,10 @@ func (c *commonProtobufClient) GetExtIPAddrWithUpNP(ctx context.Context, in *Gen
 	return out, nil
 }
 
-func (c *commonProtobufClient) GetExtIPAddrWithoutUpNP(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *commonProtobufClient) GetExtIPAddrWithoutUPnP(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "common")
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
-	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithoutUpNP")
+	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithoutUPnP")
 	out := new(GeneralResponse)
 	err := doProtobufRequest(ctx, c.client, c.urls[9], in, out)
 	if err != nil {
@@ -293,8 +293,8 @@ func NewCommonJSONClient(addr string, client HTTPClient) Common {
 		prefix + "StringStripParentheses",
 		prefix + "StringFetchCallReceiver",
 		prefix + "CheckAddress",
-		prefix + "GetExtIPAddrWithUpNP",
-		prefix + "GetExtIPAddrWithoutUpNP",
+		prefix + "GetExtIPAddrWithUPnP",
+		prefix + "GetExtIPAddrWithoutUPnP",
 		prefix + "GetCurrentTime",
 		prefix + "GetCurrentDir",
 		prefix + "SHA256",
@@ -408,10 +408,10 @@ func (c *commonJSONClient) CheckAddress(ctx context.Context, in *GeneralRequest)
 	return out, nil
 }
 
-func (c *commonJSONClient) GetExtIPAddrWithUpNP(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *commonJSONClient) GetExtIPAddrWithUPnP(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "common")
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
-	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithUpNP")
+	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithUPnP")
 	out := new(GeneralResponse)
 	err := doJSONRequest(ctx, c.client, c.urls[8], in, out)
 	if err != nil {
@@ -420,10 +420,10 @@ func (c *commonJSONClient) GetExtIPAddrWithUpNP(ctx context.Context, in *General
 	return out, nil
 }
 
-func (c *commonJSONClient) GetExtIPAddrWithoutUpNP(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *commonJSONClient) GetExtIPAddrWithoutUPnP(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "common")
 	ctx = ctxsetters.WithServiceName(ctx, "Common")
-	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithoutUpNP")
+	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithoutUPnP")
 	out := new(GeneralResponse)
 	err := doJSONRequest(ctx, c.client, c.urls[9], in, out)
 	if err != nil {
@@ -552,11 +552,11 @@ func (s *commonServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	case "/twirp/common.Common/CheckAddress":
 		s.serveCheckAddress(ctx, resp, req)
 		return
-	case "/twirp/common.Common/GetExtIPAddrWithUpNP":
-		s.serveGetExtIPAddrWithUpNP(ctx, resp, req)
+	case "/twirp/common.Common/GetExtIPAddrWithUPnP":
+		s.serveGetExtIPAddrWithUPnP(ctx, resp, req)
 		return
-	case "/twirp/common.Common/GetExtIPAddrWithoutUpNP":
-		s.serveGetExtIPAddrWithoutUpNP(ctx, resp, req)
+	case "/twirp/common.Common/GetExtIPAddrWithoutUPnP":
+		s.serveGetExtIPAddrWithoutUPnP(ctx, resp, req)
 		return
 	case "/twirp/common.Common/GetCurrentTime":
 		s.serveGetCurrentTime(ctx, resp, req)
@@ -1730,7 +1730,7 @@ func (s *commonServer) serveCheckAddressProtobuf(ctx context.Context, resp http.
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *commonServer) serveGetExtIPAddrWithUpNP(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *commonServer) serveGetExtIPAddrWithUPnP(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
 	if i == -1 {
@@ -1738,9 +1738,9 @@ func (s *commonServer) serveGetExtIPAddrWithUpNP(ctx context.Context, resp http.
 	}
 	switch strings.TrimSpace(strings.ToLower(header[:i])) {
 	case "application/json":
-		s.serveGetExtIPAddrWithUpNPJSON(ctx, resp, req)
+		s.serveGetExtIPAddrWithUPnPJSON(ctx, resp, req)
 	case "application/protobuf":
-		s.serveGetExtIPAddrWithUpNPProtobuf(ctx, resp, req)
+		s.serveGetExtIPAddrWithUPnPProtobuf(ctx, resp, req)
 	default:
 		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
 		twerr := badRouteError(msg, req.Method, req.URL.Path)
@@ -1748,9 +1748,9 @@ func (s *commonServer) serveGetExtIPAddrWithUpNP(ctx context.Context, resp http.
 	}
 }
 
-func (s *commonServer) serveGetExtIPAddrWithUpNPJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *commonServer) serveGetExtIPAddrWithUPnPJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithUpNP")
+	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithUPnP")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -1775,7 +1775,7 @@ func (s *commonServer) serveGetExtIPAddrWithUpNPJSON(ctx context.Context, resp h
 				panic(r)
 			}
 		}()
-		respContent, err = s.Common.GetExtIPAddrWithUpNP(ctx, reqContent)
+		respContent, err = s.Common.GetExtIPAddrWithUPnP(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -1783,7 +1783,7 @@ func (s *commonServer) serveGetExtIPAddrWithUpNPJSON(ctx context.Context, resp h
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling GetExtIPAddrWithUpNP. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling GetExtIPAddrWithUPnP. nil responses are not supported"))
 		return
 	}
 
@@ -1810,9 +1810,9 @@ func (s *commonServer) serveGetExtIPAddrWithUpNPJSON(ctx context.Context, resp h
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *commonServer) serveGetExtIPAddrWithUpNPProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *commonServer) serveGetExtIPAddrWithUPnPProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithUpNP")
+	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithUPnP")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -1842,7 +1842,7 @@ func (s *commonServer) serveGetExtIPAddrWithUpNPProtobuf(ctx context.Context, re
 				panic(r)
 			}
 		}()
-		respContent, err = s.Common.GetExtIPAddrWithUpNP(ctx, reqContent)
+		respContent, err = s.Common.GetExtIPAddrWithUPnP(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -1850,7 +1850,7 @@ func (s *commonServer) serveGetExtIPAddrWithUpNPProtobuf(ctx context.Context, re
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling GetExtIPAddrWithUpNP. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling GetExtIPAddrWithUPnP. nil responses are not supported"))
 		return
 	}
 
@@ -1874,7 +1874,7 @@ func (s *commonServer) serveGetExtIPAddrWithUpNPProtobuf(ctx context.Context, re
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *commonServer) serveGetExtIPAddrWithoutUpNP(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *commonServer) serveGetExtIPAddrWithoutUPnP(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
 	if i == -1 {
@@ -1882,9 +1882,9 @@ func (s *commonServer) serveGetExtIPAddrWithoutUpNP(ctx context.Context, resp ht
 	}
 	switch strings.TrimSpace(strings.ToLower(header[:i])) {
 	case "application/json":
-		s.serveGetExtIPAddrWithoutUpNPJSON(ctx, resp, req)
+		s.serveGetExtIPAddrWithoutUPnPJSON(ctx, resp, req)
 	case "application/protobuf":
-		s.serveGetExtIPAddrWithoutUpNPProtobuf(ctx, resp, req)
+		s.serveGetExtIPAddrWithoutUPnPProtobuf(ctx, resp, req)
 	default:
 		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
 		twerr := badRouteError(msg, req.Method, req.URL.Path)
@@ -1892,9 +1892,9 @@ func (s *commonServer) serveGetExtIPAddrWithoutUpNP(ctx context.Context, resp ht
 	}
 }
 
-func (s *commonServer) serveGetExtIPAddrWithoutUpNPJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *commonServer) serveGetExtIPAddrWithoutUPnPJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithoutUpNP")
+	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithoutUPnP")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -1919,7 +1919,7 @@ func (s *commonServer) serveGetExtIPAddrWithoutUpNPJSON(ctx context.Context, res
 				panic(r)
 			}
 		}()
-		respContent, err = s.Common.GetExtIPAddrWithoutUpNP(ctx, reqContent)
+		respContent, err = s.Common.GetExtIPAddrWithoutUPnP(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -1927,7 +1927,7 @@ func (s *commonServer) serveGetExtIPAddrWithoutUpNPJSON(ctx context.Context, res
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling GetExtIPAddrWithoutUpNP. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling GetExtIPAddrWithoutUPnP. nil responses are not supported"))
 		return
 	}
 
@@ -1954,9 +1954,9 @@ func (s *commonServer) serveGetExtIPAddrWithoutUpNPJSON(ctx context.Context, res
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *commonServer) serveGetExtIPAddrWithoutUpNPProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *commonServer) serveGetExtIPAddrWithoutUPnPProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithoutUpNP")
+	ctx = ctxsetters.WithMethodName(ctx, "GetExtIPAddrWithoutUPnP")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -1986,7 +1986,7 @@ func (s *commonServer) serveGetExtIPAddrWithoutUpNPProtobuf(ctx context.Context,
 				panic(r)
 			}
 		}()
-		respContent, err = s.Common.GetExtIPAddrWithoutUpNP(ctx, reqContent)
+		respContent, err = s.Common.GetExtIPAddrWithoutUPnP(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -1994,7 +1994,7 @@ func (s *commonServer) serveGetExtIPAddrWithoutUpNPProtobuf(ctx context.Context,
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling GetExtIPAddrWithoutUpNP. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling GetExtIPAddrWithoutUPnP. nil responses are not supported"))
 		return
 	}
 

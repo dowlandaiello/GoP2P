@@ -13,8 +13,8 @@ func (term *Terminal) HandleCommand(command string) {
 	switch { // Iterate through possible commands
 	case strings.Contains(strings.ToLower(command), "terminal."): // Account for terminal methods
 		term.handleTerminal(command)
-	case strings.Contains(strings.ToLower(command), "upnp."): // Account for UpNP package methods
-		term.handleUpNP(command)
+	case strings.Contains(strings.ToLower(command), "upnp."): // Account for UPnP package methods
+		term.handleUPnP(command)
 	case strings.Contains(strings.ToLower(command), "node."): // Account for node package methods
 		term.handleNode(command)
 	case strings.Contains(strings.ToLower(command), "environment."): // Account for environment package methods
@@ -39,7 +39,7 @@ func (term *Terminal) handleTerminal(command string) {
 	}
 }
 
-func (term *Terminal) handleUpNP(command string) {
+func (term *Terminal) handleUPnP(command string) {
 	switch {
 	case strings.Contains(strings.ToLower(command), "forwardport"): // Account for forwardport command
 		intVal, _ := strconv.Atoi(strings.Split(strings.Split(command, "(")[1], ")")[0]) // Attempt to fetch port from command

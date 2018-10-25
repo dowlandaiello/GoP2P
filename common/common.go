@@ -164,8 +164,8 @@ func CheckAddress(address string) error {
 	return nil // No error found, return nil
 }
 
-// GetExtIPAddrWithUpNP - retrieve the external IP address of the current machine via upnp
-func GetExtIPAddrWithUpNP() (string, error) {
+// GetExtIPAddrWithUPnP - retrieve the external IP address of the current machine via upnp
+func GetExtIPAddrWithUPnP() (string, error) {
 	// connect to router
 	d, err := upnp.Discover()
 	if err != nil { // Check for errors
@@ -180,8 +180,8 @@ func GetExtIPAddrWithUpNP() (string, error) {
 	return ip, nil
 }
 
-// GetExtIPAddrWithoutUpNP - retrieve the external IP address of the current machine w/o upnp
-func GetExtIPAddrWithoutUpNP() (string, error) {
+// GetExtIPAddrWithoutUPnP - retrieve the external IP address of the current machine w/o upnp
+func GetExtIPAddrWithoutUPnP() (string, error) {
 	addresses := []string{} // Init address buffer
 
 	finished := make(chan bool) // Init finished

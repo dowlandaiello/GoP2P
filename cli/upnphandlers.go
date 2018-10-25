@@ -8,7 +8,7 @@ import (
 )
 
 /*
-	BEGIN UpNP METHODS
+	BEGIN UPnP METHODS
 */
 
 func (term *Terminal) handleForwardPortCommand(command string, portNumber int) {
@@ -66,5 +66,5 @@ func (term *Terminal) handleRemoveForwardPort(command string, portNumber int) (s
 }
 
 /*
-	END UpNP METHODS
+	END UPnP METHODS
 */
