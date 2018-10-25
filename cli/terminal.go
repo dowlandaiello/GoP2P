@@ -66,37 +66,37 @@ func NewTerminal() error {
 			err := handleNode(&nodeClient, methodname, params) // Handle node
 
 			if err != nil { // Check for errors
-				fmt.Println(err.Error()) // Log found error
+				fmt.Println("\n" + err.Error()) // Log found error
 			}
 		case "handler":
 			err := handleHandler(&handlerClient, methodname, params) // Handle handler
 
 			if err != nil { // Check for errors
-				fmt.Println(err.Error()) // Log found error
+				fmt.Println("\n" + err.Error()) // Log found error
 			}
 		case "environment":
 			err := handleEnvironment(&environmentClient, methodname, params) // Handle environment
 
 			if err != nil { // Check for errors
-				fmt.Println(err.Error()) // Log found error
+				fmt.Println("\n" + err.Error()) // Log found error
 			}
 		case "upnp":
 			err := handleUpnp(&upnpClient, methodname, params) // Handle upnp
 
 			if err != nil { // Check for errors
-				fmt.Println(err.Error()) // Log found error
+				fmt.Println("\n" + err.Error()) // Log found error
 			}
 		case "database":
 			err := handleDatabase(&databaseClient, methodname, params) // Handle database
 
 			if err != nil { // Check for errors
-				fmt.Println(err.Error()) // Log found error
+				fmt.Println("\n" + err.Error()) // Log found error
 			}
 		case "common":
 			err := handleCommon(&commonClient, methodname, params) // Handle common
 
 			if err != nil { // Check for errors
-				fmt.Println(err.Error()) // Log found error
+				fmt.Println("\n" + err.Error()) // Log found error
 			}
 		}
 	}
