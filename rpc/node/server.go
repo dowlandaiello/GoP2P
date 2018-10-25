@@ -76,6 +76,25 @@ func (server *Server) StartListener(ctx context.Context, req *nodeProto.GeneralR
 	return &nodeProto.GeneralResponse{Message: fmt.Sprintf("Started listener with host :%s", strconv.Itoa(int(req.Port)))}, nil // Return response
 }
 
+// LogNode - node.LogNode RPC handler
+func (server *Server) LogNode(ctx context.Context, req *nodeProto.GeneralRequest) (*nodeProto.GeneralResponse, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return &nodeProto.GeneralResponse{}, err // Return found error
+	}
+
+	node, err := node.ReadNodeFromMemory(currentDir) // Fetch node from working directory
+
+	if err != nil { // Check for errors
+		return &nodeProto.GeneralResponse{}, err // Return found error
+	}
+
+	node.LogNode() // Log node
+
+	return &nodeProto.GeneralResponse{Message: ""}, nil // Return response
+}
+
 /* BEGIN IO HANDLERS */
 
 // WriteToMemory - node.WriteToMemory RPC handler

@@ -1,7 +1,9 @@
 package node
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"net"
 	"os"
 	"path/filepath"
@@ -60,6 +62,19 @@ func (node *Node) StartListener(port int) (*net.Listener, error) {
 	}
 
 	return &ln, nil // No error occurred, return listener
+}
+
+// LogNode - serialize and print contents of entire node
+func (node *Node) LogNode() error {
+	marshaledVal, err := json.MarshalIndent(*node, "", "  ") // Marshal node
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	fmt.Println("\n" + string(marshaledVal)) // Log marshaled val
+
+	return nil // No error occurred, return nil
 }
 
 // WriteToMemory - create serialized instance of specified environment in specified path (string)

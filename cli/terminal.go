@@ -103,10 +103,6 @@ func NewTerminal() error {
 }
 
 func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) error {
-	if len(params) == 0 { // Check for nil parameters
-		return errors.New("invalid parameters (requires at least 1 parameter)") // Return error
-	}
-
 	reflectParams := []reflect.Value{} // Init buffer
 
 	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
@@ -126,8 +122,10 @@ func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) 
 		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{Port: uint32(intVal)})) // Append params
 	case "WriteToMemory", "ReadFromMemory":
 		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{Path: params[0]})) // Append params
+	case "LogNode":
+		reflectParams = append(reflectParams, reflect.ValueOf(&nodeProto.GeneralRequest{})) // Append params
 	default:
-		return errors.New("illegal method: " + methodname + ", available methods: NewNode(), StartListener(), WriteToMemory(), ReadFromMemory()") // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: NewNode(), StartListener(), LogNode() WriteToMemory(), ReadFromMemory()") // Return error
 	}
 
 	result := reflect.ValueOf(*nodeClient).MethodByName(methodname).Call(reflectParams) // Call method
@@ -216,7 +214,7 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&environmentProto.GeneralRequest{Path: pathVal})) // Append path request
 	default:
-		return errors.New("illegal method: " + methodname + ", available methods: NewEnvironment(), QueryType(), QueryValue(), NewVariable(), AddVariable(), WriteToMemory(), ReadFromMemory()") // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: NewEnvironment(), LogEnvironment(), QueryType(), QueryValue(), NewVariable(), AddVariable(), WriteToMemory(), ReadFromMemory()") // Return error
 	}
 
 	result := reflect.ValueOf(*environmentClient).MethodByName(methodname).Call(reflectParams) // Call method
@@ -324,7 +322,7 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{ByteVal: byteVal})) // Append params
 	default:
-		return errors.New("illegal method: " + methodname + ", available methods: NewDatabase(), AddNode(), RemoveNode(), QueryForAddress(), WriteToMemory(), ReadFromMemory(), FromBytes()") // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: NewDatabase(), LogDatabase(), AddNode(), UpdateRemoteDatabase(), JoinDatabase(), FetchRemoteDatabase(), RemoveNode(), QueryForAddress(), WriteToMemory(), ReadFromMemory(), FromBytes()") // Return error
 	}
 
 	result := reflect.ValueOf(*databaseClient).MethodByName(methodname).Call(reflectParams) // Call method

@@ -5,6 +5,7 @@ package node; // Init package
 service Node {
     rpc NewNode(GeneralRequest) returns (GeneralResponse) {} // Initialize node
     rpc StartListener(GeneralRequest) returns (GeneralResponse) {} // Start listener
+    rpc LogNode(GeneralRequest) returns (GeneralResponse) {} // Serialize and print contents of entire node
     rpc ReadFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read node from memory
     rpc WriteToMemory(GeneralRequest) returns (GeneralResponse) {} // Write node to memory
 }
@@ -13,6 +14,7 @@ service Node {
 
 message GeneralRequest {
     string address = 1; // Address of new node
+    
     bool isBootstrap = 2; // Bootstrap configurator
 
     uint32 port = 3; // Port of listener
