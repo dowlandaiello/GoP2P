@@ -310,7 +310,7 @@ func (server *Server) FetchRemoteDatabase(ctx context.Context, req *databaseProt
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	marshaledVal, err := json.Marshal(*db) // Marshal found node
+	marshaledVal, err := json.MarshalIndent(*db, "", "  ") // Marshal found db
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
