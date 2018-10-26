@@ -1,6 +1,7 @@
 package database
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -184,6 +185,8 @@ func FetchRemoteDatabase(bootstrapAddress string, databasePort uint, databaseAli
 	if err != nil { // Check for errors
 		return &NodeDatabase{}, err // Return found error
 	}
+
+	resultBytes = bytes.Trim(resultBytes, "\x00") // Trim Windows residue
 
 	decodedResponse, err := connection.ResponseFromBytes(resultBytes) // Fetch decoded result
 
