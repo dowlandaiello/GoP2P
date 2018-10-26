@@ -2,6 +2,7 @@ package common
 
 import (
 	"bufio"
+	"bytes"
 	"errors"
 	"io/ioutil"
 	"net"
@@ -14,6 +15,8 @@ import (
 
 // SendBytes - attempt to send specified bytes to given address
 func SendBytes(b []byte, address string) error {
+	b = bytes.Trim(b, "\x00") // Trim line end
+
 	connection, err := net.Dial("tcp", address) // Connect to given address
 
 	if err != nil { // Check for errors
@@ -37,6 +40,8 @@ func SendBytes(b []byte, address string) error {
 
 // SendBytesResult - attempt to send specified bytes to given address, returning result
 func SendBytesResult(b []byte, address string) ([]byte, error) {
+	b = bytes.Trim(b, "\x00") // Trim line end
+
 	connection, err := net.Dial("tcp", address) // Connect to given address
 
 	if err != nil { // Check for errors
@@ -66,6 +71,8 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 
 // SendBytesWithConnection - attempt to send specified bytes to given address via given connection
 func SendBytesWithConnection(connection *net.Conn, b []byte) error {
+	b = bytes.Trim(b, "\x00") // Trim line end
+
 	_, err := (*connection).Write(b) // Write to connection
 
 	if err != nil { // Check for errors
@@ -77,6 +84,8 @@ func SendBytesWithConnection(connection *net.Conn, b []byte) error {
 
 // SendBytesReusable - attempt to send specified bytes to given address and return created connection
 func SendBytesReusable(b []byte, address string) (*net.Conn, error) {
+	b = bytes.Trim(b, "\x00") // Trim line end
+
 	connection, err := net.Dial("tcp", address) // Connect to given address
 
 	if err != nil { // Check for errors
