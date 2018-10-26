@@ -158,9 +158,7 @@ func ReadConnectionWaitAsync(conn net.Conn) ([]byte, error) {
 	for { // Continuously read from connection
 		select {
 		case readData := <-data: // Read data from connection
-			readData = bytes.Trim(readData, "\x00") // Trim line end
-
-			return readData, nil // Return read data
+			return bytes.Trim(readData, "\x00"), nil // Return read data
 		case readErr := <-err: // Error on read
 			return []byte{}, readErr // Return error
 		case <-ticker: // Timed out
