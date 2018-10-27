@@ -34,15 +34,15 @@ type Variable struct {
 }
 
 // NewTerminal - attempts to start io handler for term commands
-func NewTerminal() error {
+func NewTerminal(rpcPort uint) error {
 	reader := bufio.NewScanner(os.Stdin) // Init reader
 
-	nodeClient := nodeProto.NewNodeProtobufClient("http://localhost:8080", &http.Client{})                      // Init node client
-	handlerClient := handlerProto.NewHandlerProtobufClient("http://localhost:8080", &http.Client{})             // Init handler client
-	environmentClient := environmentProto.NewEnvironmentProtobufClient("http://localhost:8080", &http.Client{}) // Init environment client
-	upnpClient := upnpProto.NewUpnpProtobufClient("http://localhost:8080", &http.Client{})                      // Init upnp client
-	databaseClient := databaseProto.NewDatabaseProtobufClient("http://localhost:8080", &http.Client{})          // Init database client
-	commonClient := commonProto.NewCommonProtobufClient("http://localhost:8080", &http.Client{})                // Init common client
+	nodeClient := nodeProto.NewNodeProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})                      // Init node client
+	handlerClient := handlerProto.NewHandlerProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})             // Init handler client
+	environmentClient := environmentProto.NewEnvironmentProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{}) // Init environment client
+	upnpClient := upnpProto.NewUpnpProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})                      // Init upnp client
+	databaseClient := databaseProto.NewDatabaseProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})          // Init database client
+	commonClient := commonProto.NewCommonProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})                // Init common client
 
 	for {
 		fmt.Print("\n> ") // Print prompt

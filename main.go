@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"net/http"
+	"strconv"
 
 	"github.com/mitsukomegumi/GoP2P/cli"
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -24,20 +25,21 @@ import (
 var (
 	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                      // Init term flag
 	upnpFlag     = flag.Bool("no-upnp", false, "launch GoP2P without automatic UPnP port forwarding") // Init upnp flag
+	rpcPort      = flag.Int("rpc-port", 8080, "launch GoP2P with specified RPC port")                 // Init RPC port flag
 )
 
 func main() {
 	flag.Parse() // Parse flags
 
-	if !*upnpFlag {
-		go upnp.ForwardPortSilent(8080) // Forward port 8080
-		go upnp.ForwardPortSilent(3000) // Forward port 3000
+	if !*upnpFlag { // Check for UPnP
+		go upnp.ForwardPortSilent(uint(*rpcPort)) // Forward RPC port
+		go upnp.ForwardPortSilent(3000)           // Forward port 3000
 	}
 
 	startRPCServer() // Start RPC server
 
 	if *terminalFlag {
-		cli.NewTerminal() // Initialize terminal
+		cli.NewTerminal(uint(*rpcPort)) // Initialize terminal
 	}
 
 	startNode() // Attempt to start GoP2P in node mode
@@ -64,7 +66,7 @@ func startRPCServer() {
 	mux.Handle(databaseProto.DatabasePathPrefix, databaseHandler)          // Start mux database handler
 	mux.Handle(commonProto.CommonPathPrefix, commonHandler)                // Start mux common handler
 
-	go http.ListenAndServe(":8080", mux) // Start server
+	go http.ListenAndServe(":"+strconv.Itoa(*rpcPort), mux) // Start server
 }
 
 // startNode - attempt to execute attachnode, starthandler commands
