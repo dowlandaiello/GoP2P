@@ -1,6 +1,7 @@
 package shard
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -48,6 +49,66 @@ func TestNewShardWithNodes(t *testing.T) {
 	}
 
 	t.Logf("Initialized new shard with address %s", shard.Address) // Log new shard
+}
+
+// TestShardShard - test functionality of shard sharding
+func TestShardShard(t *testing.T) {
+	localNode, err := newNodeSafe() // Initialize shard node
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	shard, err := NewShardWithNodes(&[]node.Node{*localNode, *localNode, *localNode, *localNode, *localNode, *localNode, *localNode, *localNode}) // Init shard
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	err = shard.Shard(2) // Shard shard
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	err = shard.LogShard() // Log shard PANICS HERE (stack overflow)
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+}
+
+// TestLogShard - test functionality of shard logging
+func TestLogShard(t *testing.T) {
+	localNode, err := newNodeSafe() // Initialize shard node
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	shard, err := NewShardWithNodes(&[]node.Node{*localNode, *localNode}) // Init shard
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	err = shard.LogShard() // Log shard
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+}
+
+// TestCalculateQuadraticExponent - test functionality of quadratic exponent calculator
+func TestCalculateQuadraticExponent(t *testing.T) {
+	t.Logf(fmt.Sprintf("%f", CalculateQuadraticExponent(3))) // Log output
 }
 
 /*

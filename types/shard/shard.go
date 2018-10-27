@@ -1,6 +1,10 @@
 package shard
 
 import (
+	"encoding/json"
+	"fmt"
+	"math"
+	"reflect"
 	"time"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -34,7 +38,7 @@ type Shard struct {
 
 // NewShard - initialize new shard
 func NewShard(initializingNode *node.Node) (*Shard, error) {
-	shard := Shard{Nodes: &[]node.Node{*initializingNode}, ChildNodes: &[]node.Node{*initializingNode}, Origin: time.Now().UTC(), Address: initializingNode.Address} // Initialize shard
+	shard := Shard{Nodes: &[]node.Node{*initializingNode}, ChildNodes: &[]node.Node{*initializingNode}, ChildShards: &[]Shard{}, Origin: time.Now().UTC(), Address: initializingNode.Address} // Initialize shard
 
 	serialized, err := common.SerializeToBytes(shard) // Serialize shard
 
@@ -54,7 +58,7 @@ func NewShard(initializingNode *node.Node) (*Shard, error) {
 
 // NewShardWithNodes - initialize new shard with child nodes
 func NewShardWithNodes(initializingNodes *[]node.Node) (*Shard, error) {
-	shard := Shard{Nodes: initializingNodes, ChildNodes: initializingNodes, Origin: time.Now().UTC(), Address: ""} // Initialize shard
+	shard := Shard{Nodes: initializingNodes, ChildNodes: initializingNodes, ChildShards: &[]Shard{}, Origin: time.Now().UTC(), Address: ""} // Initialize shard
 
 	serialized, err := common.SerializeToBytes(shard) // Serialize shard
 
@@ -72,26 +76,57 @@ func NewShardWithNodes(initializingNodes *[]node.Node) (*Shard, error) {
 	return &shard, nil // Return initialized shard
 }
 
-/*
 // Shard - exponentially shard specified shard into child shards
-func (shard *Shard) Shard(exponent uint) {
+func (shard *Shard) Shard(exponent uint) error {
+	totalShards := math.Pow(float64(exponent), float64(exponent)) // Calculate total nodes
+
 	if reflect.ValueOf(shard.ParentShard).IsNil() { // Check is root
 		shard.Root = true       // Set root
-		shard.ShardRoot = shard // Set shard rood
+		shard.ShardRoot = shard // Set shard root
 	}
 
-	lastShard := shard.ShardRoot // Set last shard
-	lastRoot := shard.ShardRoot  // Set root
+	lastShard := shard // Set last shard
 
-	for x := 1; x != (len(*shard.ShardRoot.ChildNodes)/x ^ int(exponent)); x++ { // Iterate until initialized all shards
+	for x := 0; x != int(totalShards); x++ {
+		for z := 0; z != int(exponent); z++ {
+			foundNodes := (*shard.ChildNodes)[(z * x):((z * x) + int(exponent))] // Fetch nodes in shard
 
-		for z := 0; z != x^int(exponent); z++ { // Initialize all siblings
-			newShard, err := NewShardWithNodes(shard.ShardRoot.ChildNodes[z:])
+			newShard, err := NewShardWithNodes(&foundNodes) // Init shard
 
 			if err != nil { // Check for errors
-				return nil, err // Return found error
+				return err // Return found error
 			}
+
+			(*newShard).ParentShard = shard // Set parent
+
+			*lastShard.ChildShards = append(*lastShard.ChildShards, *newShard) // Append initialized shard
+			*lastShard = *newShard                                             // Set last shard
 		}
 	}
+
+	return nil // No error occurred, return nil
 }
-*/
+
+// LogShard - serialize and print contents of entire shard
+func (shard *Shard) LogShard() error {
+	marshaledVal, err := json.MarshalIndent(*shard, "", "  ") // Marshal database
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	fmt.Println("\n" + string(marshaledVal)) // Log marshaled val
+
+	return nil // No error occurred, return nil
+}
+
+// CalculateQuadraticExponent - returns exponential value of exponent to exponent exponent times
+func CalculateQuadraticExponent(exponent int) float64 {
+	val := float64(exponent) // Init buffer
+
+	for x := 0; x != exponent; x++ {
+		val = math.Pow(float64(val), float64(exponent)) // Set to exponent
+	}
+
+	return val // Return calculated val
+}
