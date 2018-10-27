@@ -3,6 +3,9 @@ package connection
 import (
 	"bytes"
 	"encoding/json"
+	"unicode/utf8"
+
+	"golang.org/x/text/encoding/unicode"
 )
 
 // Response - abstract container holding array of byte arrays
@@ -12,13 +15,19 @@ type Response struct {
 
 // ResponseFromBytes - attempt to convert specified byte array to connection
 func ResponseFromBytes(b []byte) (*Response, error) {
-	b = bytes.Trim(b, "\x00") // Trim null character
+	var err error // Init error
+
+	if !utf8.Valid(b) { // Check for non-valid in UTF-8
+		b, err = unicode.UTF16(unicode.LittleEndian, unicode.UseBOM).NewDecoder().Bytes(b) // Convert to utf-8
+
+		if err != nil { // Check for errors
+			return nil, err // Return found error
+		}
+	}
 
 	object := Response{} // Create empty instance
 
-	// PANICS HERE: \x00 character in string literal https://forum.golangbridge.org/t/how-to-convert-utf-8-string-to-utf-16-be-string/7072
-
-	err := json.NewDecoder(bytes.NewReader(b)).Decode(&object) // Attempt to read
+	err = json.NewDecoder(bytes.NewReader(b)).Decode(&object) // Attempt to read
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
