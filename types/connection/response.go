@@ -23,6 +23,8 @@ func ResponseFromBytes(b []byte) (*Response, error) {
 		if err != nil { // Check for errors
 			return nil, err // Return found error
 		}
+	} else if bytes.Contains(b, []byte("\x00")) { // Check for \x00 null chars
+		b = bytes.Trim(b, "\x00") // Trim \x00 null char
 	}
 
 	object := Response{} // Create empty instance
