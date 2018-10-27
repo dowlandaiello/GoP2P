@@ -11,11 +11,14 @@ import (
 	"github.com/mitsukomegumi/GoP2P/types/connection"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
+	"github.com/mitsukomegumi/GoP2P/types/shard"
 )
 
 // NodeDatabase - database containing list of node addresses, as well as bootstrap addresses
 type NodeDatabase struct {
 	Nodes *[]node.Node `json:"nodes"` // Nodes - primary list of nodes
+
+	Shards *[]shard.Shard `json:"shards"` // Shards - primary list of shards
 
 	NetworkAlias string `json:"network"`   // NetworkAlias - network 'name', used for identifying a common protocol
 	NetworkID    uint   `json:"networkID"` // NetworkID - integer used for identifying common network

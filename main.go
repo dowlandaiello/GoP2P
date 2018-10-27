@@ -77,3 +77,5 @@ func startNode() {
 
 	terminal.HandleCommand("node.StartHandler()") // Start handler
 }
+
+// TODO: replace getNode with shard-based node targeting

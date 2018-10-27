@@ -31,6 +31,25 @@ func TestNewShard(t *testing.T) {
 	t.Logf("Initialized new shard with address %s", shard.Address) // Log new shard
 }
 
+// TestNewShardWithNodes - test functionality of shard initializer
+func TestNewShardWithNodes(t *testing.T) {
+	localNode, err := newNodeSafe() // Initialize shard node
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	shard, err := NewShardWithNodes(&[]node.Node{*localNode, *localNode}) // Init shard
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("Initialized new shard with address %s", shard.Address) // Log new shard
+}
+
 /*
 	END EXPORTED METHODS
 */
