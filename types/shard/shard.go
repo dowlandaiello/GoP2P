@@ -17,9 +17,9 @@ type Shard struct {
 	Nodes      *[]node.Node `json:"nodes"`       // Nodes - primary list of nodes
 	ChildNodes *[]node.Node `json:"allChildren"` // ChildNodes - list of all child nodes (recursively includes nodes in child shards, not just direct children)
 
-	ShardRoot   *Shard `json:"root"`   // ShardRoot - root shard of shard tree
+	ShardRoot   *Shard `json:"-"`      // ShardRoot - root shard of shard tree
 	Root        bool   `json:"isRoot"` // Root - is root
-	ParentShard *Shard `json:"parent"` // ParentShard - parent of shard
+	ParentShard *Shard `json:"-"`      // ParentShard - parent of shard
 
 	Siblings *[]*Shard `json:"siblings"` // Siblings - shard-level siblings
 
@@ -82,8 +82,7 @@ func (shard *Shard) Shard(exponent uint) error {
 	}
 
 	if reflect.ValueOf(shard.ParentShard).IsNil() { // Check is root
-		(*shard).Root = true       // Set root
-		(*shard).ShardRoot = shard // Set shard root
+		(*shard).Root = true // Set root
 	}
 
 	lastShard := shard // Set last shard
@@ -111,7 +110,7 @@ func (shard *Shard) Shard(exponent uint) error {
 
 // LogShard - serialize and print contents of entire shard
 func (shard *Shard) LogShard() error {
-	marshaledVal, err := json.MarshalIndent(*shard, "", "  ") // Marshal database
+	marshaledVal, err := json.MarshalIndent(*shard, "", "  ") // Marshal shard
 
 	if err != nil { // Check for errors
 		return err // Return found error

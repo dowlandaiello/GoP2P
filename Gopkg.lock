@@ -186,6 +186,7 @@
     "github.com/twitchtv/twirp",
     "github.com/twitchtv/twirp/ctxsetters",
     "golang.org/x/crypto/sha3",
+    "golang.org/x/text/encoding/unicode",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

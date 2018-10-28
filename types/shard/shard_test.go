@@ -74,7 +74,7 @@ func TestShardShard(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	err = shard.LogShard() // Log shard PANICS HERE (stack overflow)
+	err = shard.ChildShards[0].LogShard() // Log shard PANICS HERE (stack overflow)
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
