@@ -8,6 +8,7 @@
 !types/database
 !types/environment
 !types/handler
+!types/shard
 !types/node
 !rpc
 !common
