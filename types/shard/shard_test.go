@@ -74,12 +74,44 @@ func TestShardShard(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	err = shard.ChildShards[0].LogShard() // Log shard PANICS HERE (stack overflow)
+	err = shard.LogShard() // Log shard
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	}
+}
+
+func TestSerializeShard(t *testing.T) {
+	localNode, err := newNodeSafe() // Initialize shard node
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	shard, err := NewShardWithNodes(&[]node.Node{*localNode, *localNode, *localNode, *localNode}) // Init shard
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	err = shard.Shard(2) // Shard shard
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	serialized, err := common.SerializeToBytes(shard) // Serialize shard
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("Serialized shard %s", string(serialized)) // Log success
 }
 
 // TestLogShard - test functionality of shard logging

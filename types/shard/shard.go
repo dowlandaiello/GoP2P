@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"reflect"
 	"time"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -17,9 +16,9 @@ type Shard struct {
 	Nodes      *[]node.Node `json:"nodes"`       // Nodes - primary list of nodes
 	ChildNodes *[]node.Node `json:"allChildren"` // ChildNodes - list of all child nodes (recursively includes nodes in child shards, not just direct children)
 
-	ShardRoot   *Shard `json:"-"`      // ShardRoot - root shard of shard tree
-	Root        bool   `json:"isRoot"` // Root - is root
-	ParentShard *Shard `json:"-"`      // ParentShard - parent of shard
+	ShardRootAddress   string `json:"root"`   // ShardRoot - root shard ID of shard tree
+	Root               bool   `json:"isRoot"` // Root - is root
+	ParentShardAddress string `json:"parent"` // ParentShard - parent ID of shard
 
 	Siblings *[]*Shard `json:"siblings"` // Siblings - shard-level siblings
 
@@ -81,7 +80,7 @@ func (shard *Shard) Shard(exponent uint) error {
 		return errors.New("shard smaller than exponential shard count") // Return found error
 	}
 
-	if reflect.ValueOf(shard.ParentShard).IsNil() { // Check is root
+	if shard.ParentShardAddress == "" { // Check is root
 		(*shard).Root = true // Set root
 	}
 
@@ -97,8 +96,8 @@ func (shard *Shard) Shard(exponent uint) error {
 				return err // Return found error
 			}
 
-			(*newShard).ParentShard = lastShard                                // Set parent
-			(*newShard).ShardRoot = shard                                      // Set shard root
+			(*newShard).ParentShardAddress = lastShard.ID                      // Set parent
+			(*newShard).ShardRootAddress = shard.ID                            // Set shard root
 			(*lastShard).ChildShards = append(lastShard.ChildShards, newShard) // Append initialized shard
 
 			lastShard = newShard // Set last shard
