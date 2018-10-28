@@ -24,7 +24,6 @@ type Shard struct {
 
 	ChildShards []*Shard `json:"child shards"` // ChildShards - shards created as children of shard
 
-	Age    uint64    `json:"age"`           // Age - shard age
 	Origin time.Time `json:"creation time"` // Origin - time shard created
 
 	Address string `json:"address"` // Address - addressable internet protocol ID used for shard-level communications
@@ -103,6 +102,8 @@ func (shard *Shard) Shard(exponent uint) error {
 			lastShard = newShard // Set last shard
 		}
 	}
+
+	shard.Nodes = &[]node.Node{} // Clear top-level shard nodes
 
 	return nil // No error occurred, return nil
 }

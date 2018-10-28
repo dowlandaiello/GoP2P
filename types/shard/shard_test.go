@@ -53,14 +53,14 @@ func TestNewShardWithNodes(t *testing.T) {
 
 // TestShardShard - test functionality of exponential sharding
 func TestShardShard(t *testing.T) {
-	localNode, err := newNodeSafe() // Initialize shard node
+	nodeList, err := newNodeListSafe(4) // Initialize shard node
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	}
 
-	shard, err := NewShardWithNodes(&[]node.Node{*localNode, *localNode, *localNode, *localNode}) // Init shard
+	shard, err := NewShardWithNodes(nodeList) // Init shard
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -83,21 +83,21 @@ func TestShardShard(t *testing.T) {
 }
 
 func TestSerializeShard(t *testing.T) {
-	localNode, err := newNodeSafe() // Initialize shard node
+	nodeList, err := newNodeListSafe(256) // Initialize shard node
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	}
 
-	shard, err := NewShardWithNodes(&[]node.Node{*localNode, *localNode, *localNode, *localNode}) // Init shard
+	shard, err := NewShardWithNodes(nodeList) // Init shard
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	}
 
-	err = shard.Shard(2) // Shard shard
+	err = shard.Shard(4) // Shard shard
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -116,14 +116,14 @@ func TestSerializeShard(t *testing.T) {
 
 // TestLogShard - test functionality of shard logging
 func TestLogShard(t *testing.T) {
-	localNode, err := newNodeSafe() // Initialize shard node
+	nodeList, err := newNodeListSafe(2) // Initialize shard node
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	}
 
-	shard, err := NewShardWithNodes(&[]node.Node{*localNode, *localNode}) // Init shard
+	shard, err := NewShardWithNodes(nodeList) // Init shard
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -167,6 +167,22 @@ func newNodeSafe() (*node.Node, error) {
 	node := node.Node{Address: ip, Reputation: 0, IsBootstrap: false, Environment: environment} // Creates new node instance with specified address
 
 	return &node, nil // Return initialized node
+}
+
+func newNodeListSafe(nodeCount int) (*[]node.Node, error) {
+	nodeList := &[]node.Node{} // Init node list
+
+	localNode, err := newNodeSafe() // Init local node
+
+	if err != nil { // Check for errors
+		return &[]node.Node{}, err // Return found error
+	}
+
+	for x := 0; x != nodeCount; x++ { // Iterate until nodeCount reached
+		*nodeList = append(*nodeList, *localNode) // Append node
+	}
+
+	return nodeList, nil // No error occurred, return nil
 }
 
 /*
