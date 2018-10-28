@@ -81,8 +81,8 @@ func (shard *Shard) Shard(exponent uint) error {
 	totalShards := math.Pow(float64(exponent), float64(exponent)) // Calculate total shards
 
 	if reflect.ValueOf(shard.ParentShard).IsNil() { // Check is root
-		shard.Root = true       // Set root
-		shard.ShardRoot = shard // Set shard root
+		(*shard).Root = true       // Set root
+		(*shard).ShardRoot = shard // Set shard root
 	}
 
 	lastShard := shard // Set last shard
@@ -97,10 +97,12 @@ func (shard *Shard) Shard(exponent uint) error {
 				return err // Return found error
 			}
 
-			(*newShard).ParentShard = shard // Set parent
-
+			(*newShard).ParentShard = shard                                    // Set parent
 			*lastShard.ChildShards = append(*lastShard.ChildShards, *newShard) // Append initialized shard
-			*lastShard = *newShard                                             // Set last shard
+
+			fmt.Println(lastShard)
+
+			lastShard = newShard // Set last shard
 		}
 	}
 

@@ -51,7 +51,7 @@ func TestNewShardWithNodes(t *testing.T) {
 	t.Logf("Initialized new shard with address %s", shard.Address) // Log new shard
 }
 
-// TestShardShard - test functionality of shard sharding
+// TestShardShard - test functionality of exponential sharding
 func TestShardShard(t *testing.T) {
 	localNode, err := newNodeSafe() // Initialize shard node
 
