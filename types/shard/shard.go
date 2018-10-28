@@ -2,10 +2,10 @@ package shard
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"reflect"
-	"strconv"
 	"time"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -14,22 +14,18 @@ import (
 
 // Shard - container holding shard metadata
 type Shard struct {
-	Nodes *[]node.Node `json:"nodes"` // Nodes - primary list of nodes
-
+	Nodes      *[]node.Node `json:"nodes"`       // Nodes - primary list of nodes
 	ChildNodes *[]node.Node `json:"allChildren"` // ChildNodes - list of all child nodes (recursively includes nodes in child shards, not just direct children)
 
-	ShardRoot *Shard `json:"root"` // ShardRoot - root shard of shard tree
-
-	Root bool `json:"isRoot"` // Root - is root
-
+	ShardRoot   *Shard `json:"root"`   // ShardRoot - root shard of shard tree
+	Root        bool   `json:"isRoot"` // Root - is root
 	ParentShard *Shard `json:"parent"` // ParentShard - parent of shard
 
 	Siblings *[]*Shard `json:"siblings"` // Siblings - shard-level siblings
 
-	ChildShards *[]Shard `json:"child shards"` // ChildShards - shards created as children of shard
+	ChildShards []*Shard `json:"child shards"` // ChildShards - shards created as children of shard
 
-	Age uint64 `json:"age"` // Age - shard age
-
+	Age    uint64    `json:"age"`           // Age - shard age
 	Origin time.Time `json:"creation time"` // Origin - time shard created
 
 	Address string `json:"address"` // Address - addressable internet protocol ID used for shard-level communications
@@ -39,7 +35,7 @@ type Shard struct {
 
 // NewShard - initialize new shard
 func NewShard(initializingNode *node.Node) (*Shard, error) {
-	shard := Shard{Nodes: &[]node.Node{*initializingNode}, ChildNodes: &[]node.Node{*initializingNode}, ChildShards: &[]Shard{}, Origin: time.Now().UTC(), Address: initializingNode.Address} // Initialize shard
+	shard := Shard{Nodes: &[]node.Node{*initializingNode}, ChildNodes: &[]node.Node{*initializingNode}, ChildShards: []*Shard{}, Origin: time.Now().UTC(), Address: (*initializingNode).Address} // Initialize shard
 
 	serialized, err := common.SerializeToBytes(shard) // Serialize shard
 
@@ -47,8 +43,8 @@ func NewShard(initializingNode *node.Node) (*Shard, error) {
 		return nil, err // Return found error
 	}
 
-	shard.ID = common.Sha3(serialized)                                          // Set shard ID
-	shard.Address, err = common.SeedAddress(initializingNode.Address, shard.ID) // Generate, set address
+	shard.ID = common.Sha3(serialized)                                             // Set shard ID
+	shard.Address, err = common.SeedAddress((*initializingNode).Address, shard.ID) // Generate, set address
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -59,7 +55,7 @@ func NewShard(initializingNode *node.Node) (*Shard, error) {
 
 // NewShardWithNodes - initialize new shard with child nodes
 func NewShardWithNodes(initializingNodes *[]node.Node) (*Shard, error) {
-	shard := Shard{Nodes: initializingNodes, ChildNodes: initializingNodes, ChildShards: &[]Shard{}, Origin: time.Now().UTC(), Address: ""} // Initialize shard
+	shard := Shard{Nodes: initializingNodes, ChildNodes: initializingNodes, ChildShards: []*Shard{}, Origin: time.Now().UTC(), Address: ""} // Initialize shard
 
 	serialized, err := common.SerializeToBytes(shard) // Serialize shard
 
@@ -81,6 +77,10 @@ func NewShardWithNodes(initializingNodes *[]node.Node) (*Shard, error) {
 func (shard *Shard) Shard(exponent uint) error {
 	totalShards := math.Pow(float64(exponent), float64(exponent)) // Calculate total shards
 
+	if totalShards > float64(len(*shard.ChildNodes)) { // Check for invalid node count
+		return errors.New("shard smaller than exponential shard count") // Return found error
+	}
+
 	if reflect.ValueOf(shard.ParentShard).IsNil() { // Check is root
 		(*shard).Root = true       // Set root
 		(*shard).ShardRoot = shard // Set shard root
@@ -88,12 +88,8 @@ func (shard *Shard) Shard(exponent uint) error {
 
 	lastShard := shard // Set last shard
 
-	fmt.Println("generating " + strconv.Itoa(int(totalShards)) + " shards")
-
 	for x := 0; x != int(exponent); x++ {
 		for z := 0; z != int(exponent); z++ {
-			fmt.Println(lastShard.Root) // Log isRoot
-
 			foundNodes := (*shard.ChildNodes)[(z * x):((z * x) + int(exponent))] // Fetch nodes in shard
 
 			newShard, err := NewShardWithNodes(&foundNodes) // Init shard
@@ -104,7 +100,7 @@ func (shard *Shard) Shard(exponent uint) error {
 
 			(*newShard).ParentShard = lastShard                                // Set parent
 			(*newShard).ShardRoot = shard                                      // Set shard root
-			*lastShard.ChildShards = append(*lastShard.ChildShards, *newShard) // Append initialized shard
+			(*lastShard).ChildShards = append(lastShard.ChildShards, newShard) // Append initialized shard
 
 			lastShard = newShard // Set last shard
 		}

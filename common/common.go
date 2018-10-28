@@ -40,13 +40,13 @@ var (
 
 // SeedAddress - generated shard address from seed
 func SeedAddress(seed string, shardID string) (string, error) {
-	if len(seed) == 0 || len(shardID) == 0 || len(shardID) < len(seed) {
+	if len(seed) == 0 || len(shardID) == 0 || len(shardID) < len(seed) { // Check for invalid input
 		return "", errors.New("invalid input") // Return found error
 	}
 
 	for i := range seed { // Iterate over seed
-		if i%3 == 0 { // Check is third
-			seed = seed[:i] + string(shardID[i]) + seed[i+1:] // Replace with ID at string
+		if i%4 == 0 { // Check should swap
+			seed = seed[:i] + string(shardID[i]) + ":" + seed[i+1:] // Replace with ID at string
 		}
 	}
 
