@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"reflect"
+	"strconv"
 	"time"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -87,8 +88,12 @@ func (shard *Shard) Shard(exponent uint) error {
 
 	lastShard := shard // Set last shard
 
-	for x := 0; x != int(totalShards); x++ {
+	fmt.Println("generating " + strconv.Itoa(int(totalShards)) + " shards")
+
+	for x := 0; x != int(exponent); x++ {
 		for z := 0; z != int(exponent); z++ {
+			fmt.Println(lastShard.Root) // Log isRoot
+
 			foundNodes := (*shard.ChildNodes)[(z * x):((z * x) + int(exponent))] // Fetch nodes in shard
 
 			newShard, err := NewShardWithNodes(&foundNodes) // Init shard
@@ -97,10 +102,9 @@ func (shard *Shard) Shard(exponent uint) error {
 				return err // Return found error
 			}
 
-			(*newShard).ParentShard = shard                                    // Set parent
+			(*newShard).ParentShard = lastShard                                // Set parent
+			(*newShard).ShardRoot = shard                                      // Set shard root
 			*lastShard.ChildShards = append(*lastShard.ChildShards, *newShard) // Append initialized shard
-
-			fmt.Println(lastShard)
 
 			lastShard = newShard // Set last shard
 		}
