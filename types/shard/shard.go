@@ -78,7 +78,7 @@ func NewShardWithNodes(initializingNodes *[]node.Node) (*Shard, error) {
 
 // Shard - exponentially shard specified shard into child shards
 func (shard *Shard) Shard(exponent uint) error {
-	totalShards := math.Pow(float64(exponent), float64(exponent)) // Calculate total nodes
+	totalShards := math.Pow(float64(exponent), float64(exponent)) // Calculate total shards
 
 	if reflect.ValueOf(shard.ParentShard).IsNil() { // Check is root
 		shard.Root = true       // Set root
