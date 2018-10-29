@@ -1,7 +1,10 @@
 package shard
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -80,6 +83,15 @@ func TestShardShard(t *testing.T) {
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	}
+
+	serialized, err := common.SerializeToString(*shard) // Serialize shard
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	writeTest(serialized, "Subsharding") // Write serialized
 }
 
 func TestSerializeShard(t *testing.T) {
@@ -183,6 +195,28 @@ func newNodeListSafe(nodeCount int) (*[]node.Node, error) {
 	}
 
 	return nodeList, nil // No error occurred, return nil
+}
+
+func writeTest(data string, testName string) {
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
+
+	file, err := os.Create(currentDir + filepath.FromSlash("/test") + testName + ".json") // Attempt to create file at path
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
+
+	writer := bufio.NewWriter(file) // Init writer
+
+	_, err = writer.WriteString(data) // Write data
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
 }
 
 /*
