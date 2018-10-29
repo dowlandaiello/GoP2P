@@ -33,7 +33,8 @@ type Shard struct {
 
 // NewShard - initialize new shard
 func NewShard(initializingNode *node.Node) (*Shard, error) {
-	shard := Shard{Nodes: &[]node.Node{*initializingNode}, ChildNodes: &[]node.Node{*initializingNode}, ChildShards: []*Shard{}, Origin: time.Now().UTC(), Address: (*initializingNode).Address} // Initialize shard
+	initializingNode = &node.Node{Address: initializingNode.Address, Reputation: initializingNode.Reputation, LastPingTime: initializingNode.LastPingTime, IsBootstrap: initializingNode.IsBootstrap} // Remove environment (plz, no recursion :pepeHands:)
+	shard := Shard{Nodes: &[]node.Node{*initializingNode}, ChildNodes: &[]node.Node{*initializingNode}, ChildShards: []*Shard{}, Origin: time.Now().UTC(), Address: (*initializingNode).Address}      // Initialize shard
 
 	serialized, err := common.SerializeToBytes(shard) // Serialize shard
 
@@ -53,6 +54,10 @@ func NewShard(initializingNode *node.Node) (*Shard, error) {
 
 // NewShardWithNodes - initialize new shard with child nodes
 func NewShardWithNodes(initializingNodes *[]node.Node) (*Shard, error) {
+	for _, initializingNode := range *initializingNodes {
+		initializingNode = node.Node{Address: initializingNode.Address, Reputation: initializingNode.Reputation, LastPingTime: initializingNode.LastPingTime, IsBootstrap: initializingNode.IsBootstrap} // Remove environment (plz, no recursion :pepeHands:)
+	}
+
 	shard := Shard{Nodes: initializingNodes, ChildNodes: initializingNodes, ChildShards: []*Shard{}, Origin: time.Now().UTC(), Address: ""} // Initialize shard
 
 	serialized, err := common.SerializeToBytes(shard) // Serialize shard
