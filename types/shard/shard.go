@@ -95,8 +95,8 @@ func (shard *Shard) Shard(exponent uint) error {
 				return err // Return found error
 			}
 
-			(*newShard).ParentShardAddress = lastShard.ID                      // Set parent
-			(*newShard).ShardRootAddress = shard.ID                            // Set shard root
+			(*newShard).ParentShardAddress = lastShard.Address                 // Set parent
+			(*newShard).ShardRootAddress = shard.Address                       // Set shard root
 			(*lastShard).ChildShards = append(lastShard.ChildShards, newShard) // Append initialized shard
 
 			lastShard = newShard // Set last shard

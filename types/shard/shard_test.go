@@ -95,7 +95,7 @@ func TestShardShard(t *testing.T) {
 }
 
 func TestSerializeShard(t *testing.T) {
-	nodeList, err := newNodeListSafe(256) // Initialize shard node
+	nodeList, err := newNodeListSafe(4) // Initialize shard node
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -109,7 +109,7 @@ func TestSerializeShard(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	err = shard.Shard(4) // Shard shard
+	err = shard.Shard(2) // Shard shard
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
