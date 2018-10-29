@@ -1,6 +1,7 @@
 # GoP2P test files
 *.gob
 test.json
+testSubsharding.json
 
 # VSCode preferences
 .vscode/
