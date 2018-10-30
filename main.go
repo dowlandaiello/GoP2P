@@ -78,4 +78,8 @@ func startNode() {
 	terminal.HandleCommand("node.StartHandler()") // Start handler
 }
 
-// TODO: replace getNode with shard-based node targeting
+/* TODO:
+- replace getNode with shard-based node targeting
+- add code coverage travis
+- add shard address parsing (return all addresses in shard)
+*/

@@ -346,10 +346,10 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 	switch methodname {
 	case "SeedAddress":
 		if len(params) != 2 { // Check for invalid parameters
-			return errors.New("invalid parameters (requires string, string)") // Return error
+			return errors.New("invalid parameters (requires []string, string)") // Return error
 		}
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{Input: params[0], SecondInput: params[1]})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{Inputs: params[0 : len(params)-2], SecondInput: params[len(params)-1]})) // Append params
 	case "ParseStringMethodCall", "ParseStringParams", "StringStripReceiverCall", "StringStripParentheses", "StringFetchCallReceiver", "CheckAddress":
 		if len(params) != 1 { // Check for invalid parameters
 			return errors.New("invalid parameters (requires string)") // Return error

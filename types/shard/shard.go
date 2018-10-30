@@ -42,8 +42,8 @@ func NewShard(initializingNode *node.Node) (*Shard, error) {
 		return nil, err // Return found error
 	}
 
-	shard.ID = common.Sha3(serialized)                                             // Set shard ID
-	shard.Address, err = common.SeedAddress((*initializingNode).Address, shard.ID) // Generate, set address
+	shard.ID = common.Sha3(serialized)                                                       // Set shard ID
+	shard.Address, err = common.SeedAddress([]string{(*initializingNode).Address}, shard.ID) // Generate, set address
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -54,7 +54,10 @@ func NewShard(initializingNode *node.Node) (*Shard, error) {
 
 // NewShardWithNodes - initialize new shard with child nodes
 func NewShardWithNodes(initializingNodes *[]node.Node) (*Shard, error) {
+	addresses := []string{} // Init buffer
 	for _, initializingNode := range *initializingNodes {
+		addresses = append(addresses, initializingNode.Address) // Append address
+
 		initializingNode = node.Node{Address: initializingNode.Address, Reputation: initializingNode.Reputation, LastPingTime: initializingNode.LastPingTime, IsBootstrap: initializingNode.IsBootstrap} // Remove environment (plz, no recursion :pepeHands:)
 	}
 
@@ -66,8 +69,8 @@ func NewShardWithNodes(initializingNodes *[]node.Node) (*Shard, error) {
 		return nil, err // Return found error
 	}
 
-	shard.ID = common.Sha3(serialized)                                                 // Set shard ID
-	shard.Address, err = common.SeedAddress((*initializingNodes)[0].Address, shard.ID) // Generate, set address
+	shard.ID = common.Sha3(serialized)                           // Set shard ID
+	shard.Address, err = common.SeedAddress(addresses, shard.ID) // Generate, set address
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error

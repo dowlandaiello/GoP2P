@@ -15,7 +15,7 @@ type Server struct{}
 
 // SeedAddress - common.SeedAddress RPC handler
 func (server *Server) SeedAddress(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
-	seededAddress, err := common.SeedAddress(req.Input, req.SecondInput) // Seed address
+	seededAddress, err := common.SeedAddress(req.Inputs, req.SecondInput) // Seed address
 
 	if err != nil { // Check for errors
 		return &commonProto.GeneralResponse{}, err // Return found error
