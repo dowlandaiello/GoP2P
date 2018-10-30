@@ -16,9 +16,9 @@ type Shard struct {
 	Nodes      *[]node.Node `json:"nodes"`       // Nodes - primary list of nodes
 	ChildNodes *[]node.Node `json:"allChildren"` // ChildNodes - list of all child nodes (recursively includes nodes in child shards, not just direct children)
 
-	ShardRootAddress   string `json:"root"`   // ShardRoot - root shard ID of shard tree
+	ShardRootAddress   string `json:"root"`   // ShardRootAddress - root shard address of shard tree
 	Root               bool   `json:"isRoot"` // Root - is root
-	ParentShardAddress string `json:"parent"` // ParentShard - parent ID of shard
+	ParentShardAddress string `json:"parent"` // ParentShardAddress - address of parent shard
 
 	Siblings *[]*Shard `json:"siblings"` // Siblings - shard-level siblings
 
