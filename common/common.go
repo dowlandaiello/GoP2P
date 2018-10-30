@@ -38,19 +38,17 @@ var (
 	BEGIN EXPORTED METHODS:
 */
 
-// SeedAddress - generated shard address from seed
-func SeedAddress(seed string, shardID string) (string, error) {
-	if len(seed) == 0 || len(shardID) == 0 || len(shardID) < len(seed) { // Check for invalid input
+// SeedAddress - generated shard address from seeds
+func SeedAddress(seeds []string, shardID string) (string, error) {
+	if len(seeds) == 0 || len(shardID) == 0 || len(shardID) < len(seeds) { // Check for invalid input
 		return "", errors.New("invalid input") // Return found error
 	}
 
-	for i := range seed { // Iterate over seed
-		if i%4 == 0 { // Check should swap
-			seed = seed[:i] + string(shardID[i]) + ":" + seed[i+1:] // Replace with ID at string
-		}
+	for x, seed := range seeds { // Iterate through given seeds
+		seeds[x] = shardID[x:x+3] + seed // Append shardID
 	}
 
-	seed = strings.Replace(seed, ".", ":", -1) // Remove IPv4 residue
+	seed := strings.Join(seeds, ":") // Return seed
 
 	return seed, nil // Return seed
 }
