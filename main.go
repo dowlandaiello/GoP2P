@@ -82,4 +82,5 @@ func startNode() {
 - replace getNode with shard-based node targeting
 - add code coverage travis
 - add shard address parsing (return all addresses in shard)
+- add shard IP socket operations
 */

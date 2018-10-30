@@ -44,13 +44,20 @@ func SeedAddress(seeds []string, shardID string) (string, error) {
 		return "", errors.New("invalid input") // Return found error
 	}
 
-	for x, seed := range seeds { // Iterate through given seeds
-		seeds[x] = shardID[x:x+3] + seed // Append shardID
-	}
-
-	seed := strings.Join(seeds, ":") // Return seed
+	seed := shardID[0:5] + "::" + strings.Join(seeds, ":") // Set seed
 
 	return seed, nil // Return seed
+}
+
+// ParseShardAddress - attempt to fetch node addresses from shard address
+func ParseShardAddress(address string) ([]string, error) {
+	if address == "" { // Check for nil input
+		return []string{}, errors.New("invalid input") // Return found error
+	}
+
+	addresses := strings.Split(address, ":") // Split
+
+	return addresses, nil // Return addresses
 }
 
 // ParseStringMethodCall - attempt to parse string as method call, returning receiver, method name, and params

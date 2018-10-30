@@ -345,7 +345,7 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 
 	switch methodname {
 	case "SeedAddress":
-		if len(params) != 2 { // Check for invalid parameters
+		if len(params) != 3 { // Check for invalid parameters
 			return errors.New("invalid parameters (requires []string, string)") // Return error
 		}
 
