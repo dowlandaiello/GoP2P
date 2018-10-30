@@ -51,11 +51,11 @@ func SeedAddress(seeds []string, shardID string) (string, error) {
 
 // ParseShardAddress - attempt to fetch node addresses from shard address
 func ParseShardAddress(address string) ([]string, error) {
-	if address == "" { // Check for nil input
+	if address == "" || !strings.Contains(address[5:7], "::") { // Check for nil input
 		return []string{}, errors.New("invalid input") // Return found error
 	}
 
-	addresses := strings.Split(address, ":") // Split
+	addresses := strings.Split(address[7:(len(address)-1)], ":") // Split
 
 	return addresses, nil // Return addresses
 }

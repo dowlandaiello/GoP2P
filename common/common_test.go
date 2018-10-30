@@ -20,6 +20,28 @@ func TestSeedAddress(t *testing.T) {
 	t.Logf("seeded address %s", address) // Log success
 }
 
+// TestParseShardAddress - test functionality of ParseShardAddress() function
+func TestParseShardAddress(t *testing.T) {
+	seeds := []string{"192.178.1.1", "192.168.1.1"} // Initialize seed
+	shardID := Sha3([]byte("despacito"))            // Initialize test shardID
+
+	address, err := SeedAddress(seeds, shardID) // Seed address
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	parsedAddresses, err := ParseShardAddress(address) // Parse address
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("parsed addresses %s", parsedAddresses) // Log success
+}
+
 // TestParseStringMethodCall - test functionality of ParseStringMethodCall() function
 func TestParseStringMethodCall(t *testing.T) {
 	input := "node.NewNode(localhost, 3000)" // Init input
