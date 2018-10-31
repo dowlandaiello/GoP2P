@@ -9,12 +9,12 @@ import (
 
 // NewNode - simple wrapper for initializing a new node
 func NewNode() (*node.Node, error) {
-	address, err := common.GetExtIPAddrWithUPnP() // Attempt to fetch current external IP address
+	address, err := common.GetExtIPAddrWithoutUPnP() // Attempt to fetch current external IP address
 
 	if err != nil { // Check for errors
 		var gErr error // Init err
 
-		address, gErr = common.GetExtIPAddrWithoutUPnP() // Attempt to fetch address without UPnP
+		address, gErr = common.GetExtIPAddrWithUPnP() // Attempt to fetch address with UPnP
 
 		if gErr != nil { // Check second try for errors
 			return nil, gErr
