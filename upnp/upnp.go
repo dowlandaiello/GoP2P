@@ -15,13 +15,13 @@ import (
 
 // GetGateway - get reference to current network gateway device
 func GetGateway() (*upnp.IGD, error) { // Returns error if forward failed, returns gateway device is succeeded
-	// Attempt to discover gateway device
-	d, err := upnp.Discover()
-	if err != nil {
+	d, err := upnp.Discover() // Attempt to discover gateway device
+
+	if err != nil { // Check for errors
 		return nil, err // Return error
 	}
 
-	return d, err
+	return d, nil // Return gateway
 }
 
 // ForwardPortSilent - forwards specified port on current device without log output
@@ -32,9 +32,9 @@ func ForwardPortSilent(portNumber uint) error { // Returns error if forward fail
 		return err // Return error
 	}
 
-	GatewayDevice.Forward(uint16(portNumber), "resourceforwarding") // Attempts to forward
+	err = GatewayDevice.Forward(uint16(portNumber), "resourceforwarding") // Attempt to forward
 
-	if err != nil { // Checks if error occurred
+	if err != nil { // Check if error occurred
 		return err // Return error
 	}
 
@@ -52,8 +52,7 @@ func ForwardPort(portNumber uint) error { // Returns error if forward failed
 
 	GatewayDevice, err := GetGateway() // Find network gateway device
 
-	// Check for error
-	if err != nil {
+	if err != nil { // Check for errors
 		s.Stop() // Stop loading indicator
 
 		return err // Return error
@@ -61,16 +60,15 @@ func ForwardPort(portNumber uint) error { // Returns error if forward failed
 
 	s.Stop() // Stop loading indicator
 
-	fmt.Println("\nfound gateway")
+	fmt.Println("\nfound gateway") // Log found gateway
 
 	s.Suffix = " attempting to forward port" // Add log message
 
 	s.Restart() // Start loading indicator
 
-	// Forward specified port
-	err = GatewayDevice.Forward(uint16(portNumber), "resourceforwarding") // Attempts to forward
+	err = GatewayDevice.Forward(uint16(portNumber), "resourceforwarding") // Attempt to forward
 
-	if err != nil { // Checks if error occurred
+	if err != nil { // Check if error occurred
 		s.Stop()   // Stop loading indicator
 		return err // Return error
 	}
@@ -86,14 +84,13 @@ func ForwardPort(portNumber uint) error { // Returns error if forward failed
 func RemovePortForward(portNumber uint) error { // Returns error if removal failed
 	GatewayDevice, err := GetGateway() // Find network gateway device
 
-	// Check for error
-	if err != nil {
+	if err != nil { // Check for errors
 		return err // Return error
 	}
 
-	// Remove specified port forwarding
-	err = GatewayDevice.Clear(uint16(portNumber))
-	if err != nil {
+	err = GatewayDevice.Clear(uint16(portNumber)) // Remove specified port forwarding
+
+	if err != nil { // Check for errors
 		return err // Return error
 	}
 

@@ -35,9 +35,9 @@ func TestForwardPort(t *testing.T) {
 func TestForwardPortSilent(t *testing.T) {
 	err := ForwardPortSilent(3000) // Attempt to forward port 3000
 
-	if err != nil && !strings.Contains(err.Error(), "no UPnP") {
+	if err != nil && !strings.Contains(err.Error(), "no UPnP") { // Check for errors
 		t.Errorf(err.Error()) // If error occurs, print error to testing console
-		t.FailNow()
+		t.FailNow()           // Panic
 	} else if err != nil && strings.Contains(err.Error(), "no UPnP") {
 		t.Logf("WARNING: UPnP testing requires UPnP network support") // Log warning
 	}
@@ -46,9 +46,9 @@ func TestForwardPortSilent(t *testing.T) {
 func TestRemovePortForward(t *testing.T) {
 	err := RemovePortForward(3000) // Attempt to remove forward on port 3000
 
-	if err != nil && !strings.Contains(err.Error(), "no UPnP") {
+	if err != nil && !strings.Contains(err.Error(), "no UPnP") { // Check for errors
 		t.Errorf(err.Error()) // If error occurs, print error to testing console
-		t.FailNow()
+		t.FailNow()           // Panic
 	} else if err != nil && strings.Contains(err.Error(), "no UPnP") {
 		t.Logf("WARNING: UPnP testing requires UPnP network support") // Log warning
 	}
