@@ -32,7 +32,7 @@ func TestMain(t *testing.T) {
 			t.FailNow()           // Panic
 		}
 
-		main() // :shrug:
+		go main() // :shrug:
 	}
 }
 

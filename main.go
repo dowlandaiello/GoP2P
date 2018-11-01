@@ -10,8 +10,8 @@ import (
 	commonServer "github.com/mitsukomegumi/GoP2P/rpc/common"
 	"github.com/mitsukomegumi/GoP2P/rpc/database"
 	"github.com/mitsukomegumi/GoP2P/rpc/environment"
-	handler "github.com/mitsukomegumi/GoP2P/rpc/handler"
-	node "github.com/mitsukomegumi/GoP2P/rpc/node"
+	handlerServer "github.com/mitsukomegumi/GoP2P/rpc/handler"
+	nodeServer "github.com/mitsukomegumi/GoP2P/rpc/node"
 	commonProto "github.com/mitsukomegumi/GoP2P/rpc/proto/common"
 	databaseProto "github.com/mitsukomegumi/GoP2P/rpc/proto/database"
 	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
@@ -19,6 +19,8 @@ import (
 	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
 	upnpProto "github.com/mitsukomegumi/GoP2P/rpc/proto/upnp"
 	upnpServer "github.com/mitsukomegumi/GoP2P/rpc/upnp"
+	"github.com/mitsukomegumi/GoP2P/types/handler"
+	"github.com/mitsukomegumi/GoP2P/types/node"
 	"github.com/mitsukomegumi/GoP2P/upnp"
 )
 
@@ -50,8 +52,8 @@ func main() {
 
 // startRPCServer - start RPC server
 func startRPCServer() {
-	nodeHandler := nodeProto.NewNodeServer(&node.Server{}, nil)                             // Init handler
-	handlerHandler := handlerProto.NewHandlerServer(&handler.Server{}, nil)                 // Init handler
+	nodeHandler := nodeProto.NewNodeServer(&nodeServer.Server{}, nil)                       // Init handler
+	handlerHandler := handlerProto.NewHandlerServer(&handlerServer.Server{}, nil)           // Init handler
 	environmentHandler := environmentProto.NewEnvironmentServer(&environment.Server{}, nil) // Init handler
 	upnpHandler := upnpProto.NewUpnpServer(&upnpServer.Server{}, nil)                       // Init handler
 	databaseHandler := databaseProto.NewDatabaseServer(&database.Server{}, nil)             // Init handler
@@ -71,11 +73,29 @@ func startRPCServer() {
 
 // startNode - attempt to execute attachnode, starthandler commands
 func startNode() {
-	terminal := cli.Terminal{Variables: []cli.Variable{}} // Init terminal
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
 
-	terminal.HandleCommand("node.Attach()") // Attach node
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
 
-	terminal.HandleCommand("node.StartHandler()") // Start handler
+	node, err := node.ReadNodeFromMemory(currentDir) // Read node from current dir
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
+
+	ln, err := node.StartListener(3000) // Start listener
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
+
+	err = handler.StartHandler(node, ln) // Start handler
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
 }
 
 /* TODO:
