@@ -100,6 +100,5 @@ func startNode() {
 
 /* TODO:
 - replace getNode with shard-based node targeting
-- add shard address parsing (return all addresses in shard)
-- add shard IP socket operations
+- finish shard IP socket operations
 */

@@ -152,7 +152,7 @@ func TestLogShard(t *testing.T) {
 
 // TestCalculateQuadraticExponent - test functionality of quadratic exponent calculator
 func TestCalculateQuadraticExponent(t *testing.T) {
-	t.Logf(fmt.Sprintf("%f", CalculateQuadraticExponent(3))) // Log output
+	t.Logf(fmt.Sprintf("%f", CalculateQuadraticExponent(4))) // Log output
 }
 
 /*
