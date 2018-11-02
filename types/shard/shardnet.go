@@ -40,6 +40,12 @@ func SendBytesShardResult(b []byte, address string, port int) ([][]byte, error) 
 		}
 	}
 
+	filteredResult, err := common.GetCommonByteDifference(result) // Fetch final result
+
+	if err != nil { // Check for errors
+		return []byte{}, err // Return found error
+	}
+
 	return buffer, nil // Return read data
 }
 
