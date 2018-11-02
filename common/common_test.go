@@ -5,6 +5,20 @@ import (
 	"testing"
 )
 
+// TestGetCommonByteDifference - test functionality of GetCommonByteDifference() function
+func TestGetCommonByteDifference(t *testing.T) {
+	byteValues := [][]byte{[]byte("test1"), []byte("test"), []byte("test2")} // Init byte values
+
+	common, err := GetCommonByteDifference(byteValues) // Fetch most common value
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("found common value %s", string(common)) // Log success
+}
+
 // TestSeedAddress - test functionality of SeedAddress() function
 func TestSeedAddress(t *testing.T) {
 	seeds := []string{"192.178.1.1", "192.168.1.1"} // Initialize seed

@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"sort"
 	"strings"
 	"time"
 
@@ -37,6 +38,46 @@ var (
 /*
 	BEGIN EXPORTED METHODS:
 */
+
+// GetCommonByteDifference - attempt to fetch most similar byte array in array of byte arrays
+func GetCommonByteDifference(b [][]byte) ([]byte, error) {
+	if len(b) == 0 { // Check for nil input
+		return []byte{}, errors.New("nil input") // Return found error
+	}
+
+	differences := []int{} // Init diff buffer
+
+	lowest := 100    // Init lowest buffer
+	lowestIndex := 0 // Init lowest index buffer
+
+	sort.Slice(b, func(x, z int) bool { // Sort by length
+		return len(b[x]) < len(b[z])
+	})
+
+	for x := 0; x != len(b); x++ { // Iterate through byte arrays
+		diff := make([]int, len(b[x])) // Init diff buffer
+		total := 0                     // Init total buffer
+
+		for i := 0; i != len(b[x]); i++ { // Iterate through current byte array
+			if x == len(b)-1 { // Check for end of slice
+				diff[i] = int(b[x][i]) - int(b[x-1][i]) // Calculate difference
+			} else {
+				diff[i] = int(b[x][i]) - int(b[x+1][i]) // Calculate difference
+			}
+
+			total += diff[i] // Add value
+		}
+
+		if total/len(diff) < lowest { // Check value is lowest
+			lowest = total / len(diff) // Set lowest
+			lowestIndex = x            // Set index
+		}
+
+		differences = append(differences, total/len(diff)) // Append difference
+	}
+
+	return b[lowestIndex], nil // No error occurred, return nil
+}
 
 // SeedAddress - generated shard address from seeds
 func SeedAddress(seeds []string, shardID string) (string, error) {
