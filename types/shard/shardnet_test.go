@@ -17,7 +17,7 @@ func TestSendBytesShardResult(t *testing.T) {
 	if err == nil { // Check for errors
 		t.Logf("WARNING: testing network methods requires a running handler") // Log warning
 	} else {
-		nodeList, err := newNodeListSafe(8) // Init node list
+		nodeList, err := newNodeListSafe(1) // Init node list
 
 		if err != nil { // Check for errors
 			t.Errorf(err.Error()) // Log found error
