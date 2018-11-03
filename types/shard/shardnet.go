@@ -11,9 +11,9 @@ import (
 )
 
 // SendBytesShardResult - attempt to send specified bytes to given shard address, returning result
-func SendBytesShardResult(b []byte, address string, port int) ([][]byte, error) {
+func SendBytesShardResult(b []byte, address string, port int) ([]byte, error) {
 	if len(address) == 0 || len(address) < 0 || !strings.Contains(address, "::") { // Check for invalid input
-		return [][]byte{}, fmt.Errorf("invalid address %s", address) // Return found error
+		return []byte{}, fmt.Errorf("invalid address %s", address) // Return found error
 	}
 
 	addresses := strings.Split(strings.Split(address, "::")[1], ":") // Split into string slice
@@ -26,7 +26,13 @@ func SendBytesShardResult(b []byte, address string, port int) ([][]byte, error) 
 
 	for _, address := range addresses { // Iterate through addresses
 		if float64(len(finished)) > (0.51 * float64(len(addresses))) { // Check 51% of nodes finished
-			return buffer, nil // Return read data
+			filteredResult, err := common.GetCommonByteDifference(buffer) // Fetch final result
+
+			if err != nil { // Check for errors
+				return []byte{}, err // Return found error
+			}
+
+			return filteredResult, nil // Return read data
 		}
 
 		address = address + ":" + strconv.Itoa(port) // Append port
@@ -36,17 +42,17 @@ func SendBytesShardResult(b []byte, address string, port int) ([][]byte, error) 
 
 	for float64(len(finished)) < (0.51 * float64(len(addresses))) {
 		if time.Now().Sub(startTime) > 3*time.Second { // Check for time out
-			return [][]byte{}, errors.New("timed out") // Return timed out
+			return []byte{}, errors.New("timed out") // Return timed out
 		}
 	}
 
-	filteredResult, err := common.GetCommonByteDifference(result) // Fetch final result
+	filteredResult, err := common.GetCommonByteDifference(buffer) // Fetch final result
 
 	if err != nil { // Check for errors
 		return []byte{}, err // Return found error
 	}
 
-	return buffer, nil // Return read data
+	return filteredResult, nil // Return read data
 }
 
 // SendBytesShard - attempt to send specified bytes to given shard address
@@ -57,10 +63,20 @@ func SendBytesShard(b []byte, address string, port int) error {
 
 	addresses := strings.Split(strings.Split(address, "::")[1], ":") // Split into string slice
 
+	finished := []bool{} // Init finished buffer
+
 	for _, address := range addresses { // Iterate through addresses
 		address = address + ":" + strconv.Itoa(port) // Append port
 
-		go common.SendBytes(b, address) // Send to address
+		go common.SendBytesAsync(b, address, finished) // Send to address
+
+		if len(finished) >= len(addresses) { // Check finished
+			return nil // No error occurred, return nil
+		}
+	}
+
+	for len(finished) < len(addresses) {
+
 	}
 
 	return nil // No error occurred, return  nil

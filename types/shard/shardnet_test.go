@@ -71,7 +71,7 @@ func TestSendBytesShardResult(t *testing.T) {
 }
 
 func TestSendBytesShard(t *testing.T) {
-	nodeList, err := newNodeListSafe(8) // Init node list
+	nodeList, err := newNodeListSafe(2) // Init node list
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error

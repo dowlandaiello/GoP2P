@@ -20,8 +20,6 @@ type Shard struct {
 	Root               bool   `json:"isRoot"` // Root - is root
 	ParentShardAddress string `json:"parent"` // ParentShardAddress - address of parent shard
 
-	Siblings *[]*Shard `json:"siblings"` // Siblings - shard-level siblings
-
 	ChildShards []*Shard `json:"child shards"` // ChildShards - shards created as children of shard
 
 	Origin time.Time `json:"creation time"` // Origin - time shard created
