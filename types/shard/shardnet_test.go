@@ -12,9 +12,11 @@ import (
 
 // TestSendBytesShardResult - test functionality of SendBytesShardResult() method
 func TestSendBytesShardResult(t *testing.T) {
-	_, err := net.Listen("tcp", ":3000") // Attempt to init listener
+	ln, err := net.Listen("tcp", ":3000") // Attempt to init listener
 
 	if err == nil { // Check for errors
+		ln.Close() // Close listener
+
 		t.Logf("WARNING: testing network methods requires a running handler") // Log warning
 	} else {
 		nodeList, err := newNodeListSafe(1) // Init node list
@@ -78,9 +80,11 @@ func TestSendBytesShardResult(t *testing.T) {
 }
 
 func TestSendBytesShard(t *testing.T) {
-	_, err := net.Listen("tcp", ":3000") // Attempt to init listener
+	ln, err := net.Listen("tcp", ":3000") // Attempt to init listener
 
 	if err == nil { // Check for errors
+		ln.Close() // Close listener
+
 		t.Logf("WARNING: testing network methods requires a running handler") // Log warning
 	} else {
 		nodeList, err := newNodeListSafe(2) // Init node list
