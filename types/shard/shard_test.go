@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"testing"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -124,6 +125,32 @@ func TestSerializeShard(t *testing.T) {
 	}
 
 	t.Logf("Serialized shard %s", string(serialized)) // Log success
+}
+
+// TestQueryForAddress - test functionality of shard address querying
+func TestQueryForAddress(t *testing.T) {
+	nodeList, err := newNodeListSafe(2) // Initialize shard node
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	shard, err := NewShardWithNodes(nodeList) // Init shard
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	index, err := shard.QueryForAddress((*nodeList)[0].Address) // Query for address
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf("found node index: %s", strconv.Itoa(int(index))) // Log success
 }
 
 // TestLogShard - test functionality of shard logging
