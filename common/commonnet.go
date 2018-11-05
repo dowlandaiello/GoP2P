@@ -86,6 +86,10 @@ func SendBytesAsync(b []byte, address string, finished []bool) error {
 
 	finished = append(finished, true) // Append finished
 
+	if finished == nil { // Check for nil
+		return errors.New("nil buffer") // Return found error
+	}
+
 	return nil // No error occurred, return nil
 }
 
@@ -116,6 +120,10 @@ func SendBytesResultBufferAsync(b []byte, buffer [][]byte, address string, finis
 	}
 
 	buffer = append(buffer, result) // Append result
+
+	if buffer == nil { // Check for nil buffer
+		return errors.New("nil buffer") // Return found error
+	}
 
 	finished <- append(<-finished, true) // Set finished
 
