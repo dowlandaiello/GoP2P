@@ -114,6 +114,17 @@ func (shard *Shard) Shard(exponent uint) error {
 	return nil // No error occurred, return nil
 }
 
+// QueryForAddress - attempts to search specified node database for specified address, returns index of node
+func (shard *Shard) QueryForAddress(address string) (uint, error) {
+	for x := 0; x != len(*shard.Nodes); x++ { // Wait until entire db has been queried
+		if address == (*shard.Nodes)[x].Address { // Check for match
+			return uint(x), nil // If provided value matches value of node in list, return index
+		}
+	}
+
+	return 0, errors.New("no value found") // Could not find index of address, return new error
+}
+
 // LogShard - serialize and print contents of entire shard
 func (shard *Shard) LogShard() error {
 	marshaledVal, err := json.MarshalIndent(*shard, "", "  ") // Marshal shard

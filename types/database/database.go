@@ -77,6 +77,55 @@ func (db *NodeDatabase) RemoveNode(address string) error {
 	return nil // Returns nil, no error
 }
 
+/* END NODE METHODS */
+
+/* BEGIN SHARD METHODS */
+
+// AddShard - attempt to append shard to current NodeDatabase
+func (db *NodeDatabase) AddShard(shard *shard.Shard) error {
+	if reflect.ValueOf(shard).IsNil() || len(*shard.ChildNodes) == 0 || shard.Address == "" { // Check for invalid shard
+		return errors.New("invalid shard") // Return found error
+	}
+
+	for _, node := range *db.Nodes { // Iterate through nodes in database
+		_, err := db.QueryForAddress(node.Address) // Check if node exists in database
+
+		if err == nil { // Check for errors while querying for address
+			go db.RemoveNode(node.Address) // Remove node
+		}
+	}
+
+	*db.Shards = append(*db.Shards, *shard) // Append shard
+
+	err := db.UpdateRemoteDatabase() // Update remote database instances
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	currentDir, err := common.GetCurrentDir() // Get working directory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	node, err := node.ReadNodeFromMemory(currentDir) // Read node from working dir
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = db.WriteToMemory(node.Environment) // Write to local environment
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
+}
+
+/* END SHARD METHODS */
+
 // QueryForAddress - attempts to search specified node database for specified address, returns index of node
 func (db *NodeDatabase) QueryForAddress(address string) (uint, error) {
 	for x := 0; x != len(*db.Nodes); x++ { // Wait until entire db has been queried
@@ -226,8 +275,6 @@ func FetchRemoteDatabase(bootstrapAddress string, databasePort uint, databaseAli
 
 	return db, nil // No error occurred, return nil
 }
-
-/* END NODE METHODS */
 
 // LogDatabase - serialize and print contents of entire database
 func (db *NodeDatabase) LogDatabase() error {
