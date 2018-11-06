@@ -139,10 +139,10 @@ func (shard *Shard) LogShard() error {
 }
 
 // CalculateQuadraticExponent - returns exponential value of exponent to exponent exponent times
-func CalculateQuadraticExponent(exponent int) float64 {
+func CalculateQuadraticExponent(exponent float64) float64 {
 	val := float64(exponent) // Init buffer
 
-	for x := 0; x != exponent; x++ {
+	for x := float64(0); x != exponent; x++ {
 		val = math.Pow(float64(val), float64(exponent)) // Set to exponent
 	}
 
