@@ -51,6 +51,8 @@ type Database interface {
 
 	FetchRemoteDatabase(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
+	SendDatabaseMessage(context.Context, *GeneralRequest) (*GeneralResponse, error)
+
 	LogDatabase(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
 	FromBytes(context.Context, *GeneralRequest) (*GeneralResponse, error)
@@ -62,14 +64,14 @@ type Database interface {
 
 type databaseProtobufClient struct {
 	client HTTPClient
-	urls   [11]string
+	urls   [12]string
 }
 
 // NewDatabaseProtobufClient creates a Protobuf client that implements the Database interface.
 // It communicates using Protobuf and can be configured with a custom HTTPClient.
 func NewDatabaseProtobufClient(addr string, client HTTPClient) Database {
 	prefix := urlBase(addr) + DatabasePathPrefix
-	urls := [11]string{
+	urls := [12]string{
 		prefix + "NewDatabase",
 		prefix + "AddNode",
 		prefix + "RemoveNode",
@@ -79,6 +81,7 @@ func NewDatabaseProtobufClient(addr string, client HTTPClient) Database {
 		prefix + "UpdateRemoteDatabase",
 		prefix + "JoinDatabase",
 		prefix + "FetchRemoteDatabase",
+		prefix + "SendDatabaseMessage",
 		prefix + "LogDatabase",
 		prefix + "FromBytes",
 	}
@@ -202,12 +205,24 @@ func (c *databaseProtobufClient) FetchRemoteDatabase(ctx context.Context, in *Ge
 	return out, nil
 }
 
+func (c *databaseProtobufClient) SendDatabaseMessage(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "database")
+	ctx = ctxsetters.WithServiceName(ctx, "Database")
+	ctx = ctxsetters.WithMethodName(ctx, "SendDatabaseMessage")
+	out := new(GeneralResponse)
+	err := doProtobufRequest(ctx, c.client, c.urls[9], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *databaseProtobufClient) LogDatabase(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "database")
 	ctx = ctxsetters.WithServiceName(ctx, "Database")
 	ctx = ctxsetters.WithMethodName(ctx, "LogDatabase")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[9], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[10], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -219,7 +234,7 @@ func (c *databaseProtobufClient) FromBytes(ctx context.Context, in *GeneralReque
 	ctx = ctxsetters.WithServiceName(ctx, "Database")
 	ctx = ctxsetters.WithMethodName(ctx, "FromBytes")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[10], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[11], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -232,14 +247,14 @@ func (c *databaseProtobufClient) FromBytes(ctx context.Context, in *GeneralReque
 
 type databaseJSONClient struct {
 	client HTTPClient
-	urls   [11]string
+	urls   [12]string
 }
 
 // NewDatabaseJSONClient creates a JSON client that implements the Database interface.
 // It communicates using JSON and can be configured with a custom HTTPClient.
 func NewDatabaseJSONClient(addr string, client HTTPClient) Database {
 	prefix := urlBase(addr) + DatabasePathPrefix
-	urls := [11]string{
+	urls := [12]string{
 		prefix + "NewDatabase",
 		prefix + "AddNode",
 		prefix + "RemoveNode",
@@ -249,6 +264,7 @@ func NewDatabaseJSONClient(addr string, client HTTPClient) Database {
 		prefix + "UpdateRemoteDatabase",
 		prefix + "JoinDatabase",
 		prefix + "FetchRemoteDatabase",
+		prefix + "SendDatabaseMessage",
 		prefix + "LogDatabase",
 		prefix + "FromBytes",
 	}
@@ -372,12 +388,24 @@ func (c *databaseJSONClient) FetchRemoteDatabase(ctx context.Context, in *Genera
 	return out, nil
 }
 
+func (c *databaseJSONClient) SendDatabaseMessage(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "database")
+	ctx = ctxsetters.WithServiceName(ctx, "Database")
+	ctx = ctxsetters.WithMethodName(ctx, "SendDatabaseMessage")
+	out := new(GeneralResponse)
+	err := doJSONRequest(ctx, c.client, c.urls[9], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *databaseJSONClient) LogDatabase(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "database")
 	ctx = ctxsetters.WithServiceName(ctx, "Database")
 	ctx = ctxsetters.WithMethodName(ctx, "LogDatabase")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[9], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[10], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -389,7 +417,7 @@ func (c *databaseJSONClient) FromBytes(ctx context.Context, in *GeneralRequest) 
 	ctx = ctxsetters.WithServiceName(ctx, "Database")
 	ctx = ctxsetters.WithMethodName(ctx, "FromBytes")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[10], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[11], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -470,6 +498,9 @@ func (s *databaseServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) 
 		return
 	case "/twirp/database.Database/FetchRemoteDatabase":
 		s.serveFetchRemoteDatabase(ctx, resp, req)
+		return
+	case "/twirp/database.Database/SendDatabaseMessage":
+		s.serveSendDatabaseMessage(ctx, resp, req)
 		return
 	case "/twirp/database.Database/LogDatabase":
 		s.serveLogDatabase(ctx, resp, req)
@@ -1781,6 +1812,150 @@ func (s *databaseServer) serveFetchRemoteDatabaseProtobuf(ctx context.Context, r
 	callResponseSent(ctx, s.hooks)
 }
 
+func (s *databaseServer) serveSendDatabaseMessage(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveSendDatabaseMessageJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveSendDatabaseMessageProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *databaseServer) serveSendDatabaseMessageJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "SendDatabaseMessage")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	reqContent := new(GeneralRequest)
+	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
+	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request json")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.Database.SendDatabaseMessage(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling SendDatabaseMessage. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	var buf bytes.Buffer
+	marshaler := &jsonpb.Marshaler{OrigName: true}
+	if err = marshaler.Marshal(&buf, respContent); err != nil {
+		err = wrapErr(err, "failed to marshal json response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.WriteHeader(http.StatusOK)
+
+	respBytes := buf.Bytes()
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *databaseServer) serveSendDatabaseMessageProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "SendDatabaseMessage")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		err = wrapErr(err, "failed to read request body")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+	reqContent := new(GeneralRequest)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request proto")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.Database.SendDatabaseMessage(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling SendDatabaseMessage. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		err = wrapErr(err, "failed to marshal proto response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
 func (s *databaseServer) serveLogDatabase(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
@@ -2498,28 +2673,29 @@ func callError(ctx context.Context, h *twirp.ServerHooks, err twirp.Error) conte
 }
 
 var twirpFileDescriptor0 = []byte{
-	// 363 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0xcf, 0x4e, 0xe3, 0x30,
-	0x10, 0xc6, 0x37, 0xbb, 0xdd, 0xfe, 0x99, 0xfe, 0xd3, 0x7a, 0x39, 0x98, 0x8a, 0x43, 0xd4, 0x53,
-	0x25, 0x50, 0x0f, 0xf0, 0x02, 0xb4, 0x84, 0x14, 0x50, 0x5b, 0x41, 0x54, 0xe0, 0xec, 0xd4, 0xa3,
-	0xb6, 0xa2, 0x89, 0x83, 0xed, 0x52, 0xe5, 0x6d, 0x78, 0x36, 0x9e, 0x04, 0xc5, 0x34, 0x01, 0x04,
-	0xa7, 0x84, 0x5b, 0xbe, 0xf9, 0x46, 0xbf, 0xc9, 0x7c, 0x23, 0x19, 0x5a, 0x9c, 0x69, 0xe6, 0x33,
-	0x85, 0xfd, 0x48, 0x0a, 0x2d, 0x48, 0x35, 0xd5, 0xdd, 0x17, 0x0b, 0x5a, 0x23, 0x0c, 0x51, 0xb2,
-	0xb5, 0x87, 0x8f, 0x1b, 0x54, 0x9a, 0x74, 0xc0, 0xd8, 0xd7, 0x4c, 0x2f, 0xa9, 0x65, 0x5b, 0xbd,
-	0x9a, 0x97, 0x69, 0x62, 0x43, 0x3d, 0x44, 0xbd, 0x15, 0xf2, 0x61, 0xca, 0x02, 0xa4, 0xbf, 0x8d,
-	0xfd, 0xb1, 0x44, 0x0e, 0xa0, 0xb6, 0x93, 0x97, 0x0e, 0xfd, 0x63, 0x5b, 0xbd, 0xa6, 0xf7, 0x5e,
-	0x20, 0x47, 0xf0, 0x8f, 0xcd, 0xe7, 0x18, 0x69, 0xe6, 0xaf, 0x71, 0xb6, 0x0a, 0x50, 0x6c, 0x34,
-	0x2d, 0x99, 0xae, 0xaf, 0x06, 0x21, 0x50, 0x8a, 0x84, 0xd4, 0xf4, 0xaf, 0x69, 0x30, 0xdf, 0x84,
-	0x42, 0x85, 0x71, 0x2e, 0x51, 0x29, 0x5a, 0x36, 0xd3, 0x53, 0x99, 0x38, 0x7e, 0xac, 0xf1, 0x8e,
-	0xad, 0x69, 0xc5, 0xb6, 0x7a, 0x0d, 0x2f, 0x95, 0xdd, 0x43, 0x68, 0x67, 0x3b, 0xaa, 0x48, 0x84,
-	0x0a, 0x93, 0xe6, 0x00, 0x95, 0x62, 0x0b, 0xdc, 0xed, 0x98, 0xca, 0xe3, 0xe7, 0x32, 0x54, 0x9d,
-	0x5d, 0x3c, 0xc4, 0x81, 0xfa, 0x14, 0xb7, 0x99, 0xa4, 0xfd, 0x2c, 0xc8, 0xcf, 0xa1, 0x75, 0xf6,
-	0xbf, 0x71, 0xde, 0x46, 0x75, 0x7f, 0x91, 0x53, 0xa8, 0x0c, 0x38, 0x9f, 0x0a, 0x9e, 0x9b, 0x70,
-	0x06, 0xe0, 0x61, 0x20, 0x9e, 0xb0, 0x08, 0xe4, 0x02, 0xda, 0x37, 0x1b, 0x94, 0xb1, 0x2b, 0xe4,
-	0x20, 0xcd, 0x2c, 0x1f, 0xc9, 0x85, 0xe6, 0xbd, 0x5c, 0x69, 0x9c, 0x89, 0x09, 0x06, 0x42, 0xc6,
-	0x79, 0x39, 0x23, 0x68, 0x79, 0xc8, 0xb8, 0x2b, 0x45, 0x50, 0x0c, 0x34, 0x81, 0xbd, 0xdb, 0x88,
-	0x33, 0x8d, 0x49, 0x4a, 0x1a, 0x8b, 0x1e, 0xec, 0x1c, 0x1a, 0x57, 0x62, 0x15, 0x16, 0xc5, 0x8c,
-	0xe1, 0xbf, 0x8b, 0x7a, 0xbe, 0xfc, 0x99, 0x9f, 0x72, 0xa0, 0x3e, 0x16, 0x8b, 0xa2, 0x94, 0x21,
-	0xd4, 0x92, 0xb8, 0x87, 0xb1, 0xc6, 0xbc, 0xe7, 0xf7, 0xcb, 0xe6, 0x15, 0x39, 0x79, 0x0d, 0x00,
-	0x00, 0xff, 0xff, 0x10, 0x0a, 0xf9, 0xa2, 0x57, 0x04, 0x00, 0x00,
+	// 376 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0xcf, 0x4e, 0xea, 0x40,
+	0x14, 0xc6, 0x6f, 0xef, 0xe5, 0xf2, 0xe7, 0xf0, 0x2f, 0x0e, 0x2e, 0x46, 0xe2, 0xa2, 0x61, 0x45,
+	0xa2, 0x61, 0xa1, 0x2f, 0x20, 0x58, 0x8b, 0x1a, 0x20, 0x5a, 0x51, 0xd7, 0x53, 0xe6, 0x04, 0x88,
+	0xb4, 0x53, 0x67, 0x06, 0x49, 0x5f, 0xd7, 0x07, 0xf0, 0x19, 0x4c, 0x0b, 0xad, 0x1a, 0x5d, 0xb5,
+	0xee, 0xfa, 0xcd, 0x77, 0xf2, 0x9b, 0x39, 0xdf, 0x39, 0x29, 0x34, 0x38, 0xd3, 0xcc, 0x65, 0x0a,
+	0x7b, 0x81, 0x14, 0x5a, 0x90, 0x72, 0xa2, 0x3b, 0xaf, 0x06, 0x34, 0x86, 0xe8, 0xa3, 0x64, 0x2b,
+	0x07, 0x9f, 0xd7, 0xa8, 0x34, 0x69, 0x43, 0x6c, 0xdf, 0x30, 0xbd, 0xa0, 0x86, 0x69, 0x74, 0x2b,
+	0x4e, 0xaa, 0x89, 0x09, 0x55, 0x1f, 0xf5, 0x46, 0xc8, 0xa7, 0x09, 0xf3, 0x90, 0xfe, 0x8d, 0xed,
+	0xcf, 0x47, 0xe4, 0x10, 0x2a, 0x3b, 0x79, 0x65, 0xd1, 0x7f, 0xa6, 0xd1, 0xad, 0x3b, 0x1f, 0x07,
+	0xe4, 0x18, 0xf6, 0xd8, 0x6c, 0x86, 0x81, 0x66, 0xee, 0x0a, 0xa7, 0x4b, 0x0f, 0xc5, 0x5a, 0xd3,
+	0x42, 0x5c, 0xf5, 0xdd, 0x20, 0x04, 0x0a, 0x81, 0x90, 0x9a, 0xfe, 0x8f, 0x0b, 0xe2, 0x6f, 0x42,
+	0xa1, 0xc4, 0x38, 0x97, 0xa8, 0x14, 0x2d, 0xc6, 0xb7, 0x27, 0x32, 0x72, 0xdc, 0x50, 0xe3, 0x03,
+	0x5b, 0xd1, 0x92, 0x69, 0x74, 0x6b, 0x4e, 0x22, 0x3b, 0x47, 0xd0, 0x4c, 0x7b, 0x54, 0x81, 0xf0,
+	0x15, 0x46, 0xc5, 0x1e, 0x2a, 0xc5, 0xe6, 0xb8, 0xeb, 0x31, 0x91, 0x27, 0x6f, 0x45, 0x28, 0x5b,
+	0xbb, 0x78, 0x88, 0x05, 0xd5, 0x09, 0x6e, 0x52, 0x49, 0x7b, 0x69, 0x90, 0x5f, 0x43, 0x6b, 0x1f,
+	0xfc, 0xe0, 0x6c, 0xaf, 0xea, 0xfc, 0x21, 0x67, 0x50, 0xea, 0x73, 0x3e, 0x11, 0x3c, 0x33, 0xe1,
+	0x1c, 0xc0, 0x41, 0x4f, 0xbc, 0x60, 0x1e, 0xc8, 0x25, 0x34, 0x6f, 0xd7, 0x28, 0x43, 0x5b, 0xc8,
+	0x7e, 0x92, 0x59, 0x36, 0x92, 0x0d, 0xf5, 0x47, 0xb9, 0xd4, 0x38, 0x15, 0x63, 0xf4, 0x84, 0x0c,
+	0xb3, 0x72, 0x86, 0xd0, 0x70, 0x90, 0x71, 0x5b, 0x0a, 0x2f, 0x1f, 0x68, 0x0c, 0xfb, 0xf7, 0x01,
+	0x67, 0x1a, 0xa3, 0x94, 0x34, 0xe6, 0x1d, 0xd8, 0x05, 0xd4, 0xae, 0xc5, 0xd2, 0xcf, 0x8b, 0x19,
+	0x41, 0xcb, 0x46, 0x3d, 0x5b, 0xfc, 0xce, 0xa3, 0x46, 0xd0, 0xba, 0x43, 0x9f, 0x27, 0x98, 0xf1,
+	0x76, 0x5f, 0xb3, 0xd2, 0x2c, 0xa8, 0x8e, 0xc4, 0x3c, 0xef, 0x9b, 0x06, 0x50, 0x89, 0x86, 0x37,
+	0x08, 0x35, 0x66, 0x5d, 0x26, 0xb7, 0x18, 0xff, 0x93, 0x4e, 0xdf, 0x03, 0x00, 0x00, 0xff, 0xff,
+	0x25, 0x97, 0x1d, 0x5c, 0xa5, 0x04, 0x00, 0x00,
 }
