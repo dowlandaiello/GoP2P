@@ -102,6 +102,12 @@ func handleSingular(node *node.Node, connection *connection.Connection) ([]byte,
 		return common.SerializeToBytes(*db) // Attempt to serialize
 	}
 
+	result, err := handleNetworkMessage(node, connection) // Attempt to decode message
+
+	if err == nil { // Check for success
+		return result, nil // Return result
+	}
+
 	variable, err := environment.NewVariable("Connection", connection) // Init variable to hold connection data
 
 	if err != nil { // Check for errors
@@ -115,6 +121,28 @@ func handleSingular(node *node.Node, connection *connection.Connection) ([]byte,
 	}
 
 	return varByteVal, node.Environment.AddVariable(variable, false) // Attempt to add variable to environment, return variable value as byte
+}
+
+func handleNetworkMessage(node *node.Node, connection *connection.Connection) ([]byte, error) {
+	message, err := database.MessageFromBytes(connection.Data) // Fetch message from connection data
+
+	if err != nil { // Check for errors
+		return []byte{}, err // Return found error
+	}
+
+	variable, err := environment.NewVariable(fmt.Sprintf("%sNetworkMessage", message.Network), *message) // Init variable
+
+	if err != nil { // Check for errors
+		return []byte{}, err // Return found error
+	}
+
+	err = node.Environment.AddVariable(variable, false) // Attempt to add variable to environment
+
+	if err != nil { // Check for errors
+		return []byte{}, err // Return found error
+	}
+
+	return []byte(message.Message), nil // Return message value
 }
 
 // handleStack - found connection with stack, iterate through and handle each command

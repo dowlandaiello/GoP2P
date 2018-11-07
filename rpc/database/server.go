@@ -339,7 +339,7 @@ func (server *Server) SendDatabaseMessage(ctx context.Context, req *databaseProt
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	message, err := database.NewMessage(req.StringVals[0], uint(req.UintVal), req.StringVals[1]) // Init message
+	message, err := database.NewMessage(req.StringVals[0], uint(req.UintVal), req.StringVals[1], req.NetworkName) // Init message
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -351,7 +351,13 @@ func (server *Server) SendDatabaseMessage(ctx context.Context, req *databaseProt
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("sent data %s to %s nodes", req.StringVals[0], strconv.Itoa(len(*db.Nodes)))}, nil // Return result message
+	marshaledVal, err := json.Marshal(*message) // Marshal found node
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("sent data %s to %s nodes", marshaledVal, strconv.Itoa(len(*db.Nodes)))}, nil // Return result message
 }
 
 // LogDatabase - database.LogDatabase RPC handler

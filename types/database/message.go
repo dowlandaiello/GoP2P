@@ -20,12 +20,15 @@ type Message struct {
 	Message  string `json:"message"`     // Message value
 	Priority uint   `json:"priority"`    // Message priority
 	Type     string `json:"messagetype"` // Message type
+	Network  string `json:"network"`     // Message network
 }
 
 // NewMessage - attempt to initialize new message with given parameters
-func NewMessage(message string, priority uint, messageType string) (*Message, error) {
+func NewMessage(message string, priority uint, messageType string, networkName string) (*Message, error) {
 	if !common.StringInSlice(ValidMessageTypes, messageType) { // Check for invalid message type
 		return &Message{}, fmt.Errorf("invalid message type %s", messageType) // Return found error
+	} else if message == "" || networkName == "" { // Check for nil message
+		return &Message{}, errors.New("nil message") // Return found error
 	}
 
 	return &Message{Message: message, Priority: priority, Type: messageType}, nil // Return initialized message
