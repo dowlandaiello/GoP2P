@@ -32,7 +32,9 @@ message GeneralRequest {
 
     string address = 6;
 
-    bytes byteVal = 7;
+    string privateKey = 7;
+
+    bytes byteVal = 8;
 }
 
 /* END REQUESTS */
