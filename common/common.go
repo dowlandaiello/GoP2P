@@ -278,6 +278,17 @@ func SafeSlice(b []byte) string {
 	return strVal[0:20] // Unsafe, return sliced
 }
 
+// StringInSlice - check if value is in slice
+func StringInSlice(s []string, v string) bool {
+	for _, value := range s { // Iterate through values in slice
+		if value == v { // Check for matching value
+			return true // Value in slice
+		}
+	}
+
+	return false // Value not in slice
+}
+
 /*
 	END EXPORTED METHODS
 */

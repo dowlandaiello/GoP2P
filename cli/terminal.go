@@ -274,15 +274,15 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 
 	switch methodname {
 	case "NewDatabase":
-		if len(params) != 3 { // Check for invalid parameters
-			return errors.New("invalid parameters (requires string, uint32, uint32)") // Return error
+		if len(params) != 4 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string, uint32, uint32, string)") // Return error
 		}
 
 		acceptableTimeout, _ := strconv.Atoi(params[2]) // Fetch acceptable timeout
 
 		networkID, _ := strconv.Atoi(params[1]) // Fetch network id
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{NetworkName: params[0], NetworkID: uint32(networkID), AcceptableTimeout: uint32(acceptableTimeout)})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{NetworkName: params[0], NetworkID: uint32(networkID), AcceptableTimeout: uint32(acceptableTimeout), PrivateKey: params[len(params)-1]})) // Append params
 	case "AddNode", "UpdateRemoteDatabase", "LogDatabase":
 		if len(params) != 1 { // Check for valid parameters
 			return errors.New("invalid parameters (requires string)") // Return error
@@ -321,8 +321,16 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 		byteVal := []byte(params[0]) // Fetch byte val
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{ByteVal: byteVal})) // Append params
+	case "SendDatabaseMessage":
+		if len(params) != 6 { // Check for invalid parameters
+			return errors.New("invalid parameters (require string, string, string, string, uint") // Return error
+		}
+
+		uintVal, _ := strconv.Atoi(params[len(params)-1]) // Convert to uint
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{NetworkName: params[0], PrivateKey: params[1], UintVal: uint32(uintVal), StringVals: strings.Split(params[2], ", ")})) // Append params
 	default:
-		return errors.New("illegal method: " + methodname + ", available methods: NewDatabase(), LogDatabase(), AddNode(), UpdateRemoteDatabase(), JoinDatabase(), FetchRemoteDatabase(), RemoveNode(), QueryForAddress(), WriteToMemory(), ReadFromMemory(), FromBytes()") // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: NewDatabase(), LogDatabase(), AddNode(), UpdateRemoteDatabase(), JoinDatabase(), FetchRemoteDatabase(), RemoveNode(), QueryForAddress(), WriteToMemory(), ReadFromMemory(), FromBytes(), SendDatabaseMessage()") // Return error
 	}
 
 	result := reflect.ValueOf(*databaseClient).MethodByName(methodname).Call(reflectParams) // Call method

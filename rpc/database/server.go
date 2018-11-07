@@ -32,7 +32,7 @@ func (server *Server) NewDatabase(ctx context.Context, req *databaseProto.Genera
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	db, err := database.NewDatabase(node, req.NetworkName, uint(req.NetworkID), uint(req.AcceptableTimeout)) // Create new database with bootstrap node, and acceptable timeout
+	db, err := database.NewDatabase(node, req.NetworkName, uint(req.NetworkID), uint(req.AcceptableTimeout), req.PrivateKey) // Create new database with bootstrap node, and acceptable timeout
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -317,6 +317,41 @@ func (server *Server) FetchRemoteDatabase(ctx context.Context, req *databaseProt
 	}
 
 	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
+}
+
+// SendDatabaseMessage - database.SendDatabaseMessage RPC handler
+func (server *Server) SendDatabaseMessage(ctx context.Context, req *databaseProto.GeneralRequest) (*databaseProto.GeneralResponse, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	env, err := getLocalEnvironment(currentDir) // Fetch working directory
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	db, err := database.ReadDatabaseFromMemory(env, req.NetworkName) // Fetch database with alias
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	message, err := database.NewMessage(req.StringVals[0], uint(req.UintVal), req.StringVals[1]) // Init message
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = db.SendDatabaseMessage(message, req.PrivateKey) // Send db message
+
+	if err != nil { // Check for errors
+		return &databaseProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("sent data %s to %s nodes", req.StringVals[0], strconv.Itoa(len(*db.Nodes)))}, nil // Return result message
 }
 
 // LogDatabase - database.LogDatabase RPC handler

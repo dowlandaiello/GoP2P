@@ -279,13 +279,19 @@ func FetchRemoteDatabase(bootstrapAddress string, databasePort uint, databaseAli
 }
 
 // SendDatabaseMessage - send announcement message to all nodes in network
-func (db *NodeDatabase) SendDatabaseMessage(message string, messageKey string) error {
+func (db *NodeDatabase) SendDatabaseMessage(message *Message, messageKey string) error {
 	if common.Sha3([]byte(messageKey+db.NetworkAlias)) != db.HashedNetworkMessageKey { // Check for matching message private key
 		return errors.New("invalid message private key") // Return found error
 	}
 
+	byteVal, err := message.ToBytes() // Serialize to bytes
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	for _, node := range *db.Nodes { // Iterate through nodes
-		go common.SendBytes([]byte(message), node.Address) // Send message
+		go common.SendBytes(byteVal, node.Address) // Send message
 	}
 
 	return nil // No error occurred, return nil

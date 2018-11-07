@@ -72,7 +72,7 @@ func (term *Terminal) handleNewNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	db, err := database.NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 5) // Attempt to create new database
+	db, err := database.NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 5, "test") // Attempt to create new database
 
 	if err != nil { // Check for errors
 		return "", err // Return found error

@@ -55,7 +55,8 @@ func ReadGob(filePath string, object interface{}) error {
 
 // SerializeToBytes - attempt to convert specified interface to byte array
 func SerializeToBytes(object interface{}) ([]byte, error) {
-	serializedBuffer := new(bytes.Buffer)                   // Create buffer to store encoded object
+	serializedBuffer := new(bytes.Buffer) // Create buffer to store encoded object
+
 	err := json.NewEncoder(serializedBuffer).Encode(object) // Attempt to encode
 
 	if err != nil { // Check for errors

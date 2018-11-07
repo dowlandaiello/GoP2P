@@ -35,6 +35,10 @@ message GeneralRequest {
     string privateKey = 7;
 
     bytes byteVal = 8;
+
+    repeated string stringVals = 9;
+
+    uint32 uintVal = 10;
 }
 
 /* END REQUESTS */
