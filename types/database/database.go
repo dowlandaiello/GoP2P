@@ -23,6 +23,8 @@ type NodeDatabase struct {
 	NetworkAlias string `json:"network"`   // NetworkAlias - network 'name', used for identifying a common protocol
 	NetworkID    uint   `json:"networkID"` // NetworkID - integer used for identifying common network
 
+	HashedNetworkMessageKey string // HashedNetworkMessageKey - key used for network-wide messages
+
 	AcceptableTimeout uint `json:"db-wide timeout"` // AcceptableTimeout - database-wide definition for operation timeout
 }
 
@@ -31,8 +33,8 @@ type NodeDatabase struct {
 */
 
 // NewDatabase - attempts creates new instance of the NodeDatabase struct
-func NewDatabase(bootstrapNode *node.Node, networkName string, networkID uint, acceptableTimeout uint) (NodeDatabase, error) {
-	db := NodeDatabase{AcceptableTimeout: acceptableTimeout, NetworkAlias: networkName, NetworkID: networkID} // Create empty database with specified timeout
+func NewDatabase(bootstrapNode *node.Node, networkName string, networkID uint, acceptableTimeout uint, privateNetworkKey string) (NodeDatabase, error) {
+	db := NodeDatabase{AcceptableTimeout: acceptableTimeout, NetworkAlias: networkName, NetworkID: networkID, HashedNetworkMessageKey: common.Sha3([]byte(privateNetworkKey + networkName))} // Create empty database with specified timeout
 
 	err := db.AddNode(bootstrapNode) // Attempt to add bootstrapnode
 
@@ -87,11 +89,11 @@ func (db *NodeDatabase) AddShard(shard *shard.Shard) error {
 		return errors.New("invalid shard") // Return found error
 	}
 
-	for _, node := range *db.Nodes { // Iterate through nodes in database
+	for _, node := range *shard.Nodes { // Iterate through nodes in database
 		_, err := db.QueryForAddress(node.Address) // Check if node exists in database
 
-		if err == nil { // Check for errors while querying for address
-			go db.RemoveNode(node.Address) // Remove node
+		if err != nil { // Check for errors while querying for address
+			go db.AddNode(&node) // Add node
 		}
 	}
 
@@ -274,6 +276,19 @@ func FetchRemoteDatabase(bootstrapAddress string, databasePort uint, databaseAli
 	}
 
 	return db, nil // No error occurred, return nil
+}
+
+// SendDatabaseMessage - send announcement message to all nodes in network
+func (db *NodeDatabase) SendDatabaseMessage(message string, messageKey string) error {
+	if common.Sha3([]byte(messageKey+db.NetworkAlias)) != db.HashedNetworkMessageKey { // Check for matching message private key
+		return errors.New("invalid message private key") // Return found error
+	}
+
+	for _, node := range *db.Nodes { // Iterate through nodes
+		go common.SendBytes([]byte(message), node.Address) // Send message
+	}
+
+	return nil // No error occurred, return nil
 }
 
 // LogDatabase - serialize and print contents of entire database
