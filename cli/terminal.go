@@ -322,13 +322,13 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{ByteVal: byteVal})) // Append params
 	case "SendDatabaseMessage":
-		if len(params) != 6 { // Check for invalid parameters
+		if len(params) != 5 { // Check for invalid parameters
 			return errors.New("invalid parameters (require string, string, string, string, uint") // Return error
 		}
 
 		uintVal, _ := strconv.Atoi(params[len(params)-1]) // Convert to uint
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{NetworkName: params[0], PrivateKey: params[1], UintVal: uint32(uintVal), StringVals: strings.Split(params[2], ", ")})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{NetworkName: params[0], PrivateKey: params[1], UintVal: uint32(uintVal), StringVals: params[2:4]})) // Append params
 	default:
 		return errors.New("illegal method: " + methodname + ", available methods: NewDatabase(), LogDatabase(), AddNode(), UpdateRemoteDatabase(), JoinDatabase(), FetchRemoteDatabase(), RemoveNode(), QueryForAddress(), WriteToMemory(), ReadFromMemory(), FromBytes(), SendDatabaseMessage()") // Return error
 	}
