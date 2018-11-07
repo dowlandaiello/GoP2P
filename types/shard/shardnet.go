@@ -40,7 +40,7 @@ func SendBytesShardResult(b []byte, address string, port int) ([]byte, error) {
 		go common.SendBytesResultBufferAsync(b, buffer, address, finished) // Send to address, append to buffer
 	}
 
-	for float64(len(finished)) < (0.51 * float64(len(addresses))) {
+	for float64(len(finished)) < (0.51 * float64(len(addresses))) { // Check 51% of nodes finished
 		if time.Now().Sub(startTime) > 3*time.Second { // Check for time out
 			return []byte{}, errors.New("timed out") // Return timed out
 		}
@@ -65,6 +65,8 @@ func SendBytesShard(b []byte, address string, port int) error {
 
 	finished := []bool{} // Init finished buffer
 
+	startTime := time.Now() // Fetch current time
+
 	for _, address := range addresses { // Iterate through addresses
 		address = address + ":" + strconv.Itoa(port) // Append port
 
@@ -75,8 +77,10 @@ func SendBytesShard(b []byte, address string, port int) error {
 		}
 	}
 
-	for len(finished) < len(addresses) {
-
+	for float64(len(finished)) < 0.75*float64(len(addresses)) { // Check wrote to all nodes
+		if time.Now().Sub(startTime) > 10*time.Second { // Check for timeout
+			return errors.New("timed out") // Return timed out
+		}
 	}
 
 	return nil // No error occurred, return  nil
