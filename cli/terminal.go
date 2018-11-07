@@ -297,7 +297,7 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 		intVal, _ := strconv.Atoi(params[1]) // Convert port to uint
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{Address: params[0], Port: uint32(intVal), NetworkName: params[2]})) // Append params
-	case "RemoveNode", "QueryForAddress":
+	case "WriteToMemory", "ReadFromMemory", "RemoveNode", "QueryForAddress":
 		if len(params) != 2 { // Check for invalid parameters
 			return errors.New("invalid parameters (requires string, string)") // Return error
 		}
@@ -305,14 +305,6 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 		address := params[0] // Fetch removal address
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{Address: address, NetworkName: params[1]})) // Append params
-	case "WriteToMemory", "ReadFromMemory":
-		if len(params) != 2 { // Check for invalid parameters
-			return errors.New("invalid parameters (requires string, string)") // Return error
-		}
-
-		path := params[0] // Fetch path
-
-		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{DataPath: path, NetworkName: params[1]})) // Append params
 	case "FromBytes":
 		if len(params) != 1 { // Check for invalid parameters
 			return errors.New("invalid parameters (requires []byte)") // Return error

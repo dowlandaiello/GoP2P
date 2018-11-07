@@ -216,7 +216,7 @@ func (server *Server) WriteToMemory(ctx context.Context, req *databaseProto.Gene
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	err = node.WriteToMemory(req.DataPath) // Write to data path
+	err = node.WriteToMemory(req.Address) // Write to data path
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -239,7 +239,7 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *databaseProto.Gen
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	node, env, err := getLocalNodeEnvironment(req.DataPath) // Attempt to read environment from request path
+	node, env, err := getLocalNodeEnvironment(req.Address) // Attempt to read environment from request path
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error
@@ -263,7 +263,7 @@ func (server *Server) ReadFromMemory(ctx context.Context, req *databaseProto.Gen
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\nRead database %s from environment memory at path %s", string(marshaledVal), req.DataPath)}, nil // Return response
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\nRead database %s from environment memory at path %s", string(marshaledVal), req.Address)}, nil // Return response
 }
 
 // UpdateRemoteDatabase - database.UpdateRemoteDatabase RPC handler
