@@ -39,6 +39,10 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
+	if strings.Contains(string(data), "messagetype") { // Check for network message
+		return handleLogNetworkMessage(data) // Handle network message
+	}
+
 	fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), string(data)) // Log connection
 
 	readConnection, err := connection.FromBytes(data) // Attempt to decode data
