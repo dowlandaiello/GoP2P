@@ -3,11 +3,13 @@ package color
 import (
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
 
 	"github.com/mattn/go-colorable"
+	"github.com/mattn/go-isatty"
 )
 
 var (
@@ -15,7 +17,8 @@ var (
 	// false or true based on the stdout's file descriptor referring to a terminal
 	// or not. This is a global option and affects all colors. For more control
 	// over each color block use the methods DisableColor() individually.
-	NoColor = false
+	NoColor = os.Getenv("TERM") == "dumb" ||
+		(!isatty.IsTerminal(os.Stdout.Fd()) && !isatty.IsCygwinTerminal(os.Stdout.Fd()))
 
 	// Output defines the standard output of the print functions. By default
 	// os.Stdout is used.
