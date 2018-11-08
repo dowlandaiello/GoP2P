@@ -6,7 +6,9 @@ import (
 	"net"
 	"reflect"
 	"strconv"
+	"strings"
 
+	"github.com/fatih/color"
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/connection"
 	"github.com/mitsukomegumi/GoP2P/types/database"
@@ -48,7 +50,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 	fmt.Println("\n\n-- CONNECTION " + conn.RemoteAddr().String() + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.") // Log read connection
 
 	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
-		val, err := handleSingular(node, readConnection) // Handle singular event
+		val, isMessage, err := handleSingular(node, readConnection) // Handle singular event
 
 		if err != nil { // Check for errors
 			return err // Return found error
@@ -60,7 +62,11 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 			return err // Return found error
 		}
 
-		fmt.Println("\n-- CONNECTION " + conn.RemoteAddr().String() + " -- responding with data " + common.SafeSlice(serializedResponse) + "...") // Log response
+		if isMessage == true {
+			handleLogNetworkMessage(val) // Handle network message
+		} else {
+			fmt.Println("\n-- CONNECTION " + conn.RemoteAddr().String() + " -- responding with data " + common.SafeSlice(serializedResponse) + "...") // Log response
+		}
 
 		conn.Write(serializedResponse) // Write success
 
@@ -89,40 +95,73 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 }
 
 // handleSingular - no stack present in found connection, write variable with connection data
-func handleSingular(node *node.Node, connection *connection.Connection) ([]byte, error) {
+func handleSingular(node *node.Node, connection *connection.Connection) ([]byte, bool, error) {
 	db, err := database.FromBytes(connection.Data) // Attempt to read db
 
 	if err == nil { // Check for success
 		err = db.WriteToMemory(node.Environment) // Write db to memory
 
 		if err != nil { // Check for errors
-			return nil, err // Return found error
+			return nil, false, err // Return found error
 		}
 
-		return common.SerializeToBytes(*db) // Attempt to serialize
+		result, err := common.SerializeToBytes(*db) // Attempt to serialize
+
+		if err != nil { // Check for errors
+			return nil, false, err // Return found error
+		}
+
+		return result, false, nil // Attempt to serialize
 	}
 
 	result, err := handleNetworkMessage(node, connection) // Attempt to decode message
 
 	if err == nil { // Check for success
-		return result, nil // Return result
+		return result, true, nil // Return result
 	}
 
 	variable, err := environment.NewVariable("Connection", connection) // Init variable to hold connection data
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return nil, false, err // Return found error
 	}
 
 	varByteVal, err := common.SerializeToBytes(variable) // Serialize
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return nil, false, err // Return found error
 	}
 
-	return varByteVal, node.Environment.AddVariable(variable, false) // Attempt to add variable to environment, return variable value as byte
+	return varByteVal, false, node.Environment.AddVariable(variable, false) // Attempt to add variable to environment, return variable value as byte
 }
 
+// handleLogNetworkMessage - handle logging of a network message
+func handleLogNetworkMessage(b []byte) error {
+	message, err := database.MessageFromBytes(b) // Fetch message from connection data
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	red := color.New(color.FgRed)       // Init red writer
+	yellow := color.New(color.FgYellow) // Init yellow writer
+	cyan := color.New(color.FgCyan)     // Init cyan writer
+
+	switch message.Priority { // Account for different message priorities
+	case 0: // Check for normal message
+		fmt.Printf("\n== NETWORK MESSAGE (%s) == %s", message.Type, message.Message) // Log response
+	case 1: // Check for critical message
+		red.Printf("\n== CRITICAL NETWORK MESSAGE (%s) == %s", strings.ToUpper(message.Type), message.Message) // Log response
+	case 2: // Check for warning message
+		yellow.Printf("\n== NETWORK MESSAGE (%s) == %s", message.Type, message.Message) // Log response
+	case 3: // Check for update/info message
+		cyan.Printf("\n== NETWORK MESSAGE (%s) == %s", message.Type, message.Message) // Log response
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// handleNetworkMessage - handle received network message
 func handleNetworkMessage(node *node.Node, connection *connection.Connection) ([]byte, error) {
 	message, err := database.MessageFromBytes(connection.Data) // Fetch message from connection data
 
@@ -142,7 +181,7 @@ func handleNetworkMessage(node *node.Node, connection *connection.Connection) ([
 		return []byte{}, err // Return found error
 	}
 
-	return []byte(message.Message), nil // Return message value
+	return message.ToBytes() // Return message value
 }
 
 // handleStack - found connection with stack, iterate through and handle each command

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/fatih/color"
 	"github.com/mitsukomegumi/GoP2P/cli"
 	"github.com/mitsukomegumi/GoP2P/common"
 	commonServer "github.com/mitsukomegumi/GoP2P/rpc/common"
@@ -25,23 +26,26 @@ import (
 )
 
 var (
-	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                      // Init term flag
-	upnpFlag     = flag.Bool("no-upnp", false, "launch GoP2P without automatic UPnP port forwarding") // Init upnp flag
-	rpcPort      = flag.Int("rpc-port", 8080, "launch GoP2P with specified RPC port")                 // Init RPC port flag
+	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                            // Init term flag
+	upnpFlag     = flag.Bool("no-upnp", false, "launch GoP2P without automatic UPnP port forwarding")       // Init upnp flag
+	rpcPortFlag  = flag.Int("rpc-port", 8080, "launch GoP2P with specified RPC port")                       // Init RPC port flag
+	noColorFlag  = flag.Bool("no-color", false, "disables GoP2P terminal colored output (not recommended)") // Init color flag
 )
 
 func main() {
 	flag.Parse() // Parse flags
 
 	if !*upnpFlag { // Check for UPnP
-		go upnp.ForwardPortSilent(uint(*rpcPort)) // Forward RPC port
-		go upnp.ForwardPortSilent(3000)           // Forward port 3000
+		go upnp.ForwardPortSilent(uint(*rpcPortFlag)) // Forward RPC port
+		go upnp.ForwardPortSilent(3000)               // Forward port 3000
+	} else if *noColorFlag { // Check for no colors
+		color.NoColor = true // Disable colors
 	}
 
 	startRPCServer() // Start RPC server
 
 	if *terminalFlag {
-		cli.NewTerminal(uint(*rpcPort)) // Initialize terminal
+		cli.NewTerminal(uint(*rpcPortFlag)) // Initialize terminal
 	}
 
 	startNode() // Attempt to start GoP2P in node mode
@@ -68,7 +72,7 @@ func startRPCServer() {
 	mux.Handle(databaseProto.DatabasePathPrefix, databaseHandler)          // Start mux database handler
 	mux.Handle(commonProto.CommonPathPrefix, commonHandler)                // Start mux common handler
 
-	go http.ListenAndServe(":"+strconv.Itoa(*rpcPort), mux) // Start server
+	go http.ListenAndServe(":"+strconv.Itoa(*rpcPortFlag), mux) // Start server
 }
 
 // startNode - attempt to execute attachnode, starthandler commands
