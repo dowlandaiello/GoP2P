@@ -345,7 +345,7 @@ func (server *Server) SendDatabaseMessage(ctx context.Context, req *databaseProt
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	err = db.SendDatabaseMessage(message, req.PrivateKey) // Send db message
+	err = db.SendDatabaseMessage(message, req.PrivateKey, uint(req.Port)) // Send db message
 
 	if err != nil { // Check for errors
 		return &databaseProto.GeneralResponse{}, err // Return found error

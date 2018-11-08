@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strconv"
 
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/command"
@@ -279,7 +280,7 @@ func FetchRemoteDatabase(bootstrapAddress string, databasePort uint, databaseAli
 }
 
 // SendDatabaseMessage - send announcement message to all nodes in network
-func (db *NodeDatabase) SendDatabaseMessage(message *Message, messageKey string) error {
+func (db *NodeDatabase) SendDatabaseMessage(message *Message, messageKey string, databasePort uint) error {
 	if common.Sha3([]byte(messageKey+db.NetworkAlias)) != db.HashedNetworkMessageKey { // Check for matching message private key
 		return errors.New("invalid message private key") // Return found error
 	}
@@ -290,9 +291,13 @@ func (db *NodeDatabase) SendDatabaseMessage(message *Message, messageKey string)
 		return err // Return found error
 	}
 
+	finished := make(chan bool) // Init finished buffer
+
 	for _, node := range *db.Nodes { // Iterate through nodes
-		go common.SendBytes(byteVal, node.Address) // Send message
+		go common.SendBytesAsyncRoutine(byteVal, node.Address+":"+strconv.Itoa(int(databasePort)), finished) // Send message
 	}
+
+	<-finished // Check finished
 
 	return nil // No error occurred, return nil
 }
