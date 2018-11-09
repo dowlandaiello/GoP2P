@@ -1,0 +1,40 @@
+syntax = "proto3"; // Specify syntax version
+
+package shard; // Init package
+
+service Shard {
+    rpc NewShard(GeneralRequest) returns (GeneralResponse) {} // Initialize new shard
+    rpc NewShardWithNodes(GeneralRequest) returns (GeneralResponse) {} // Initialize new shard with child nodes
+    rpc Shard(GeneralRequest) returns (GeneralResponse) {} // Exponentially shard specified shard into child shards
+    rpc QueryForAddress(GeneralRequest) returns (GeneralResponse) {} // Attempts to search specified node database for specified address, returns index of node
+    rpc LogShard(GeneralRequest) returns (GeneralResponse) {} // Serialize and print contents of entire shard
+    rpc CalculateQuadraticExponent(GeneralRequest) returns (GeneralResponse) {} // Calculate exponential value of exponent to exponent exponent times
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    string address = 1; // Address of new node
+
+    repeated string addresses = 2; // Node addresses
+    
+    bool isBootstrap = 3; // Bootstrap configurator
+
+    uint32 port = 4; // Port of listener
+
+    uint32 exponent = 5; // Exponent
+
+    string path = 6; // Node path
+
+    bytes bytes = 7; // Bytes
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1; // Response
+}
+
+/* END RESPONSES */
