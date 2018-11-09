@@ -27,6 +27,8 @@ message GeneralRequest {
     string path = 6; // Node path
 
     bytes bytes = 7; // Bytes
+
+    string networkName = 8; // Network name
 }
 
 /* END REQUESTS */
