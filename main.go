@@ -103,7 +103,4 @@ func startNode() {
 }
 
 /* TODO:
-- replace getNode with shard-based node targeting
-- finish shard IP socket operations
-- add support for network-wide messaging with messaging key
-*/
+ */
