@@ -43,7 +43,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return handleLogNetworkMessage(data) // Handle network message
 	}
 
-	fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), string(data)) // Log connection
+	fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), fmt.Sprintf("%s... }", string(data)[0:100])) // Log connection
 
 	readConnection, err := connection.FromBytes(data) // Attempt to decode data
 
@@ -160,6 +160,8 @@ func handleLogNetworkMessage(b []byte) error {
 		yellow.Printf("\n== NETWORK MESSAGE (%s) == %s", message.Type, message.Message) // Log response
 	case 3: // Check for update/info message
 		cyan.Printf("\n== NETWORK MESSAGE (%s) == %s", message.Type, message.Message) // Log response
+	default: // Check for any other priority
+		fmt.Printf("\n== NETWORK MESSAGE (%s) == %s", message.Type, message.Message) // Log response
 	}
 
 	return nil // No error occurred, return nil

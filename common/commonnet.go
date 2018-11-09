@@ -3,8 +3,10 @@ package common
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net"
+	"strconv"
 	"time"
 )
 
@@ -43,10 +45,12 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 		return nil, err // Return found error
 	}
 
-	_, err = connection.Write(b) // Write data to connection
+	n, err := connection.Write(b) // Write data to connection
 
 	if err != nil { // Check for errors
 		return nil, err // Return found errors
+	} else if n != len(b) { // Check write failed
+		return []byte{}, fmt.Errorf("connection write failed: wrote %s bytes of data of %s bytes of data", strconv.Itoa(n), strconv.Itoa(len(b)))
 	}
 
 	result, err := ReadConnectionWaitAsync(connection) // Read connection
@@ -221,7 +225,7 @@ func ReadConnectionWaitAsync(conn net.Conn) ([]byte, error) {
 
 	go func(data chan []byte, err chan error) {
 		for {
-			readData := make([]byte, 2048) // Init read buffer
+			readData := make([]byte, 4096) // Init read buffer
 
 			_, readErr := conn.Read(readData) // Read into buffer
 
@@ -235,7 +239,7 @@ func ReadConnectionWaitAsync(conn net.Conn) ([]byte, error) {
 		}
 	}(data, err)
 
-	ticker := time.Tick(time.Second) // Init ticker
+	ticker := time.Tick(3 * time.Second) // Init ticker
 
 	for { // Continuously read from connection
 		select {
