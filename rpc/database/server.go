@@ -357,7 +357,7 @@ func (server *Server) SendDatabaseMessage(ctx context.Context, req *databaseProt
 		return &databaseProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("sent data %s to %s nodes", marshaledVal, strconv.Itoa(len(*db.Nodes)))}, nil // Return result message
+	return &databaseProto.GeneralResponse{Message: fmt.Sprintf("\nsent data %s to %s nodes", marshaledVal, strconv.Itoa(len(*db.Nodes)))}, nil // Return result message
 }
 
 // LogDatabase - database.LogDatabase RPC handler

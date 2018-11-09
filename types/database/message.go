@@ -27,11 +27,11 @@ type Message struct {
 func NewMessage(message string, priority uint, messageType string, networkName string) (*Message, error) {
 	if !common.StringInSlice(ValidMessageTypes, messageType) { // Check for invalid message type
 		return &Message{}, fmt.Errorf("invalid message type %s", messageType) // Return found error
-	} else if message == "" || networkName == "" { // Check for nil message
+	} else if message == "" || networkName == "" || priority > 3 { // Check for nil message
 		return &Message{}, errors.New("nil message") // Return found error
 	}
 
-	return &Message{Message: message, Priority: priority, Type: messageType}, nil // Return initialized message
+	return &Message{Message: message, Priority: priority, Type: messageType, Network: networkName}, nil // Return initialized message
 }
 
 // ToBytes - attempt to serialize given message to bytes

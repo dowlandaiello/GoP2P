@@ -315,7 +315,7 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 		reflectParams = append(reflectParams, reflect.ValueOf(&databaseProto.GeneralRequest{ByteVal: byteVal})) // Append params
 	case "SendDatabaseMessage":
 		if len(params) != 6 { // Check for invalid parameters
-			return errors.New("invalid parameters (require string, uint, string, string, string, uint") // Return error
+			return errors.New("invalid parameters (requires string, uint32, string, string, string, uint)") // Return error
 		}
 
 		uintVal, _ := strconv.Atoi(params[len(params)-1]) // Convert to uint
