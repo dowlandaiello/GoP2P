@@ -98,6 +98,14 @@ func (db *NodeDatabase) AddShard(shard *shard.Shard) error {
 		}
 	}
 
+	for _, shard := range *db.Shards { // Iterate through shards in database
+		_, err := db.QueryForShardAddress(shard.Address) // Check shard in database
+
+		if err == nil { // Check for errors
+			db.RemoveShard(shard.Address) // Remove shard
+		}
+	}
+
 	*db.Shards = append(*db.Shards, *shard) // Append shard
 
 	err := db.UpdateRemoteDatabase() // Update remote database instances
@@ -127,13 +135,37 @@ func (db *NodeDatabase) AddShard(shard *shard.Shard) error {
 	return nil // No error occurred, return nil
 }
 
+// RemoveShard - removes shard with specified address from database
+func (db *NodeDatabase) RemoveShard(address string) error {
+	shardIndex, err := db.QueryForShardAddress(address) // Finds index of node with address
+
+	if err != nil { // Checks for error
+		return err // Returns error
+	}
+
+	db.removeShard(int(shardIndex)) // Removes value at index
+
+	return nil // Returns nil, no error
+}
+
 /* END SHARD METHODS */
 
-// QueryForAddress - attempts to search specified node database for specified address, returns index of node
+// QueryForAddress - attempts to search specified node database for specified address, returning index of node
 func (db *NodeDatabase) QueryForAddress(address string) (uint, error) {
 	for x := 0; x != len(*db.Nodes); x++ { // Wait until entire db has been queried
 		if address == (*db.Nodes)[x].Address { // Check for match
 			return uint(x), nil // If provided value matches value of node in list, return index
+		}
+	}
+
+	return 0, errors.New("no value found") // Could not find index of address, return new error
+}
+
+// QueryForShardAddress - attempts to search specified node database for specified address, returning index of shard
+func (db *NodeDatabase) QueryForShardAddress(address string) (uint, error) {
+	for x := 0; x != len(*db.Shards); x++ { // Wait until entire db has been queried
+		if address == (*db.Shards)[x].Address { // Check for match
+			return uint(x), nil // Return matching index
 		}
 	}
 
@@ -325,6 +357,10 @@ func (db *NodeDatabase) LogDatabase() error {
 
 func (db *NodeDatabase) remove(s int) { // Removes address at index
 	*db.Nodes = append((*db.Nodes)[:s], (*db.Nodes)[s+1:]...) // Remove index
+}
+
+func (db *NodeDatabase) removeShard(s int) { // Removes address at index
+	*db.Shards = append((*db.Shards)[:s], (*db.Shards)[s+1:]...) // Remove index
 }
 
 /*
