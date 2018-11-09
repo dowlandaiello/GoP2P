@@ -153,15 +153,15 @@ func handleLogNetworkMessage(b []byte) error {
 
 	switch message.Priority { // Account for different message priorities
 	case 0: // Check for normal message
-		fmt.Printf("\n== Network Message (%s) From Network %s == %s", message.Type, message.Message, message.Network) // Log response
+		fmt.Printf("\n== Network Message (%s) From Network %s == %s", message.Type, message.Network, message.Message) // Log response
 	case 1: // Check for critical message
-		red.Printf("\n== CRITICAL NETWORK MESSAGE (%s) FROM NETWORK %s == %s", strings.ToUpper(message.Type), message.Message, message.Network) // Log response
+		red.Printf("\n== CRITICAL NETWORK MESSAGE (%s) FROM NETWORK %s == %s", strings.ToUpper(message.Type), message.Network, message.Message) // Log response
 	case 2: // Check for warning message
-		yellow.Printf("\n== NETWORK MESSAGE (%s) FROM NETWORK %s == %s", strings.ToUpper(message.Type), message.Message, message.Network) // Log response
+		yellow.Printf("\n== NETWORK MESSAGE (%s) FROM NETWORK %s == %s", strings.ToUpper(message.Type), message.Network, message.Message) // Log response
 	case 3: // Check for update/info message
-		cyan.Printf("\n== Network Message (%s) From Network %s == %s", message.Type, message.Message, message.Network) // Log response
+		cyan.Printf("\n== Network Message (%s) From Network %s == %s", message.Type, message.Network, message.Message) // Log response
 	default: // Check for any other priority
-		fmt.Printf("\n== Network Message (%s) From Network %s == %s", message.Type, message.Message, message.Network) // Log response
+		fmt.Printf("\n== Network Message (%s) From Network %s == %s", message.Type, message.Network, message.Message) // Log response
 	}
 
 	return nil // No error occurred, return nil
