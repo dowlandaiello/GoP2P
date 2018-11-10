@@ -103,4 +103,5 @@ func startNode() {
 }
 
 /* TODO:
- */
+- add shard package terminal parsing support
+*/
