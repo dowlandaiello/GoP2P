@@ -12,7 +12,7 @@ import (
 
 var (
 	// ValidMessageTypes - definitions for valid messsage types
-	ValidMessageTypes = []string{"hardfork", "update", "upgrade", "notice"}
+	ValidMessageTypes = []string{"hardfork", "softfork", "update", "upgrade", "notice"}
 )
 
 // Message - string alias for database messages

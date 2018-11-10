@@ -6,16 +6,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/mitsukomegumi/GoP2P/types/database"
-
-	"github.com/mitsukomegumi/GoP2P/types/shard"
-
-	"github.com/mitsukomegumi/GoP2P/types/environment"
-
-	"github.com/mitsukomegumi/GoP2P/types/node"
-
 	"github.com/mitsukomegumi/GoP2P/common"
 	shardProto "github.com/mitsukomegumi/GoP2P/rpc/proto/shard"
+	"github.com/mitsukomegumi/GoP2P/types/database"
+	"github.com/mitsukomegumi/GoP2P/types/environment"
+	"github.com/mitsukomegumi/GoP2P/types/node"
+	"github.com/mitsukomegumi/GoP2P/types/shard"
 )
 
 // Server - GoP2P RPC server
@@ -64,6 +60,57 @@ func (server *Server) NewShard(ctx context.Context, req *shardProto.GeneralReque
 	}
 
 	return &shardProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
+}
+
+// NewShardWithNodes - shard.NewShardWithNodes RPC handler
+func NewShardWithNodes(ctx context.Context, req *shardProto.GeneralRequest) (*shardProto.GeneralResponse, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	localNode, err := node.ReadNodeFromMemory(currentDir) // Read node from working directory
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	nodes, err := generateNodeSliceFromAddresses(req.Addresses) // Init node list
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	*nodes = append(*nodes, *localNode) // Append local node
+
+	shard, err := shard.NewShardWithNodes(nodes) // Init shard
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	marshaledVal, err := json.Marshal(*shard) // Marshal shard
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &shardProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
+}
+
+// generateNodeSliceFromAddress - generate nodes from node address list
+func generateNodeSliceFromAddresses(addresses []string) (*[]node.Node, error) {
+	nodeList := &[]node.Node{} // Init node slice buffer
+
+	for _, address := range addresses { // Iterate through addresses
+		env, _ := environment.NewEnvironment() // Init environment
+
+		node := node.Node{Address: address, Reputation: 0, LastPingTime: time.Now().UTC(), IsBootstrap: false, Environment: env} // Init node
+		*nodeList = append(*nodeList, node)                                                                                      // Append initialized node
+	}
+
+	return nodeList, nil // Return initialized node list
 }
 
 // handleNoNode - generate new node with address if no node in working directory
