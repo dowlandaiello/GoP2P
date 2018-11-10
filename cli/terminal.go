@@ -18,6 +18,7 @@ import (
 	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
 	handlerProto "github.com/mitsukomegumi/GoP2P/rpc/proto/handler"
 	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
+	shardProto "github.com/mitsukomegumi/GoP2P/rpc/proto/shard"
 	upnpProto "github.com/mitsukomegumi/GoP2P/rpc/proto/upnp"
 )
 
@@ -43,6 +44,7 @@ func NewTerminal(rpcPort uint) error {
 	upnpClient := upnpProto.NewUpnpProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})                      // Init upnp client
 	databaseClient := databaseProto.NewDatabaseProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})          // Init database client
 	commonClient := commonProto.NewCommonProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})                // Init common client
+	shardClient := shardProto.NewShardProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})                   // Init shard client
 
 	for {
 		fmt.Print("\n> ") // Print prompt
@@ -94,6 +96,12 @@ func NewTerminal(rpcPort uint) error {
 			}
 		case "common":
 			err := handleCommon(&commonClient, methodname, params) // Handle common
+
+			if err != nil { // Check for errors
+				fmt.Println("\n" + err.Error()) // Log found error
+			}
+		case "shard":
+			err := handleShard(&shardClient, methodname, params) // Handle shard
 
 			if err != nil { // Check for errors
 				fmt.Println("\n" + err.Error()) // Log found error
@@ -384,6 +392,45 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 	result := reflect.ValueOf(*commonClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 	response := result[0].Interface().(*commonProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		fmt.Println(result[1].Interface().(error).Error()) // Log error
+	} else {
+		fmt.Println(response.Message) // Log response
+	}
+
+	return nil // No error occurred, return nil
+}
+
+func handleShard(shardClient *shardProto.Shard, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "NewShard", "QueryForAddress", "LogShard":
+		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Address: params[1]})) // Append params
+	case "NewShardWithNodes":
+		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Addresses: params[1:len(params)]})) // Append params
+	case "Shard":
+		exponent, _ := strconv.Atoi(params[2]) // Fetch int val
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Address: params[0], Exponent: uint32(exponent)})) // Append params
+	case "CalculateQuadraticExponent":
+		exponent, _ := strconv.Atoi(params[0]) // Fetch int val
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{Exponent: uint32(exponent)})) // Append params
+	case "SendBytesShardResult", "SendBytesShard":
+		port, _ := strconv.Atoi(params[1]) // Fetch int val
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{Address: params[0], Port: uint32(port), Bytes: []byte(strings.Join(params[2:len(params)], " "))})) // Append params
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: NewShard(), NewShardWithNodes(), Shard(), QueryForAddress(), LogShard(), CalculateQuadraticExponent(), SendBytesShardResult(), SendBytesShard()") // Return error
+	}
+
+	result := reflect.ValueOf(*shardClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*shardProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
 		fmt.Println(result[1].Interface().(error).Error()) // Log error

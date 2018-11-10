@@ -18,7 +18,9 @@ import (
 	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
 	handlerProto "github.com/mitsukomegumi/GoP2P/rpc/proto/handler"
 	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
+	shardProto "github.com/mitsukomegumi/GoP2P/rpc/proto/shard"
 	upnpProto "github.com/mitsukomegumi/GoP2P/rpc/proto/upnp"
+	shardServer "github.com/mitsukomegumi/GoP2P/rpc/shard"
 	upnpServer "github.com/mitsukomegumi/GoP2P/rpc/upnp"
 	"github.com/mitsukomegumi/GoP2P/types/handler"
 	"github.com/mitsukomegumi/GoP2P/types/node"
@@ -62,6 +64,7 @@ func startRPCServer() {
 	upnpHandler := upnpProto.NewUpnpServer(&upnpServer.Server{}, nil)                       // Init handler
 	databaseHandler := databaseProto.NewDatabaseServer(&database.Server{}, nil)             // Init handler
 	commonHandler := commonProto.NewCommonServer(&commonServer.Server{}, nil)               // Init handler
+	shardHandler := shardProto.NewShardServer(&shardServer.Server{}, nil)                   // Init handler
 
 	mux := http.NewServeMux() // Init mux
 
@@ -71,6 +74,7 @@ func startRPCServer() {
 	mux.Handle(upnpProto.UpnpPathPrefix, upnpHandler)                      // Start mux upnp handler
 	mux.Handle(databaseProto.DatabasePathPrefix, databaseHandler)          // Start mux database handler
 	mux.Handle(commonProto.CommonPathPrefix, commonHandler)                // Start mux common handler
+	mux.Handle(shardProto.ShardPathPrefix, shardHandler)                   // Start mux shard handler
 
 	go http.ListenAndServe(":"+strconv.Itoa(*rpcPortFlag), mux) // Start server
 }

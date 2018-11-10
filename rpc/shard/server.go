@@ -77,6 +77,12 @@ func (server *Server) NewShardWithNodes(ctx context.Context, req *shardProto.Gen
 		return &shardProto.GeneralResponse{}, err // Return found error
 	}
 
+	db, err := database.ReadDatabaseFromMemory(localNode.Environment, req.NetworkName) // Read database from environment memory
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
 	nodes, err := generateNodeSliceFromAddresses(req.Addresses) // Init node list
 
 	if err != nil { // Check for errors
@@ -86,6 +92,12 @@ func (server *Server) NewShardWithNodes(ctx context.Context, req *shardProto.Gen
 	*nodes = append(*nodes, *localNode) // Append local node
 
 	shard, err := shard.NewShardWithNodes(nodes) // Init shard
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = db.AddShard(shard) // Append new shard
 
 	if err != nil { // Check for errors
 		return &shardProto.GeneralResponse{}, err // Return found error
