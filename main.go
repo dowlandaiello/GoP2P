@@ -58,7 +58,7 @@ func main() {
 
 // startRPCServer - start RPC server
 func startRPCServer() {
-	err := common.GenerateTLSCertificates() // Generate certs
+	err := common.GenerateTLSCertificates("gop2pTerm") // Generate certs
 
 	if err != nil { // Check for errors
 		panic(err) // Panic
@@ -114,4 +114,5 @@ func startNode() {
 
 /* TODO:
 - add RPC connection encryption
+- switch all references to net.conn to tls.conn
 */

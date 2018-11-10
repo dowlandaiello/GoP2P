@@ -298,18 +298,18 @@ func StringInSlice(s []string, v string) bool {
 }
 
 // GenerateTLSCertificates - generate necessary TLS certificates, keys
-func GenerateTLSCertificates() error {
-	_, certErr := os.Stat("cert.pen") // Check for error reading file
-	_, keyErr := os.Stat("key.pem")   // Check for error reading file
+func GenerateTLSCertificates(namePrefix string) error {
+	_, certErr := os.Stat(fmt.Sprintf("%sCert.pem", namePrefix)) // Check for error reading file
+	_, keyErr := os.Stat(fmt.Sprintf("%sKey.pem", namePrefix))   // Check for error reading file
 
 	if os.IsNotExist(certErr) || os.IsNotExist(keyErr) { // Check for does not exist error
-		privateKey, err := generateTLSKey() // Generate key
+		privateKey, err := generateTLSKey(namePrefix) // Generate key
 
 		if err != nil { // Check for errors
 			return err // Return found error
 		}
 
-		err = generateTLSCert(privateKey) // Generate cert
+		err = generateTLSCert(privateKey, namePrefix) // Generate cert
 
 		if err != nil { // Check for errors
 			return err // Return found error
@@ -320,8 +320,8 @@ func GenerateTLSCertificates() error {
 }
 
 // generateTLSKey - generates necessary TLS key
-func generateTLSKey() (*ecdsa.PrivateKey, error) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader) // Generate private key
+func generateTLSKey(namePrefix string) (*ecdsa.PrivateKey, error) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -335,7 +335,7 @@ func generateTLSKey() (*ecdsa.PrivateKey, error) {
 
 	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: marshaledPrivateKey}) // Encode to memory
 
-	err = ioutil.WriteFile("key.pem", pemEncoded, 0644) // Write pem
+	err = ioutil.WriteFile(fmt.Sprintf("%sKey.pem", namePrefix), pemEncoded, 0644) // Write pem
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -345,7 +345,7 @@ func generateTLSKey() (*ecdsa.PrivateKey, error) {
 }
 
 // generateTLSCert - generates necessary TLS cert
-func generateTLSCert(privateKey *ecdsa.PrivateKey) error {
+func generateTLSCert(privateKey *ecdsa.PrivateKey, namePrefix string) error {
 	notBefore := time.Now() // Fetch current time
 
 	notAfter := notBefore.Add(292 * (365 * (24 * time.Hour))) // Fetch 'deadline'
@@ -374,7 +374,7 @@ func generateTLSCert(privateKey *ecdsa.PrivateKey) error {
 
 	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cert}) // Encode pem
 
-	err = ioutil.WriteFile("cert.pem", pemEncoded, 0644) // Write cert file
+	err = ioutil.WriteFile(fmt.Sprintf("%sCert.pem", namePrefix), pemEncoded, 0644) // Write cert file
 
 	if err != nil { // Check for errors
 		return err // Return found error
