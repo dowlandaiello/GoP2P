@@ -1,10 +1,18 @@
 package common
 
 import (
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	"crypto/x509/pkix"
 	"encoding/hex"
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"net"
 	"net/http"
 	"os"
@@ -289,6 +297,92 @@ func StringInSlice(s []string, v string) bool {
 	return false // Value not in slice
 }
 
+// GenerateTLSCertificates - generate necessary TLS certificates, keys
+func GenerateTLSCertificates() error {
+	_, certErr := os.Stat("cert.pen") // Check for error reading file
+	_, keyErr := os.Stat("key.pem")   // Check for error reading file
+
+	if os.IsNotExist(certErr) || os.IsNotExist(keyErr) { // Check for does not exist error
+		privateKey, err := generateTLSKey() // Generate key
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		err = generateTLSCert(privateKey) // Generate cert
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// generateTLSKey - generates necessary TLS key
+func generateTLSKey() (*ecdsa.PrivateKey, error) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	marshaledPrivateKey, err := x509.MarshalECPrivateKey(privateKey) // Marshal private key
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: marshaledPrivateKey}) // Encode to memory
+
+	err = ioutil.WriteFile("key.pem", pemEncoded, 0644) // Write pem
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return privateKey, nil // No error occurred, return nil
+}
+
+// generateTLSCert - generates necessary TLS cert
+func generateTLSCert(privateKey *ecdsa.PrivateKey) error {
+	notBefore := time.Now() // Fetch current time
+
+	notAfter := notBefore.Add(292 * (365 * (24 * time.Hour))) // Fetch 'deadline'
+
+	serialNumberLimit := new(big.Int).Lsh(big.NewInt(1), 128)     // Init limit
+	serialNumber, err := rand.Int(rand.Reader, serialNumberLimit) // Init serial number
+
+	template := x509.Certificate{ // Init template
+		SerialNumber: serialNumber, // Generate w/serial number
+		Subject: pkix.Name{ // Generate w/subject
+			Organization: []string{"GoP2P"}, // Generate w/org
+		},
+		NotBefore: notBefore, // Generate w/not before
+		NotAfter:  notAfter,  // Generate w/not after
+
+		KeyUsage:              x509.KeyUsageKeyEncipherment | x509.KeyUsageDigitalSignature, // Generate w/key usage
+		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},               // Generate w/ext key
+		BasicConstraintsValid: true,                                                         // Generate w/basic constraints
+	}
+
+	cert, err := x509.CreateCertificate(rand.Reader, &template, &template, publicKey(privateKey), privateKey) // Generate certificate
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cert}) // Encode pem
+
+	err = ioutil.WriteFile("cert.pem", pemEncoded, 0644) // Write cert file
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
+}
+
 /*
 	END EXPORTED METHODS
 */
@@ -336,6 +430,17 @@ func getIPFromProviderAsync(provider string, buffer *[]string, finished chan boo
 				finished <- true // Set finished
 			}
 		}
+	}
+}
+
+func publicKey(privateKey interface{}) interface{} {
+	switch k := privateKey.(type) {
+	case *rsa.PrivateKey:
+		return &k.PublicKey
+	case *ecdsa.PrivateKey:
+		return &k.PublicKey
+	default:
+		return nil
 	}
 }
 

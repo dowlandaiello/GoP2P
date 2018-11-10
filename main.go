@@ -58,6 +58,12 @@ func main() {
 
 // startRPCServer - start RPC server
 func startRPCServer() {
+	err := common.GenerateTLSCertificates() // Generate certs
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
+
 	nodeHandler := nodeProto.NewNodeServer(&nodeServer.Server{}, nil)                       // Init handler
 	handlerHandler := handlerProto.NewHandlerServer(&handlerServer.Server{}, nil)           // Init handler
 	environmentHandler := environmentProto.NewEnvironmentServer(&environment.Server{}, nil) // Init handler
@@ -76,7 +82,7 @@ func startRPCServer() {
 	mux.Handle(commonProto.CommonPathPrefix, commonHandler)                // Start mux common handler
 	mux.Handle(shardProto.ShardPathPrefix, shardHandler)                   // Start mux shard handler
 
-	go http.ListenAndServe(":"+strconv.Itoa(*rpcPortFlag), mux) // Start server
+	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "cert.pem", "key.pem", mux) // Start server
 }
 
 // startNode - attempt to execute attachnode, starthandler commands
@@ -107,5 +113,5 @@ func startNode() {
 }
 
 /* TODO:
-- add shard package terminal parsing support
+- add RPC connection encryption
 */
