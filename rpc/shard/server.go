@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -225,6 +226,28 @@ func (server *Server) LogShard(ctx context.Context, req *shardProto.GeneralReque
 // CalculateQuadraticExponent - shard.CalculateQuadraticExponent RPC handler
 func (server *Server) CalculateQuadraticExponent(ctx context.Context, req *shardProto.GeneralRequest) (*shardProto.GeneralResponse, error) {
 	return &shardProto.GeneralResponse{Message: fmt.Sprintf("\n%f", shard.CalculateQuadraticExponent(float64(req.Exponent)))}, nil // Return response
+}
+
+// SendBytesShardResult - shard.SendBytesShardResult RPC handler
+func (server *Server) SendBytesShardResult(ctx context.Context, req *shardProto.GeneralRequest) (*shardProto.GeneralResponse, error) {
+	result, err := shard.SendBytesShardResult(req.Bytes, req.Address, int(req.Port)) // Send bytes, store response
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &shardProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(result))}, nil // Return response
+}
+
+// SendBytesShard - shard.SendBytesShard RPC handler
+func (server *Server) SendBytesShard(ctx context.Context, req *shardProto.GeneralRequest) (*shardProto.GeneralResponse, error) {
+	err := shard.SendBytesShard(req.Bytes, req.Address, int(req.Port)) // Send bytes
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &shardProto.GeneralResponse{Message: fmt.Sprintf("\nsent %s bits of data to address %s", strconv.Itoa(len(req.Bytes)), req.Address)}, nil // Return response
 }
 
 // generateNodeSliceFromAddress - generate nodes from node address list
