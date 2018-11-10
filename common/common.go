@@ -321,7 +321,7 @@ func GenerateTLSCertificates() error {
 
 // generateTLSKey - generates necessary TLS key
 func generateTLSKey() (*ecdsa.PrivateKey, error) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -356,7 +356,7 @@ func generateTLSCert(privateKey *ecdsa.PrivateKey) error {
 	template := x509.Certificate{ // Init template
 		SerialNumber: serialNumber, // Generate w/serial number
 		Subject: pkix.Name{ // Generate w/subject
-			Organization: []string{"GoP2P"}, // Generate w/org
+			Organization: []string{"localhost"}, // Generate w/org
 		},
 		NotBefore: notBefore, // Generate w/not before
 		NotAfter:  notAfter,  // Generate w/not after

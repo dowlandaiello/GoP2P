@@ -3,6 +3,7 @@ package cli
 import (
 	"bufio"
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"net/http"
@@ -38,13 +39,17 @@ type Variable struct {
 func NewTerminal(rpcPort uint) error {
 	reader := bufio.NewScanner(os.Stdin) // Init reader
 
-	nodeClient := nodeProto.NewNodeProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})                      // Init node client
-	handlerClient := handlerProto.NewHandlerProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})             // Init handler client
-	environmentClient := environmentProto.NewEnvironmentProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{}) // Init environment client
-	upnpClient := upnpProto.NewUpnpProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})                      // Init upnp client
-	databaseClient := databaseProto.NewDatabaseProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})          // Init database client
-	commonClient := commonProto.NewCommonProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})                // Init common client
-	shardClient := shardProto.NewShardProtobufClient("http://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{})                   // Init shard client
+	transport := &http.Transport{ // Init transport
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	nodeClient := nodeProto.NewNodeProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                      // Init node client
+	handlerClient := handlerProto.NewHandlerProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})             // Init handler client
+	environmentClient := environmentProto.NewEnvironmentProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init environment client
+	upnpClient := upnpProto.NewUpnpProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                      // Init upnp client
+	databaseClient := databaseProto.NewDatabaseProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})          // Init database client
+	commonClient := commonProto.NewCommonProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                // Init common client
+	shardClient := shardProto.NewShardProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init shard client
 
 	for {
 		fmt.Print("\n> ") // Print prompt
