@@ -63,7 +63,7 @@ func (server *Server) NewShard(ctx context.Context, req *shardProto.GeneralReque
 }
 
 // NewShardWithNodes - shard.NewShardWithNodes RPC handler
-func NewShardWithNodes(ctx context.Context, req *shardProto.GeneralRequest) (*shardProto.GeneralResponse, error) {
+func (server *Server) NewShardWithNodes(ctx context.Context, req *shardProto.GeneralRequest) (*shardProto.GeneralResponse, error) {
 	currentDir, err := common.GetCurrentDir() // Fetch working directory
 
 	if err != nil { // Check for errors
@@ -91,6 +91,49 @@ func NewShardWithNodes(ctx context.Context, req *shardProto.GeneralRequest) (*sh
 	}
 
 	marshaledVal, err := json.Marshal(*shard) // Marshal shard
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &shardProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
+}
+
+// Shard - shard.Shard RPC handler
+func (server *Server) Shard(ctx context.Context, req *shardProto.GeneralRequest) (*shardProto.GeneralResponse, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	localNode, err := node.ReadNodeFromMemory(currentDir) // Read node from working directory
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	db, err := database.ReadDatabaseFromMemory(localNode.Environment, req.NetworkName) // Read database
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	shardIndex, err := db.QueryForShardAddress(req.Address) // Query shard by address
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	shard := (*db.Shards)[shardIndex] // Fetch shard by index
+
+	err = shard.Shard(uint(req.Exponent)) // Shard shard
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	marshaledVal, err := json.Marshal(shard) // Marshal shard
 
 	if err != nil { // Check for errors
 		return &shardProto.GeneralResponse{}, err // Return found error
