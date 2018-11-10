@@ -26,10 +26,10 @@ import (
 )
 
 var (
-	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                            // Init term flag
-	upnpFlag     = flag.Bool("no-upnp", false, "launch GoP2P without automatic UPnP port forwarding")       // Init upnp flag
-	rpcPortFlag  = flag.Int("rpc-port", 8080, "launch GoP2P with specified RPC port")                       // Init RPC port flag
-	noColorFlag  = flag.Bool("no-color", false, "disables GoP2P terminal colored output (not recommended)") // Init color flag
+	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                      // Init term flag
+	upnpFlag     = flag.Bool("no-upnp", false, "launch GoP2P without automatic UPnP port forwarding") // Init upnp flag
+	rpcPortFlag  = flag.Int("rpc-port", 8080, "launch GoP2P with specified RPC port")                 // Init RPC port flag
+	noColorFlag  = flag.Bool("no-color", false, "disables GoP2P terminal colored output")             // Init color flag
 )
 
 func main() {

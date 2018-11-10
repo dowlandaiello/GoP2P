@@ -142,6 +142,37 @@ func (server *Server) Shard(ctx context.Context, req *shardProto.GeneralRequest)
 	return &shardProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
 }
 
+// QueryForAddress - shard.QueryForAddress RPC handler
+func (server *Server) QueryForAddress(ctx context.Context, req *shardProto.GeneralRequest) (*shardProto.GeneralResponse, error) {
+	currentDir, err := common.GetCurrentDir() // Fetch working directory
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	localNode, err := node.ReadNodeFromMemory(currentDir) // Read node from working directory
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	db, err := database.ReadDatabaseFromMemory(localNode.Environment, req.NetworkName) // Read database
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	shardIndex, err := db.QueryForShardAddress(req.Address) // Query shard by address
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	shard := (*db.Shards)[shardIndex] // Fetch shard by index
+
+	nodeIndex, err := shard.QueryForAddress(req.Address)
+}
+
 // generateNodeSliceFromAddress - generate nodes from node address list
 func generateNodeSliceFromAddresses(addresses []string) (*[]node.Node, error) {
 	nodeList := &[]node.Node{} // Init node slice buffer
