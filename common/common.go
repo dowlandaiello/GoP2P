@@ -5,6 +5,7 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/hex"
@@ -41,6 +42,12 @@ const (
 var (
 	// ExtIPProviders - preset macro defining list of available external IP checking services
 	ExtIPProviders = []string{"http://checkip.amazonaws.com/", "http://icanhazip.com/", "http://www.trackip.net/ip", "http://bot.whatismyipaddress.com/", "https://ipecho.net/plain", "http://myexternalip.com/raw"}
+
+	// GeneralTLSConfig - general global GoP2P TLS Config
+	GeneralTLSConfig = &tls.Config{ // Init TLS config
+		Certificates:       []tls.Certificate{getTLSCerts("GoP2PGeneral")},
+		InsecureSkipVerify: true,
+		ServerName:         "localhost"}
 )
 
 /*
@@ -381,6 +388,19 @@ func generateTLSCert(privateKey *ecdsa.PrivateKey, namePrefix string) error {
 	}
 
 	return nil // No error occurred, return nil
+}
+
+// getTLSCert - attempt to read TLS cert from current dir
+func getTLSCerts(certPrefix string) tls.Certificate {
+	GenerateTLSCertificates(certPrefix) // Generate certs
+
+	cert, err := tls.LoadX509KeyPair(fmt.Sprintf("%sCert.pem", certPrefix), fmt.Sprintf("%sKey.pem", certPrefix)) // Load key pair
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
+
+	return cert // Return read certificates
 }
 
 /*

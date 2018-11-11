@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"net"
@@ -25,14 +26,16 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 	for {
 		conn, err := (*ln).Accept() // Accept connection
 
+		tlsConn := tls.Server(conn, common.GeneralTLSConfig) // Accept tls conn
+
 		if err == nil { // Check for errors
-			go handleConnection(node, conn) // Handle connection
+			go handleConnection(node, tlsConn) // Handle connection
 		}
 	}
 }
 
 // handleConnection - attempt to fetch connection metadata, handle it respectively (stack or singular)
-func handleConnection(node *node.Node, conn net.Conn) error {
+func handleConnection(node *node.Node, conn *tls.Conn) error {
 	data, err := common.ReadConnectionWaitAsync(conn) // Read entire connection
 
 	if err != nil { // Check for errors
@@ -43,7 +46,11 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return handleLogNetworkMessage(data) // Handle network message
 	}
 
-	fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), fmt.Sprintf("%s... }", string(data)[0:100])) // Log connection
+	if len(data) < 100 { // Check for safe length
+		fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), fmt.Sprintf("%s", string(data))) // Log connection
+	} else {
+		fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), fmt.Sprintf("%s... }", string(data)[0:100])) // Log connection
+	}
 
 	readConnection, err := connection.FromBytes(data) // Attempt to decode data
 

@@ -114,5 +114,5 @@ func startNode() {
 
 /* TODO:
 - add RPC connection encryption
-- switch all references to net.conn to tls.conn
+- switch all references to tls.Conn to tls.conn
 */
