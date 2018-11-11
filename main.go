@@ -46,7 +46,7 @@ func main() {
 
 	startRPCServer() // Start RPC server
 
-	if *terminalFlag {
+	if *terminalFlag { // Check for terminal flag
 		cli.NewTerminal(uint(*rpcPortFlag)) // Initialize terminal
 	}
 
@@ -113,6 +113,5 @@ func startNode() {
 }
 
 /* TODO:
-- add RPC connection encryption
-- switch all references to net.conn to tls.conn
+- finalize TLS support
 */
