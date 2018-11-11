@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"crypto/tls"
 	"errors"
 	"fmt"
 	"net"
@@ -26,17 +25,15 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 	for {
 		conn, err := (*ln).Accept() // Accept connection
 
-		tlsConn := tls.Server(conn, common.GeneralTLSConfig) // Accept tls conn
-
 		if err == nil { // Check for errors
-			go handleConnection(node, tlsConn) // Handle connection
+			go handleConnection(node, conn) // Handle connection
 		}
 	}
 }
 
 // handleConnection - attempt to fetch connection metadata, handle it respectively (stack or singular)
-func handleConnection(node *node.Node, conn *tls.Conn) error {
-	data, err := common.ReadConnectionWaitAsync(conn) // Read entire connection
+func handleConnection(node *node.Node, conn net.Conn) error {
+	data, err := common.ReadConnectionWaitAsyncNoTLS(net.Conn(conn)) // Read entire connection
 
 	if err != nil { // Check for errors
 		return err // Return found error

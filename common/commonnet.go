@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net"
 	"strconv"
@@ -235,8 +234,6 @@ func ReadConnectionWaitAsync(conn *tls.Conn) ([]byte, error) {
 
 			if readErr != nil { // Check for errors
 				if readErr, timeout := readErr.(net.Error); timeout && readErr.Timeout() { // Check for errors
-					fmt.Println("test")
-					fmt.Println(readData)
 					data <- readData // Write read data
 
 					return // Return
@@ -246,9 +243,6 @@ func ReadConnectionWaitAsync(conn *tls.Conn) ([]byte, error) {
 
 				return // Return
 			}
-
-			fmt.Println("test2")
-			fmt.Println(readData)
 
 			data <- readData // Write read data
 		}
@@ -273,24 +267,16 @@ func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
 	data := make(chan []byte) // Init buffer
 	err := make(chan error)   // Init error buffer
 
+	conn.SetReadDeadline(time.Now().Add(2 * time.Second)) // Set read deadline
+
 	go func(data chan []byte, err chan error) {
-		for {
-			readData := make([]byte, 4096) // Init read buffer
+		readData, readErr := ioutil.ReadAll(conn) // Read connection
 
-			_, readErr := conn.Read(readData) // Read into buffer
-
-			if readErr != nil { // Check for errors
-				if readErr != io.EOF { // Set error
-					err <- readErr // Write found error
-				} else {
-					data <- readData // Write read data
-				}
-
-				return // Return
-			}
-
-			data <- readData // Write read data
+		if readErr != nil { // Check for errors
+			err <- readErr // Write read error
 		}
+
+		data <- readData // Write read data
 	}(data, err)
 
 	ticker := time.Tick(3 * time.Second) // Init ticker
