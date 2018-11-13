@@ -55,7 +55,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
-	fmt.Println("\n\n-- CONNECTION " + conn.RemoteAddr().String() + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.") // Log read connection
+	fmt.Println("\n\n-- CONNECTION " + conn.RemoteAddr().String() + " -- attempted to read " + strconv.Itoa(len(data)) + " bytes of data.") // Log read connection
 
 	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
 		val, isMessage, err := handleSingular(node, readConnection) // Handle singular event
@@ -204,8 +204,8 @@ func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, 
 		responses = append(responses, val) // Append response
 	}
 
-	if len(responses) == 0 {
-		return nil, errors.New("nil response")
+	if len(responses) == 0 { // Check for nil response
+		return nil, errors.New("nil response") // Return found error
 	}
 
 	return responses, nil // No error occurred, return nil

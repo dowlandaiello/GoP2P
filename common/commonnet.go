@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
 	"strconv"
@@ -224,11 +225,11 @@ func ReadConnectionWaitAsync(conn *tls.Conn) ([]byte, error) {
 	data := make(chan []byte) // Init buffer
 	err := make(chan error)   // Init error buffer
 
+	conn.SetReadDeadline(time.Now().Add(1 * time.Second)) // Set read deadline
+
 	go func(data chan []byte, err chan error) {
 		for {
 			readData := make([]byte, 4096) // Init read buffer
-
-			conn.SetReadDeadline(time.Now().Add(1 * time.Second)) // Set read deadline
 
 			_, readErr := conn.Read(readData) // Read into buffer
 
@@ -237,6 +238,8 @@ func ReadConnectionWaitAsync(conn *tls.Conn) ([]byte, error) {
 					data <- readData // Write read data
 
 					return // Return
+				} else if readErr == io.EOF { // Check for EOF
+					continue // Continue
 				}
 
 				err <- readErr // Write found error
@@ -272,7 +275,7 @@ func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
 	go func(data chan []byte, err chan error) {
 		readData, readErr := ioutil.ReadAll(conn) // Read connection
 
-		if readErr != nil { // Check for errors
+		if readErr != nil && readErr != io.EOF { // Check for errors
 			err <- readErr // Write read error
 		}
 
