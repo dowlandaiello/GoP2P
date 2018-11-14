@@ -82,7 +82,7 @@ func startRPCServer() {
 	mux.Handle(commonProto.CommonPathPrefix, commonHandler)                // Start mux common handler
 	mux.Handle(shardProto.ShardPathPrefix, shardHandler)                   // Start mux shard handler
 
-	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "cert.pem", "key.pem", mux) // Start server
+	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "gop2pTermCert.pem", "gop2pTermKey.pem", mux) // Start server
 }
 
 // startNode - attempt to execute attachnode, starthandler commands
