@@ -52,7 +52,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 	if err != nil { // Check for errors
 		return nil, err // Return found errors
 	} else if n != len(b) { // Check write failed
-		return []byte{}, fmt.Errorf("connection write failed: wrote %s bytes of data of %s bytes of data", strconv.Itoa(n), strconv.Itoa(len(b)))
+		return []byte{}, fmt.Errorf("connection write failed: wrote %s bytes of data of %s bytes of data", strconv.Itoa(n), strconv.Itoa(len(b))) // Log connection write failed
 	}
 
 	result, err := ReadConnectionWaitAsync(connection) // Read connection
@@ -231,10 +231,12 @@ func ReadConnectionWaitAsync(conn *tls.Conn) ([]byte, error) {
 		for {
 			readData := make([]byte, 4096) // Init read buffer
 
-			_, readErr := conn.Read(readData) // Read into buffer
+			lenReadData, readErr := conn.Read(readData) // Read into buffer
 
 			if readErr != nil { // Check for errors
 				if readErr, timeout := readErr.(net.Error); timeout && readErr.Timeout() { // Check for errors
+					readData = readData[0:lenReadData] // Trim nil chars
+
 					data <- readData // Write read data
 
 					return // Return
@@ -246,6 +248,8 @@ func ReadConnectionWaitAsync(conn *tls.Conn) ([]byte, error) {
 
 				return // Return
 			}
+
+			readData = readData[0:lenReadData] // Trim nil chars
 
 			data <- readData // Write read data
 		}
