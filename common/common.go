@@ -54,6 +54,19 @@ var (
 	BEGIN EXPORTED METHODS:
 */
 
+// DelaySeconds - wait until duration passed, return true once duration completed
+func DelaySeconds(seconds uint) bool {
+	startTime := time.Now() // Get current time
+
+	for {
+		if time.Now().Sub(startTime) >= time.Duration(seconds)*time.Second { // Check passed duration
+			break // Break
+		}
+	}
+
+	return true // Reached end
+}
+
 // GetCommonByteDifference - attempt to fetch most similar byte array in array of byte arrays
 func GetCommonByteDifference(b [][]byte) ([]byte, error) {
 	if len(b) == 0 { // Check for nil input

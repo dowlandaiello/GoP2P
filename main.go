@@ -114,5 +114,5 @@ func startNode() {
 
 /* TODO:
 - add RPC connection encryption
-- switch all references to tls.Conn to tls.conn
+- upgrade handler sockets to async servers
 */
