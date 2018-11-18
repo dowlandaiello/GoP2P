@@ -268,7 +268,7 @@ func GetExtIPAddrWithoutUPnP() (string, error) {
 
 	close(finished) // Close channel
 
-	return getNonNilInStringSlice(addresses), nil // Return valid address
+	return getNonNilInStringSlice(addresses) // Return valid address
 }
 
 // GetCurrentTime - get current time in the UTC format
@@ -449,7 +449,10 @@ func getIPFromProviderAsync(provider string, buffer *[]string, finished chan boo
 		resp, err := http.Get(provider) // Attempt to check IP via provider
 
 		if err != nil { // Check for errors
-			fmt.Println(err.Error()) // Log error
+			if len(*buffer) == 0 { // Double check IP not already determined
+				*buffer = append(*buffer, "") // Set IP
+				finished <- true              // Set finished
+			}
 		} else {
 			defer resp.Body.Close() // Close connection
 
@@ -477,14 +480,14 @@ func publicKey(privateKey interface{}) interface{} {
 	}
 }
 
-func getNonNilInStringSlice(slice []string) string {
+func getNonNilInStringSlice(slice []string) (string, error) {
 	for _, entry := range slice { // Iterate through entries
 		if entry != "" { // Check for non-nil entry
-			return entry // Return valid entry
+			return entry, nil // Return valid entry
 		}
 	}
 
-	return "" // Couldn't find valid address, return nil
+	return "", fmt.Errorf("couldn't find non-nil element in slice %v", slice) // Couldn't find valid address, return error
 }
 
 /*
