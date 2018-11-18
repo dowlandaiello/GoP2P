@@ -378,13 +378,13 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{Inputs: params})) // Append params
 	case "Sha3":
 		if len(params) != 1 { // Check for invalid parameters
-			return errors.New("invalid parameters (requires string)")
+			return errors.New("invalid parameters (requires string)") // Return error
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{ByteInput: []byte(params[0])})) // Append params
 	case "SendBytes":
 		if len(params) != 2 { // Check for invalid parameters
-			return errors.New("invalid parameters (requires []byte, string)")
+			return errors.New("invalid parameters (requires []byte, string)") // Return error
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{ByteInput: []byte(params[0]), Input: params[1]})) // Append params
@@ -414,18 +414,38 @@ func handleShard(shardClient *shardProto.Shard, methodname string, params []stri
 
 	switch methodname {
 	case "NewShard", "QueryForAddress", "LogShard":
+		if len(params) != 2 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires string, string)") // Return error
+		}
+
 		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Address: params[1]})) // Append params
 	case "NewShardWithNodes":
+		if len(params) < 2 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires string, []string)") // Return error
+		}
+
 		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Addresses: params[1:len(params)]})) // Append params
 	case "Shard":
+		if len(params) != 3 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires string, string, uint32)") // Return error
+		}
+
 		exponent, _ := strconv.Atoi(params[2]) // Fetch int val
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Address: params[0], Exponent: uint32(exponent)})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Address: params[1], Exponent: uint32(exponent)})) // Append params
 	case "CalculateQuadraticExponent":
+		if len(params) != 1 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires uint32)") // Return error
+		}
+
 		exponent, _ := strconv.Atoi(params[0]) // Fetch int val
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{Exponent: uint32(exponent)})) // Append params
 	case "SendBytesShardResult", "SendBytesShard":
+		if len(params) < 3 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires string, uint32, []byte)") // Return error
+		}
+
 		port, _ := strconv.Atoi(params[1]) // Fetch int val
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{Address: params[0], Port: uint32(port), Bytes: []byte(strings.Join(params[2:len(params)], " "))})) // Append params
