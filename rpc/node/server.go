@@ -21,11 +21,9 @@ func (server *Server) NewNode(ctx context.Context, req *nodeProto.GeneralRequest
 	if req.Address == "localhost" { // Check for invalid address
 		address, err := common.GetExtIPAddrWithoutUPnP() // Fetch IP
 
-		if err != nil { // Check for errors
-			return &nodeProto.GeneralResponse{}, err // Return found error
+		if err == nil { // Check for errors
+			req.Address = address // Set to request value
 		}
-
-		req.Address = address // Set to request value
 	}
 
 	node, err := node.NewNode(req.Address, req.IsBootstrap) // Init node

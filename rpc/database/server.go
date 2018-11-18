@@ -113,11 +113,9 @@ func (server *Server) RemoveNode(ctx context.Context, req *databaseProto.General
 	if req.Address == "localhost" { // Check for invalid address
 		address, err := common.GetExtIPAddrWithoutUPnP()
 
-		if err != nil { // Check for errors
-			return &databaseProto.GeneralResponse{}, err // Return found error
+		if err == nil { // Check for errors
+			req.Address = address // Set to request value
 		}
-
-		req.Address = address // Set to request value
 	}
 
 	currentDir, err := common.GetCurrentDir() // Fetch current dir
