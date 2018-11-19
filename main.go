@@ -126,5 +126,4 @@ func startNode() {
 }
 
 /* TODO:
-- test RPC & TCP encryption/decryption reading
-*/
+ */
