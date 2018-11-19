@@ -85,12 +85,12 @@ func (db *NodeDatabase) RemoveNode(address string) error {
 /* BEGIN SHARD METHODS */
 
 // AddShard - attempt to append shard to current NodeDatabase
-func (db *NodeDatabase) AddShard(shard *shard.Shard) error {
-	if reflect.ValueOf(shard).IsNil() || len(*shard.ChildNodes) == 0 || shard.Address == "" { // Check for invalid shard
+func (db *NodeDatabase) AddShard(destinationShard *shard.Shard) error {
+	if reflect.ValueOf(destinationShard).IsNil() || len(*destinationShard.ChildNodes) == 0 || destinationShard.Address == "" { // Check for invalid shard
 		return errors.New("invalid shard") // Return found error
 	}
 
-	for _, node := range *shard.Nodes { // Iterate through nodes in database
+	for _, node := range *destinationShard.Nodes { // Iterate through nodes in database
 		_, err := db.QueryForAddress(node.Address) // Check if node exists in database
 
 		if err != nil { // Check for errors while querying for address
@@ -98,15 +98,19 @@ func (db *NodeDatabase) AddShard(shard *shard.Shard) error {
 		}
 	}
 
-	for _, shard := range *db.Shards { // Iterate through shards in database
-		_, err := db.QueryForShardAddress(shard.Address) // Check shard in database
+	if db.Shards != nil { // Check for non-nil shards
+		for _, xShard := range *db.Shards { // Iterate through shards in database
+			_, err := db.QueryForShardAddress(destinationShard.Address) // Check shard in database
 
-		if err == nil { // Check for errors
-			db.RemoveShard(shard.Address) // Remove shard
+			if err == nil { // Check for errors
+				db.RemoveShard(xShard.Address) // Remove shard
+			}
 		}
-	}
 
-	*db.Shards = append(*db.Shards, *shard) // Append shard
+		*db.Shards = append(*db.Shards, *destinationShard) // Append shard
+	} else {
+		db.Shards = &[]shard.Shard{*destinationShard} // Initialize w/shard
+	}
 
 	err := db.UpdateRemoteDatabase() // Update remote database instances
 
