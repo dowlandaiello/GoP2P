@@ -36,7 +36,7 @@ type Variable struct {
 }
 
 // NewTerminal - attempts to start io handler for term commands
-func NewTerminal(rpcPort uint) error {
+func NewTerminal(rpcPort uint, rpcAddress string) error {
 	reader := bufio.NewScanner(os.Stdin) // Init reader
 
 	transport := &http.Transport{ // Init transport
@@ -63,19 +63,19 @@ func NewTerminal(rpcPort uint) error {
 				continue
 			}
 
-			handleCommand(receiver, methodname, params, rpcPort, transport) // Handle command
+			handleCommand(receiver, methodname, params, rpcPort, rpcAddress, transport) // Handle command
 		}
 	}
 }
 
-func handleCommand(receiver string, methodname string, params []string, rpcPort uint, transport *http.Transport) {
-	nodeClient := nodeProto.NewNodeProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                      // Init node client
-	handlerClient := handlerProto.NewHandlerProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})             // Init handler client
-	environmentClient := environmentProto.NewEnvironmentProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init environment client
-	upnpClient := upnpProto.NewUpnpProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                      // Init upnp client
-	databaseClient := databaseProto.NewDatabaseProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})          // Init database client
-	commonClient := commonProto.NewCommonProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                // Init common client
-	shardClient := shardProto.NewShardProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init shard client
+func handleCommand(receiver string, methodname string, params []string, rpcPort uint, rpcAddress string, transport *http.Transport) {
+	nodeClient := nodeProto.NewNodeProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                      // Init node client
+	handlerClient := handlerProto.NewHandlerProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})             // Init handler client
+	environmentClient := environmentProto.NewEnvironmentProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init environment client
+	upnpClient := upnpProto.NewUpnpProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                      // Init upnp client
+	databaseClient := databaseProto.NewDatabaseProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})          // Init database client
+	commonClient := commonProto.NewCommonProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                // Init common client
+	shardClient := shardProto.NewShardProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init shard client
 
 	switch receiver {
 	case "node":

@@ -2,8 +2,10 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/mitsukomegumi/GoP2P/cli"
@@ -28,11 +30,12 @@ import (
 )
 
 var (
-	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                      // Init term flag
-	upnpFlag     = flag.Bool("no-upnp", false, "launch GoP2P without automatic UPnP port forwarding") // Init upnp flag
-	rpcPortFlag  = flag.Int("rpc-port", 8080, "launch GoP2P with specified RPC port")                 // Init RPC port flag
-	noColorFlag  = flag.Bool("no-color", false, "disables GoP2P terminal colored output")             // Init color flag
-	forwardRPC   = flag.Bool("forward-rpc", false, "enables forwarding of GoP2P RPC terminal ports")  // Init forward RPC flag
+	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                                                                                   // Init term flag
+	upnpFlag     = flag.Bool("no-upnp", false, "launch GoP2P without automatic UPnP port forwarding")                                                              // Init upnp flag
+	rpcPortFlag  = flag.Int("rpc-port", 8080, "launch GoP2P with specified RPC port")                                                                              // Init RPC port flag
+	noColorFlag  = flag.Bool("no-color", false, "disables GoP2P terminal colored output")                                                                          // Init color flag
+	forwardRPC   = flag.Bool("forward-rpc", false, "enables forwarding of GoP2P RPC terminal ports")                                                               // Init forward RPC flag
+	rpcAddr      = flag.String("remote-rpc", fmt.Sprintf("localhost:%s", strconv.Itoa(*rpcPortFlag)), "connects to remote RPC terminal (default: localhost:8080)") // Init remote rpc addr flag
 )
 
 func main() {
@@ -46,12 +49,14 @@ func main() {
 		go upnp.ForwardPortSilent(3000) // Forward port 3000
 	} else if *noColorFlag { // Check for no colors
 		color.NoColor = true // Disable colors
+	} else if strings.Contains(*rpcAddr, "localhost") { // Check for default RPC address
+		startRPCServer() // Start RPC server
 	}
 
-	startRPCServer() // Start RPC server
+	if *terminalFlag { // Check for terminal
+		*rpcAddr = strings.Split(*rpcAddr, ":")[0] // Remove port
 
-	if *terminalFlag {
-		cli.NewTerminal(uint(*rpcPortFlag)) // Initialize terminal
+		cli.NewTerminal(uint(*rpcPortFlag), *rpcAddr) // Initialize terminal
 	}
 
 	startNode() // Attempt to start GoP2P in node mode
