@@ -167,13 +167,17 @@ func (db *NodeDatabase) QueryForAddress(address string) (uint, error) {
 
 // QueryForShardAddress - attempts to search specified node database for specified address, returning index of shard
 func (db *NodeDatabase) QueryForShardAddress(address string) (uint, error) {
-	for x := 0; x != len(*db.Shards); x++ { // Wait until entire db has been queried
-		if address == (*db.Shards)[x].Address { // Check for match
-			return uint(x), nil // Return matching index
+	if db.Shards != nil {
+		for x := 0; x != len(*db.Shards); x++ { // Wait until entire db has been queried
+			if address == (*db.Shards)[x].Address { // Check for match
+				return uint(x), nil // Return matching index
+			}
 		}
+
+		return 0, errors.New("no value found") // Could not find index of address, return new error
 	}
 
-	return 0, errors.New("no value found") // Could not find index of address, return new error
+	return 0, fmt.Errorf("no shards in db %v", db) // Return no shards error
 }
 
 // UpdateRemoteDatabase - push database changes to remote network nodes

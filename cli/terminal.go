@@ -413,7 +413,7 @@ func handleShard(shardClient *shardProto.Shard, methodname string, params []stri
 	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
 
 	switch methodname {
-	case "NewShard", "QueryForAddress", "LogShard":
+	case "NewShard", "LogShard":
 		if len(params) != 2 { // Check for invalid parameters length
 			return errors.New("invalid parameters (requires string, string)") // Return error
 		}
@@ -449,6 +449,12 @@ func handleShard(shardClient *shardProto.Shard, methodname string, params []stri
 		port, _ := strconv.Atoi(params[1]) // Fetch int val
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{Address: params[0], Port: uint32(port), Bytes: []byte(strings.Join(params[2:len(params)], " "))})) // Append params
+	case "QueryForAddress":
+		if len(params) < 3 { // Check for invalid parameters length
+			return errors.New("invalid parameters (require string, string, string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Addresses: params[1:len(params)]})) // Append params
 	default:
 		return errors.New("illegal method: " + methodname + ", available methods: NewShard(), NewShardWithNodes(), Shard(), QueryForAddress(), LogShard(), CalculateQuadraticExponent(), SendBytesShardResult(), SendBytesShard()") // Return error
 	}
