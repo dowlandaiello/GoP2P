@@ -47,9 +47,13 @@ func main() {
 		}
 
 		go upnp.ForwardPortSilent(3000) // Forward port 3000
-	} else if *noColorFlag { // Check for no colors
+	}
+
+	if *noColorFlag { // Check for no colors
 		color.NoColor = true // Disable colors
-	} else if strings.Contains(*rpcAddr, "localhost") { // Check for default RPC address
+	}
+
+	if strings.Contains(*rpcAddr, "localhost") { // Check for default RPC address
 		startRPCServer() // Start RPC server
 	}
 
