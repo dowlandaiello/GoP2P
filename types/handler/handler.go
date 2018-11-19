@@ -33,7 +33,7 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 
 // handleConnection - attempt to fetch connection metadata, handle it respectively (stack or singular)
 func handleConnection(node *node.Node, conn net.Conn) error {
-	data, err := common.ReadConnectionWaitAsyncNoTLS(net.Conn(conn)) // Read entire connection
+	data, err := common.ReadConnectionWaitAsyncNoTLS(conn) // Read entire connection
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -97,9 +97,9 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 
 	fmt.Println("\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- responding with data " + common.SafeSlice(serializedResponse) + "...") // Log response
 
-	conn.Write(serializedResponse) // Write success
+	_, err = conn.Write(serializedResponse) // Write success
 
-	return nil // Attempt to handle stack
+	return err // Attempt to handle stack
 }
 
 // handleSingular - no stack present in found connection, write variable with connection data

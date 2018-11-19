@@ -2,6 +2,7 @@ package common
 
 import (
 	"bufio"
+	"bytes"
 	"crypto/tls"
 	"errors"
 	"fmt"
@@ -50,7 +51,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 	n, err := connection.Write(b) // Write data to connection
 
 	if err != nil { // Check for errors
-		return nil, err // Return found errors
+		return nil, err // Return found error
 	} else if n != len(b) { // Check write failed
 		return []byte{}, fmt.Errorf("connection write failed: wrote %s bytes of data of %s bytes of data", strconv.Itoa(n), strconv.Itoa(len(b))) // Log connection write failed
 	}
@@ -58,7 +59,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 	result, err := ReadConnectionWaitAsync(connection) // Read connection
 
 	if err != nil { // Check for errors
-		return nil, err // Return found errors
+		return nil, err // Return found error
 	}
 
 	err = connection.Close() // Close connection
@@ -225,33 +226,25 @@ func ReadConnectionWaitAsync(conn *tls.Conn) ([]byte, error) {
 	data := make(chan []byte) // Init buffer
 	err := make(chan error)   // Init error buffer
 
-	conn.SetReadDeadline(time.Now().Add(1 * time.Second)) // Set read deadline
+	conn.SetReadDeadline(time.Now().Add(2 * time.Second)) // Set read deadline
 
 	go func(data chan []byte, err chan error) {
+		reads := 0 // Init reads buffer
+
 		for {
-			readData := make([]byte, 4096) // Init read buffer
+			reads++ // Increment read
 
-			lenReadData, readErr := conn.Read(readData) // Read into buffer
+			var buffer bytes.Buffer // Init buffer
 
-			if readErr != nil { // Check for errors
-				if readErr, timeout := readErr.(net.Error); timeout && readErr.Timeout() { // Check for errors
-					readData = readData[0:lenReadData] // Trim nil chars
+			readData, readErr := io.Copy(&buffer, conn) // Read connection
 
-					data <- readData // Write read data
-
-					return // Return
-				} else if readErr == io.EOF { // Check for EOF
-					continue // Continue
-				}
-
-				err <- readErr // Write found error
-
-				return // Return
+			if readErr != nil && readErr != io.EOF && reads > 3 { // Check for errors
+				err <- readErr // Write read error
+			} else if readData == 0 { // Check for nil readData
+				continue // Continue
 			}
 
-			readData = readData[0:lenReadData] // Trim nil chars
-
-			data <- readData // Write read data
+			data <- buffer.Bytes() // Write read data
 		}
 	}(data, err)
 
@@ -277,13 +270,23 @@ func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
 	conn.SetReadDeadline(time.Now().Add(2 * time.Second)) // Set read deadline
 
 	go func(data chan []byte, err chan error) {
-		readData, readErr := ioutil.ReadAll(conn) // Read connection
+		reads := 0 // Init reads buffer
 
-		if readErr != nil && readErr != io.EOF { // Check for errors
-			err <- readErr // Write read error
+		for {
+			reads++ // Increment read
+
+			var buffer bytes.Buffer // Init buffer
+
+			readData, readErr := io.Copy(&buffer, conn) // Read connection
+
+			if readErr != nil && readErr != io.EOF && reads > 3 { // Check for errors
+				err <- readErr // Write read error
+			} else if readData == 0 { // Check for nil readData
+				continue // Continue
+			}
+
+			data <- buffer.Bytes() // Write read data
 		}
-
-		data <- readData // Write read data
 	}(data, err)
 
 	ticker := time.Tick(3 * time.Second) // Init ticker

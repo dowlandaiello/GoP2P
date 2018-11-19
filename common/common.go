@@ -299,11 +299,11 @@ func Sha3(b []byte) string {
 func SafeSlice(b []byte) string {
 	strVal := string(b) // Convert to string
 
-	if len(strVal) < 20 { // Check for large string
+	if len(strVal) < 30 { // Check for large string
 		return strVal // Safe, return string
 	}
 
-	return strVal[0:20] // Unsafe, return sliced
+	return strVal[0:30] // Unsafe, return sliced
 }
 
 // StringInSlice - check if value is in slice
