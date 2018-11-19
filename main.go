@@ -30,12 +30,12 @@ import (
 )
 
 var (
-	terminalFlag   = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                                                                                   // Init term flag
-	upnpFlag       = flag.Bool("no-upnp", false, "launch GoP2P without automatic UPnP port forwarding")                                                              // Init upnp flag
-	rpcPortFlag    = flag.Int("rpc-port", 8080, "launch GoP2P with specified RPC port")                                                                              // Init RPC port flag
-	noColorFlag    = flag.Bool("no-color", false, "disables GoP2P terminal colored output")                                                                          // Init color flag
-	forwardRPCFlag = flag.Bool("forward-rpc", false, "enables forwarding of GoP2P RPC terminal ports")                                                               // Init forward RPC flag
-	rpcAddrFlag    = flag.String("remote-rpc", fmt.Sprintf("localhost:%s", strconv.Itoa(*rpcPortFlag)), "connects to remote RPC terminal (default: localhost:8080)") // Init remote rpc addr flag
+	terminalFlag   = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                                                                                    // Init term flag
+	upnpFlag       = flag.Bool("no-upnp", false, "launch GoP2P without automatic UPnP port forwarding")                                                               // Init upnp flag
+	rpcPortFlag    = flag.Int("rpc-port", 8080, "launch GoP2P with specified RPC port")                                                                               // Init RPC port flag
+	noColorFlag    = flag.Bool("no-color", false, "disables GoP2P terminal colored output")                                                                           // Init color flag
+	forwardRPCFlag = flag.Bool("forward-rpc", false, "enables forwarding of GoP2P RPC terminal ports")                                                                // Init forward RPC flag
+	rpcAddrFlag    = flag.String("rpc-address", fmt.Sprintf("localhost:%s", strconv.Itoa(*rpcPortFlag)), "connects to remote RPC terminal (default: localhost:8080)") // Init remote rpc addr flag
 )
 
 func main() {
