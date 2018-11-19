@@ -339,6 +339,59 @@ func GenerateTLSCertificates(namePrefix string) error {
 	return nil // No error occurred, return nil
 }
 
+/*
+	END EXPORTED METHODS
+*/
+
+/*
+	BEGIN INTERNAL METHODS:
+*/
+
+func getIPFromProvider(provider string) (string, error) {
+	resp, err := http.Get(provider) // Attempt to check IP via provider
+
+	if err != nil { // Check for errors
+		return "", err // Return error
+	}
+
+	defer resp.Body.Close() // Close connection
+
+	ip, err := ioutil.ReadAll(resp.Body) // Read address
+
+	if err != nil { // Check for errors
+		return "", err // Return error
+	}
+
+	stringVal := string(ip[:]) // Fetch string value
+
+	return strings.TrimSpace(stringVal), nil // Return ip
+}
+
+func getIPFromProviderAsync(provider string, buffer *[]string, finished chan bool) {
+	if len(*buffer) == 0 { // Check IP not already determined
+		resp, err := http.Get(provider) // Attempt to check IP via provider
+
+		if err != nil { // Check for errors
+			if len(*buffer) == 0 { // Double check IP not already determined
+				*buffer = append(*buffer, "") // Set IP
+				finished <- true              // Set finished
+			}
+		} else {
+			defer resp.Body.Close() // Close connection
+
+			ip, _ := ioutil.ReadAll(resp.Body) // Read address
+
+			stringVal := string(ip[:]) // Fetch string value
+
+			if len(*buffer) == 0 { // Double check IP not already determined
+				*buffer = append(*buffer, strings.TrimSpace(stringVal)) // Set ip
+
+				finished <- true // Set finished
+			}
+		}
+	}
+}
+
 // generateTLSKey - generates necessary TLS key
 func generateTLSKey(namePrefix string) (*ecdsa.PrivateKey, error) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
@@ -414,59 +467,6 @@ func getTLSCerts(certPrefix string) tls.Certificate {
 	}
 
 	return cert // Return read certificates
-}
-
-/*
-	END EXPORTED METHODS
-*/
-
-/*
-	BEGIN INTERNAL METHODS:
-*/
-
-func getIPFromProvider(provider string) (string, error) {
-	resp, err := http.Get(provider) // Attempt to check IP via provider
-
-	if err != nil { // Check for errors
-		return "", err // Return error
-	}
-
-	defer resp.Body.Close() // Close connection
-
-	ip, err := ioutil.ReadAll(resp.Body) // Read address
-
-	if err != nil { // Check for errors
-		return "", err // Return error
-	}
-
-	stringVal := string(ip[:]) // Fetch string value
-
-	return strings.TrimSpace(stringVal), nil // Return ip
-}
-
-func getIPFromProviderAsync(provider string, buffer *[]string, finished chan bool) {
-	if len(*buffer) == 0 { // Check IP not already determined
-		resp, err := http.Get(provider) // Attempt to check IP via provider
-
-		if err != nil { // Check for errors
-			if len(*buffer) == 0 { // Double check IP not already determined
-				*buffer = append(*buffer, "") // Set IP
-				finished <- true              // Set finished
-			}
-		} else {
-			defer resp.Body.Close() // Close connection
-
-			ip, _ := ioutil.ReadAll(resp.Body) // Read address
-
-			stringVal := string(ip[:]) // Fetch string value
-
-			if len(*buffer) == 0 { // Double check IP not already determined
-				*buffer = append(*buffer, strings.TrimSpace(stringVal)) // Set ip
-
-				finished <- true // Set finished
-			}
-		}
-	}
 }
 
 func publicKey(privateKey interface{}) interface{} {

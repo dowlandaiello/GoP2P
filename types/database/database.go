@@ -136,6 +136,12 @@ func (db *NodeDatabase) AddShard(destinationShard *shard.Shard) error {
 		return err // Return found error
 	}
 
+	err = node.WriteToMemory(currentDir) // Write to memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	return nil // No error occurred, return nil
 }
 
@@ -148,6 +154,36 @@ func (db *NodeDatabase) RemoveShard(address string) error {
 	}
 
 	db.removeShard(int(shardIndex)) // Removes value at index
+
+	err = db.UpdateRemoteDatabase() // Update remote database instances
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	currentDir, err := common.GetCurrentDir() // Get working directory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	node, err := node.ReadNodeFromMemory(currentDir) // Read node from working dir
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = db.WriteToMemory(node.Environment) // Write to local environment
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = node.WriteToMemory(currentDir) // Write to memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
 
 	return nil // Returns nil, no error
 }
