@@ -1,13 +1,13 @@
 package common
 
 import (
-	"net"
+	"crypto/tls"
 	"testing"
 )
 
 // TestSendBytes - test functionality of SendBytes() method
 func TestSendBytes(t *testing.T) {
-	err := SendBytes([]byte("test"), "1.1.1.1:80") // Write to address
+	err := SendBytes([]byte("test"), "1.1.1.1:443") // Write to address
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -19,14 +19,14 @@ func TestSendBytes(t *testing.T) {
 
 // TestSendBytesWithConnection - test functionality of SendBytesWithConnection() method
 func TestSendBytesWithConnection(t *testing.T) {
-	connection, err := net.Dial("tcp", "1.1.1.1:80") // Init connection
+	connection, err := tls.Dial("tcp", "1.1.1.1:443", GeneralTLSConfig) // Init connection
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	}
 
-	err = SendBytesWithConnection(&connection, []byte("test")) // Attempt to send bytes
+	err = SendBytesWithConnection(connection, []byte("test")) // Attempt to send bytes
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -43,7 +43,7 @@ func TestSendBytesWithConnection(t *testing.T) {
 
 // TestSendBytesReusable - test functionality of SendBytesReusable() method
 func TestSendBytesReusable(t *testing.T) {
-	connection, err := SendBytesReusable([]byte("test"), "1.1.1.1:80") // Attempt to send bytes
+	connection, err := SendBytesReusable([]byte("test"), "1.1.1.1:443") // Attempt to send bytes
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error

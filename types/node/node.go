@@ -1,6 +1,7 @@
 package node
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -55,7 +56,7 @@ func NewNode(address string, isBootstrap bool) (Node, error) {
 
 // StartListener - attempt to listen on specified port, return new listener
 func (node *Node) StartListener(port int) (*net.Listener, error) {
-	ln, err := net.Listen("tcp", ":"+strconv.Itoa(port)) // Listen on port
+	ln, err := tls.Listen("tcp", ":"+strconv.Itoa(port), common.GeneralTLSConfig) // Listen on port
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error

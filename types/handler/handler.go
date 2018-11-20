@@ -33,7 +33,7 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 
 // handleConnection - attempt to fetch connection metadata, handle it respectively (stack or singular)
 func handleConnection(node *node.Node, conn net.Conn) error {
-	data, err := common.ReadConnectionWaitAsync(conn) // Read entire connection
+	data, err := common.ReadConnectionWaitAsyncNoTLS(conn) // Read entire connection
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -43,7 +43,11 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return handleLogNetworkMessage(data) // Handle network message
 	}
 
-	fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), fmt.Sprintf("%s... }", string(data)[0:100])) // Log connection
+	if len(data) < 100 { // Check for safe length
+		fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), fmt.Sprintf("%s", string(data))) // Log connection
+	} else {
+		fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), fmt.Sprintf("%s... }", string(data)[0:100])) // Log connection
+	}
 
 	readConnection, err := connection.FromBytes(data) // Attempt to decode data
 
@@ -51,7 +55,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
-	fmt.Println("\n\n-- CONNECTION " + conn.RemoteAddr().String() + " -- attempted to read " + strconv.Itoa(len(data)) + " byte of data.") // Log read connection
+	fmt.Println("\n\n-- CONNECTION " + conn.RemoteAddr().String() + " -- attempted to read " + strconv.Itoa(len(data)) + " bytes of data.") // Log read connection
 
 	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
 		val, isMessage, err := handleSingular(node, readConnection) // Handle singular event
@@ -93,9 +97,9 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 
 	fmt.Println("\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- responding with data " + common.SafeSlice(serializedResponse) + "...") // Log response
 
-	conn.Write(serializedResponse) // Write success
+	_, err = conn.Write(serializedResponse) // Write success
 
-	return nil // Attempt to handle stack
+	return err // Attempt to handle stack
 }
 
 // handleSingular - no stack present in found connection, write variable with connection data
@@ -200,8 +204,8 @@ func handleStack(node *node.Node, connection *connection.Connection) ([][]byte, 
 		responses = append(responses, val) // Append response
 	}
 
-	if len(responses) == 0 {
-		return nil, errors.New("nil response")
+	if len(responses) == 0 { // Check for nil response
+		return nil, errors.New("nil response") // Return found error
 	}
 
 	return responses, nil // No error occurred, return nil

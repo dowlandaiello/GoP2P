@@ -2,8 +2,11 @@ package common
 
 import (
 	"bufio"
+	"bytes"
+	"crypto/tls"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
 	"strconv"
@@ -16,7 +19,7 @@ import (
 
 // SendBytes - attempt to send specified bytes to given address
 func SendBytes(b []byte, address string) error {
-	connection, err := net.Dial("tcp", address) // Connect to given address
+	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -39,7 +42,7 @@ func SendBytes(b []byte, address string) error {
 
 // SendBytesResult - attempt to send specified bytes to given address, returning result
 func SendBytesResult(b []byte, address string) ([]byte, error) {
-	connection, err := net.Dial("tcp", address) // Connect to given address
+	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -48,15 +51,15 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 	n, err := connection.Write(b) // Write data to connection
 
 	if err != nil { // Check for errors
-		return nil, err // Return found errors
+		return nil, err // Return found error
 	} else if n != len(b) { // Check write failed
-		return []byte{}, fmt.Errorf("connection write failed: wrote %s bytes of data of %s bytes of data", strconv.Itoa(n), strconv.Itoa(len(b)))
+		return []byte{}, fmt.Errorf("connection write failed: wrote %s bytes of data of %s bytes of data", strconv.Itoa(n), strconv.Itoa(len(b))) // Log connection write failed
 	}
 
 	result, err := ReadConnectionWaitAsync(connection) // Read connection
 
 	if err != nil { // Check for errors
-		return nil, err // Return found errors
+		return nil, err // Return found error
 	}
 
 	err = connection.Close() // Close connection
@@ -70,7 +73,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 
 // SendBytesAsync - attempt to send specified bytes to given address in an asynchronous manner
 func SendBytesAsync(b []byte, address string, finished []bool) error {
-	connection, err := net.Dial("tcp", address) // Connect to given address
+	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -99,7 +102,7 @@ func SendBytesAsync(b []byte, address string, finished []bool) error {
 
 // SendBytesAsyncRoutine - attempt to send specified bytes to given address in an asynchronous, go routine-based manner.
 func SendBytesAsyncRoutine(b []byte, address string, finished chan bool) error {
-	connection, err := net.Dial("tcp", address) // Connect to given address
+	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -124,7 +127,7 @@ func SendBytesAsyncRoutine(b []byte, address string, finished chan bool) error {
 
 // SendBytesResultBufferAsync - attempt to send specified bytes to given address in an asynchronous fashion, reading the result into a given buffer
 func SendBytesResultBufferAsync(b []byte, buffer [][]byte, address string, finished chan []bool) error {
-	connection, err := net.Dial("tcp", address) // Connect to given address
+	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -160,7 +163,7 @@ func SendBytesResultBufferAsync(b []byte, buffer [][]byte, address string, finis
 }
 
 // SendBytesWithConnection - attempt to send specified bytes to given address via given connection
-func SendBytesWithConnection(connection *net.Conn, b []byte) error {
+func SendBytesWithConnection(connection *tls.Conn, b []byte) error {
 	_, err := (*connection).Write(b) // Write to connection
 
 	if err != nil { // Check for errors
@@ -171,8 +174,8 @@ func SendBytesWithConnection(connection *net.Conn, b []byte) error {
 }
 
 // SendBytesReusable - attempt to send specified bytes to given address and return created connection
-func SendBytesReusable(b []byte, address string) (*net.Conn, error) {
-	connection, err := net.Dial("tcp", address) // Connect to given address
+func SendBytesReusable(b []byte, address string) (*tls.Conn, error) {
+	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -184,11 +187,11 @@ func SendBytesReusable(b []byte, address string) (*net.Conn, error) {
 		return nil, err // Return found errors
 	}
 
-	return &connection, nil // No error occurred, return nil
+	return connection, nil // No error occurred, return nil
 }
 
 // ReadConnectionDelim - attempt to read connection until occurrence of standard GoP2P connection delimiter
-func ReadConnectionDelim(conn net.Conn) ([]byte, error) {
+func ReadConnectionDelim(conn *tls.Conn) ([]byte, error) {
 	reader := bufio.NewReader(conn) // Initialize reader
 
 	data, err := reader.ReadBytes(ConnectionDelimiter) // Read until delimiter
@@ -201,7 +204,7 @@ func ReadConnectionDelim(conn net.Conn) ([]byte, error) {
 }
 
 // ReadConnectionAsync - attempt to read entirety of specified connection in an asynchronous fashion, returning data byte value
-func ReadConnectionAsync(conn net.Conn, buffer chan []byte, finished chan bool, err chan error) {
+func ReadConnectionAsync(conn *tls.Conn, buffer chan []byte, finished chan bool, err chan error) {
 	data, readErr := ioutil.ReadAll(conn) // Read connection
 
 	if readErr != nil { // Check for errors
@@ -219,23 +222,70 @@ func ReadConnectionAsync(conn net.Conn, buffer chan []byte, finished chan bool, 
 }
 
 // ReadConnectionWaitAsync - attempt to read from connection in an asynchronous fashion, after waiting for peer to write
-func ReadConnectionWaitAsync(conn net.Conn) ([]byte, error) {
+func ReadConnectionWaitAsync(conn *tls.Conn) ([]byte, error) {
 	data := make(chan []byte) // Init buffer
 	err := make(chan error)   // Init error buffer
 
+	conn.SetReadDeadline(time.Now().Add(2 * time.Second)) // Set read deadline
+
 	go func(data chan []byte, err chan error) {
+		reads := 0 // Init reads buffer
+
 		for {
-			readData := make([]byte, 4096) // Init read buffer
+			reads++ // Increment read
 
-			_, readErr := conn.Read(readData) // Read into buffer
+			var buffer bytes.Buffer // Init buffer
 
-			if readErr != nil { // Check for errors
-				err <- readErr // Write found error
+			readData, readErr := io.Copy(&buffer, conn) // Read connection
 
-				return // Return
+			if readErr != nil && readErr != io.EOF && reads > 3 { // Check for errors
+				err <- readErr // Write read error
+			} else if readData == 0 { // Check for nil readData
+				continue // Continue
 			}
 
-			data <- readData // Write read data
+			data <- buffer.Bytes() // Write read data
+		}
+	}(data, err)
+
+	ticker := time.Tick(3 * time.Second) // Init ticker
+
+	for { // Continuously read from connection
+		select {
+		case readData := <-data: // Read data from connection
+			return readData, nil // Return read data
+		case readErr := <-err: // Error on read
+			return []byte{}, readErr // Return error
+		case <-ticker: // Timed out
+			return []byte{}, errors.New("timed out") // Return timed out error
+		}
+	}
+}
+
+// ReadConnectionWaitAsyncNoTLS - attempt to read from connection in an asynchronous fashion, after waiting for peer to write
+func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
+	data := make(chan []byte) // Init buffer
+	err := make(chan error)   // Init error buffer
+
+	conn.SetReadDeadline(time.Now().Add(2 * time.Second)) // Set read deadline
+
+	go func(data chan []byte, err chan error) {
+		reads := 0 // Init reads buffer
+
+		for {
+			reads++ // Increment read
+
+			var buffer bytes.Buffer // Init buffer
+
+			readData, readErr := io.Copy(&buffer, conn) // Read connection
+
+			if readErr != nil && readErr != io.EOF && reads > 3 { // Check for errors
+				err <- readErr // Write read error
+			} else if readData == 0 { // Check for nil readData
+				continue // Continue
+			}
+
+			data <- buffer.Bytes() // Write read data
 		}
 	}(data, err)
 

@@ -95,7 +95,7 @@ func (connection *Connection) AttemptVariable() (*environment.Variable, error) {
 
 // attempt - attempt connection
 func (connection *Connection) attempt() ([]byte, error) {
-	fmt.Println("-- CONNECTION -- attempting connection")
+	fmt.Println("-- CONNECTION -- attempting connection to peer with address " + connection.DestinationNode.Address) // Log connection
 
 	serializedConnection, err := common.SerializeToBytes(*connection) // Serialize connection
 
@@ -108,6 +108,10 @@ func (connection *Connection) attempt() ([]byte, error) {
 	if err != nil { // Check for errors
 		return nil, err // Return found error
 	}
+
+	/*
+		TODO: fix nil read data
+	*/
 
 	return result, nil // No error occurred, return nil
 }

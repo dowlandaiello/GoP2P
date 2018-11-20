@@ -85,12 +85,12 @@ func (db *NodeDatabase) RemoveNode(address string) error {
 /* BEGIN SHARD METHODS */
 
 // AddShard - attempt to append shard to current NodeDatabase
-func (db *NodeDatabase) AddShard(shard *shard.Shard) error {
-	if reflect.ValueOf(shard).IsNil() || len(*shard.ChildNodes) == 0 || shard.Address == "" { // Check for invalid shard
+func (db *NodeDatabase) AddShard(destinationShard *shard.Shard) error {
+	if reflect.ValueOf(destinationShard).IsNil() || len(*destinationShard.ChildNodes) == 0 || destinationShard.Address == "" { // Check for invalid shard
 		return errors.New("invalid shard") // Return found error
 	}
 
-	for _, node := range *shard.Nodes { // Iterate through nodes in database
+	for _, node := range *destinationShard.Nodes { // Iterate through nodes in database
 		_, err := db.QueryForAddress(node.Address) // Check if node exists in database
 
 		if err != nil { // Check for errors while querying for address
@@ -98,15 +98,19 @@ func (db *NodeDatabase) AddShard(shard *shard.Shard) error {
 		}
 	}
 
-	for _, shard := range *db.Shards { // Iterate through shards in database
-		_, err := db.QueryForShardAddress(shard.Address) // Check shard in database
+	if db.Shards != nil { // Check for non-nil shards
+		for _, xShard := range *db.Shards { // Iterate through shards in database
+			_, err := db.QueryForShardAddress(destinationShard.Address) // Check shard in database
 
-		if err == nil { // Check for errors
-			db.RemoveShard(shard.Address) // Remove shard
+			if err == nil { // Check for errors
+				db.RemoveShard(xShard.Address) // Remove shard
+			}
 		}
-	}
 
-	*db.Shards = append(*db.Shards, *shard) // Append shard
+		*db.Shards = append(*db.Shards, *destinationShard) // Append shard
+	} else {
+		db.Shards = &[]shard.Shard{*destinationShard} // Initialize w/shard
+	}
 
 	err := db.UpdateRemoteDatabase() // Update remote database instances
 
@@ -132,6 +136,12 @@ func (db *NodeDatabase) AddShard(shard *shard.Shard) error {
 		return err // Return found error
 	}
 
+	err = node.WriteToMemory(currentDir) // Write to memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	return nil // No error occurred, return nil
 }
 
@@ -144,6 +154,36 @@ func (db *NodeDatabase) RemoveShard(address string) error {
 	}
 
 	db.removeShard(int(shardIndex)) // Removes value at index
+
+	err = db.UpdateRemoteDatabase() // Update remote database instances
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	currentDir, err := common.GetCurrentDir() // Get working directory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	node, err := node.ReadNodeFromMemory(currentDir) // Read node from working dir
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = db.WriteToMemory(node.Environment) // Write to local environment
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = node.WriteToMemory(currentDir) // Write to memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
 
 	return nil // Returns nil, no error
 }
@@ -163,13 +203,17 @@ func (db *NodeDatabase) QueryForAddress(address string) (uint, error) {
 
 // QueryForShardAddress - attempts to search specified node database for specified address, returning index of shard
 func (db *NodeDatabase) QueryForShardAddress(address string) (uint, error) {
-	for x := 0; x != len(*db.Shards); x++ { // Wait until entire db has been queried
-		if address == (*db.Shards)[x].Address { // Check for match
-			return uint(x), nil // Return matching index
+	if db.Shards != nil {
+		for x := 0; x != len(*db.Shards); x++ { // Wait until entire db has been queried
+			if address == (*db.Shards)[x].Address { // Check for match
+				return uint(x), nil // Return matching index
+			}
 		}
+
+		return 0, errors.New("no value found") // Could not find index of address, return new error
 	}
 
-	return 0, errors.New("no value found") // Could not find index of address, return new error
+	return 0, fmt.Errorf("no shards in db %v", db) // Return no shards error
 }
 
 // UpdateRemoteDatabase - push database changes to remote network nodes

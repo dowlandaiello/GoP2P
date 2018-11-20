@@ -2,8 +2,10 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/mitsukomegumi/GoP2P/cli"
@@ -28,26 +30,37 @@ import (
 )
 
 var (
-	terminalFlag = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                      // Init term flag
-	upnpFlag     = flag.Bool("no-upnp", false, "launch GoP2P without automatic UPnP port forwarding") // Init upnp flag
-	rpcPortFlag  = flag.Int("rpc-port", 8080, "launch GoP2P with specified RPC port")                 // Init RPC port flag
-	noColorFlag  = flag.Bool("no-color", false, "disables GoP2P terminal colored output")             // Init color flag
+	terminalFlag   = flag.Bool("terminal", false, "launch GoP2P in terminal mode")                                                                                    // Init term flag
+	upnpFlag       = flag.Bool("no-upnp", false, "launch GoP2P without automatic UPnP port forwarding")                                                               // Init upnp flag
+	rpcPortFlag    = flag.Int("rpc-port", 8080, "launch GoP2P with specified RPC port")                                                                               // Init RPC port flag
+	noColorFlag    = flag.Bool("no-color", false, "disables GoP2P terminal colored output")                                                                           // Init color flag
+	forwardRPCFlag = flag.Bool("forward-rpc", false, "enables forwarding of GoP2P RPC terminal ports")                                                                // Init forward RPC flag
+	rpcAddrFlag    = flag.String("rpc-address", fmt.Sprintf("localhost:%s", strconv.Itoa(*rpcPortFlag)), "connects to remote RPC terminal (default: localhost:8080)") // Init remote rpc addr flag
 )
 
 func main() {
 	flag.Parse() // Parse flags
 
 	if !*upnpFlag { // Check for UPnP
-		go upnp.ForwardPortSilent(uint(*rpcPortFlag)) // Forward RPC port
-		go upnp.ForwardPortSilent(3000)               // Forward port 3000
-	} else if *noColorFlag { // Check for no colors
+		if *forwardRPCFlag {
+			go upnp.ForwardPortSilent(uint(*rpcPortFlag)) // Forward RPC port
+		}
+
+		go upnp.ForwardPortSilent(3000) // Forward port 3000
+	}
+
+	if *noColorFlag { // Check for no colors
 		color.NoColor = true // Disable colors
 	}
 
-	startRPCServer() // Start RPC server
+	if strings.Contains(*rpcAddrFlag, "localhost") { // Check for default RPC address
+		startRPCServer() // Start RPC server
+	}
 
-	if *terminalFlag { // Check for terminal flag
-		cli.NewTerminal(uint(*rpcPortFlag)) // Initialize terminal
+	if *terminalFlag { // Check for terminal
+		*rpcAddrFlag = strings.Split(*rpcAddrFlag, ":")[0] // Remove port
+    
+		cli.NewTerminal(uint(*rpcPortFlag), *rpcAddrFlag) // Initialize terminal
 	}
 
 	startNode() // Attempt to start GoP2P in node mode
@@ -82,7 +95,7 @@ func startRPCServer() {
 	mux.Handle(commonProto.CommonPathPrefix, commonHandler)                // Start mux common handler
 	mux.Handle(shardProto.ShardPathPrefix, shardHandler)                   // Start mux shard handler
 
-	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "cert.pem", "key.pem", mux) // Start server
+	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "gop2pTermCert.pem", "gop2pTermKey.pem", mux) // Start server
 }
 
 // startNode - attempt to execute attachnode, starthandler commands
@@ -113,5 +126,4 @@ func startNode() {
 }
 
 /* TODO:
-- finalize TLS support
-*/
+ */

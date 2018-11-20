@@ -36,20 +36,12 @@ type Variable struct {
 }
 
 // NewTerminal - attempts to start io handler for term commands
-func NewTerminal(rpcPort uint) error {
+func NewTerminal(rpcPort uint, rpcAddress string) error {
 	reader := bufio.NewScanner(os.Stdin) // Init reader
 
 	transport := &http.Transport{ // Init transport
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-
-	nodeClient := nodeProto.NewNodeProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                      // Init node client
-	handlerClient := handlerProto.NewHandlerProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})             // Init handler client
-	environmentClient := environmentProto.NewEnvironmentProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init environment client
-	upnpClient := upnpProto.NewUpnpProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                      // Init upnp client
-	databaseClient := databaseProto.NewDatabaseProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})          // Init database client
-	commonClient := commonProto.NewCommonProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                // Init common client
-	shardClient := shardProto.NewShardProtobufClient("https://localhost:"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init shard client
 
 	for {
 		fmt.Print("\n> ") // Print prompt
@@ -60,57 +52,73 @@ func NewTerminal(rpcPort uint) error {
 
 		input = strings.TrimSuffix(input, "\n") // Trim newline
 
-		receiver, methodname, params, err := common.ParseStringMethodCall(input) // Attempt to parse as method call
+		err := handleStringOnly(input) // Handle nil-call
+
+		if err != nil {
+			receiver, methodname, params, err := common.ParseStringMethodCall(input) // Attempt to parse as method call
+
+			if err != nil { // Check for errors
+				fmt.Println(err.Error()) // Log found error
+
+				continue
+			}
+
+			handleCommand(receiver, methodname, params, rpcPort, rpcAddress, transport) // Handle command
+		}
+	}
+}
+
+func handleCommand(receiver string, methodname string, params []string, rpcPort uint, rpcAddress string, transport *http.Transport) {
+	nodeClient := nodeProto.NewNodeProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                      // Init node client
+	handlerClient := handlerProto.NewHandlerProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})             // Init handler client
+	environmentClient := environmentProto.NewEnvironmentProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init environment client
+	upnpClient := upnpProto.NewUpnpProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                      // Init upnp client
+	databaseClient := databaseProto.NewDatabaseProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})          // Init database client
+	commonClient := commonProto.NewCommonProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                // Init common client
+	shardClient := shardProto.NewShardProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init shard client
+
+	switch receiver {
+	case "node":
+		err := handleNode(&nodeClient, methodname, params) // Handle node
 
 		if err != nil { // Check for errors
-			fmt.Println(err.Error()) // Log found error
-
-			continue
+			fmt.Println("\n" + err.Error()) // Log found error
 		}
+	case "handler":
+		err := handleHandler(&handlerClient, methodname, params) // Handle handler
 
-		switch receiver {
-		case "node":
-			err := handleNode(&nodeClient, methodname, params) // Handle node
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
+	case "environment":
+		err := handleEnvironment(&environmentClient, methodname, params) // Handle environment
 
-			if err != nil { // Check for errors
-				fmt.Println("\n" + err.Error()) // Log found error
-			}
-		case "handler":
-			err := handleHandler(&handlerClient, methodname, params) // Handle handler
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
+	case "upnp":
+		err := handleUpnp(&upnpClient, methodname, params) // Handle upnp
 
-			if err != nil { // Check for errors
-				fmt.Println("\n" + err.Error()) // Log found error
-			}
-		case "environment":
-			err := handleEnvironment(&environmentClient, methodname, params) // Handle environment
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
+	case "database":
+		err := handleDatabase(&databaseClient, methodname, params) // Handle database
 
-			if err != nil { // Check for errors
-				fmt.Println("\n" + err.Error()) // Log found error
-			}
-		case "upnp":
-			err := handleUpnp(&upnpClient, methodname, params) // Handle upnp
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
+	case "common":
+		err := handleCommon(&commonClient, methodname, params) // Handle common
 
-			if err != nil { // Check for errors
-				fmt.Println("\n" + err.Error()) // Log found error
-			}
-		case "database":
-			err := handleDatabase(&databaseClient, methodname, params) // Handle database
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
+	case "shard":
+		err := handleShard(&shardClient, methodname, params) // Handle shard
 
-			if err != nil { // Check for errors
-				fmt.Println("\n" + err.Error()) // Log found error
-			}
-		case "common":
-			err := handleCommon(&commonClient, methodname, params) // Handle common
-
-			if err != nil { // Check for errors
-				fmt.Println("\n" + err.Error()) // Log found error
-			}
-		case "shard":
-			err := handleShard(&shardClient, methodname, params) // Handle shard
-
-			if err != nil { // Check for errors
-				fmt.Println("\n" + err.Error()) // Log found error
-			}
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
 		}
 	}
 }
@@ -378,13 +386,13 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{Inputs: params})) // Append params
 	case "Sha3":
 		if len(params) != 1 { // Check for invalid parameters
-			return errors.New("invalid parameters (requires string)")
+			return errors.New("invalid parameters (requires string)") // Return error
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{ByteInput: []byte(params[0])})) // Append params
 	case "SendBytes":
 		if len(params) != 2 { // Check for invalid parameters
-			return errors.New("invalid parameters (requires []byte, string)")
+			return errors.New("invalid parameters (requires []byte, string)") // Return error
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{ByteInput: []byte(params[0]), Input: params[1]})) // Append params
@@ -413,22 +421,48 @@ func handleShard(shardClient *shardProto.Shard, methodname string, params []stri
 	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
 
 	switch methodname {
-	case "NewShard", "QueryForAddress", "LogShard":
+	case "NewShard", "LogShard":
+		if len(params) != 2 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires string, string)") // Return error
+		}
+
 		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Address: params[1]})) // Append params
 	case "NewShardWithNodes":
+		if len(params) < 2 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires string, []string)") // Return error
+		}
+
 		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Addresses: params[1:len(params)]})) // Append params
 	case "Shard":
+		if len(params) != 3 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires string, string, uint32)") // Return error
+		}
+
 		exponent, _ := strconv.Atoi(params[2]) // Fetch int val
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Address: params[0], Exponent: uint32(exponent)})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Address: params[1], Exponent: uint32(exponent)})) // Append params
 	case "CalculateQuadraticExponent":
+		if len(params) != 1 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires uint32)") // Return error
+		}
+
 		exponent, _ := strconv.Atoi(params[0]) // Fetch int val
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{Exponent: uint32(exponent)})) // Append params
 	case "SendBytesShardResult", "SendBytesShard":
+		if len(params) < 3 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires string, uint32, []byte)") // Return error
+		}
+
 		port, _ := strconv.Atoi(params[1]) // Fetch int val
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{Address: params[0], Port: uint32(port), Bytes: []byte(strings.Join(params[2:len(params)], " "))})) // Append params
+	case "QueryForAddress":
+		if len(params) < 3 { // Check for invalid parameters length
+			return errors.New("invalid parameters (require string, string, string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Addresses: params[1:len(params)]})) // Append params
 	default:
 		return errors.New("illegal method: " + methodname + ", available methods: NewShard(), NewShardWithNodes(), Shard(), QueryForAddress(), LogShard(), CalculateQuadraticExponent(), SendBytesShardResult(), SendBytesShard()") // Return error
 	}
@@ -508,12 +542,19 @@ func hasVariableSet(command string) bool {
 	return false
 }
 
-func handle(input string) {
+func handleStringOnly(input string) error {
 	if input == "despacito" || input == "ree" {
 		for x := 0; x != 10000; x++ {
-			color.Red("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
-			color.Green("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
-			color.Blue("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")
+			color.Red("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")       // Log string
+			color.Yellow("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")    // Log string
+			color.HiMagenta("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree") // Log string
+			color.Green("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")     // Log string
+			color.Cyan("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")      // Log string
+			color.Blue("Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree Ree")      // Log string
 		}
+
+		return nil // No error occurred, return nil
 	}
+
+	return errors.New("not string call")
 }

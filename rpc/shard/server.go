@@ -60,6 +60,18 @@ func (server *Server) NewShard(ctx context.Context, req *shardProto.GeneralReque
 		return &shardProto.GeneralResponse{}, err // Return found error
 	}
 
+	err = db.WriteToMemory(node.Environment) // Write to memory
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = node.WriteToMemory(currentDir) // Write env to memory
+
+	if err != nil { // Check for errors
+		return &shardProto.GeneralResponse{}, err // Return found error
+	}
+
 	return &shardProto.GeneralResponse{Message: fmt.Sprintf("\n%s", string(marshaledVal))}, nil // Return response
 }
 
@@ -175,7 +187,7 @@ func (server *Server) QueryForAddress(ctx context.Context, req *shardProto.Gener
 		return &shardProto.GeneralResponse{}, err // Return found error
 	}
 
-	shardIndex, err := db.QueryForShardAddress(req.Address) // Query shard by address
+	shardIndex, err := db.QueryForShardAddress(req.Addresses[0]) // Query shard by address
 
 	if err != nil { // Check for errors
 		return &shardProto.GeneralResponse{}, err // Return found error
@@ -183,7 +195,7 @@ func (server *Server) QueryForAddress(ctx context.Context, req *shardProto.Gener
 
 	shard := (*db.Shards)[shardIndex] // Fetch shard by index
 
-	nodeIndex, err := shard.QueryForAddress(req.Address) // Fetch node index
+	nodeIndex, err := shard.QueryForAddress(req.Addresses[1]) // Fetch node index
 
 	if err != nil { // Check for errors
 		return &shardProto.GeneralResponse{}, err // Return found error

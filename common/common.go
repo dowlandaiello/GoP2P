@@ -5,6 +5,7 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/hex"
@@ -41,11 +42,30 @@ const (
 var (
 	// ExtIPProviders - preset macro defining list of available external IP checking services
 	ExtIPProviders = []string{"http://checkip.amazonaws.com/", "http://icanhazip.com/", "http://www.trackip.net/ip", "http://bot.whatismyipaddress.com/", "https://ipecho.net/plain", "http://myexternalip.com/raw"}
+
+	// GeneralTLSConfig - general global GoP2P TLS Config
+	GeneralTLSConfig = &tls.Config{ // Init TLS config
+		Certificates:       []tls.Certificate{getTLSCerts("GoP2PGeneral")},
+		InsecureSkipVerify: true,
+		ServerName:         "localhost"}
 )
 
 /*
 	BEGIN EXPORTED METHODS:
 */
+
+// DelaySeconds - wait until duration passed, return true once duration completed
+func DelaySeconds(seconds uint) bool {
+	startTime := time.Now() // Get current time
+
+	for {
+		if time.Now().Sub(startTime) >= time.Duration(seconds)*time.Second { // Check passed duration
+			break // Break
+		}
+	}
+
+	return true // Reached end
+}
 
 // GetCommonByteDifference - attempt to fetch most similar byte array in array of byte arrays
 func GetCommonByteDifference(b [][]byte) ([]byte, error) {
@@ -248,7 +268,7 @@ func GetExtIPAddrWithoutUPnP() (string, error) {
 
 	close(finished) // Close channel
 
-	return getNonNilInStringSlice(addresses), nil // Return valid address
+	return getNonNilInStringSlice(addresses) // Return valid address
 }
 
 // GetCurrentTime - get current time in the UTC format
@@ -279,11 +299,11 @@ func Sha3(b []byte) string {
 func SafeSlice(b []byte) string {
 	strVal := string(b) // Convert to string
 
-	if len(strVal) < 20 { // Check for large string
+	if len(strVal) < 30 { // Check for large string
 		return strVal // Safe, return string
 	}
 
-	return strVal[0:20] // Unsafe, return sliced
+	return strVal[0:30] // Unsafe, return sliced
 }
 
 // StringInSlice - check if value is in slice
@@ -317,6 +337,59 @@ func GenerateTLSCertificates(namePrefix string) error {
 	}
 
 	return nil // No error occurred, return nil
+}
+
+/*
+	END EXPORTED METHODS
+*/
+
+/*
+	BEGIN INTERNAL METHODS:
+*/
+
+func getIPFromProvider(provider string) (string, error) {
+	resp, err := http.Get(provider) // Attempt to check IP via provider
+
+	if err != nil { // Check for errors
+		return "", err // Return error
+	}
+
+	defer resp.Body.Close() // Close connection
+
+	ip, err := ioutil.ReadAll(resp.Body) // Read address
+
+	if err != nil { // Check for errors
+		return "", err // Return error
+	}
+
+	stringVal := string(ip[:]) // Fetch string value
+
+	return strings.TrimSpace(stringVal), nil // Return ip
+}
+
+func getIPFromProviderAsync(provider string, buffer *[]string, finished chan bool) {
+	if len(*buffer) == 0 { // Check IP not already determined
+		resp, err := http.Get(provider) // Attempt to check IP via provider
+
+		if err != nil { // Check for errors
+			if len(*buffer) == 0 { // Double check IP not already determined
+				*buffer = append(*buffer, "") // Set IP
+				finished <- true              // Set finished
+			}
+		} else {
+			defer resp.Body.Close() // Close connection
+
+			ip, _ := ioutil.ReadAll(resp.Body) // Read address
+
+			stringVal := string(ip[:]) // Fetch string value
+
+			if len(*buffer) == 0 { // Double check IP not already determined
+				*buffer = append(*buffer, strings.TrimSpace(stringVal)) // Set ip
+
+				finished <- true // Set finished
+			}
+		}
+	}
 }
 
 // generateTLSKey - generates necessary TLS key
@@ -387,54 +460,17 @@ func generateTLSCert(privateKey *ecdsa.PrivateKey, namePrefix string) error {
 	return nil // No error occurred, return nil
 }
 
-/*
-	END EXPORTED METHODS
-*/
+// getTLSCert - attempt to read TLS cert from current dir
+func getTLSCerts(certPrefix string) tls.Certificate {
+	GenerateTLSCertificates(certPrefix) // Generate certs
 
-/*
-	BEGIN INTERNAL METHODS:
-*/
-
-func getIPFromProvider(provider string) (string, error) {
-	resp, err := http.Get(provider) // Attempt to check IP via provider
+	cert, err := tls.LoadX509KeyPair(fmt.Sprintf("%sCert.pem", certPrefix), fmt.Sprintf("%sKey.pem", certPrefix)) // Load key pair
 
 	if err != nil { // Check for errors
-		return "", err // Return error
+		panic(err) // Panic
 	}
 
-	defer resp.Body.Close() // Close connection
-
-	ip, err := ioutil.ReadAll(resp.Body) // Read address
-
-	if err != nil { // Check for errors
-		return "", err // Return error
-	}
-
-	stringVal := string(ip[:]) // Fetch string value
-
-	return strings.TrimSpace(stringVal), nil // Return ip
-}
-
-func getIPFromProviderAsync(provider string, buffer *[]string, finished chan bool) {
-	if len(*buffer) == 0 { // Check IP not already determined
-		resp, err := http.Get(provider) // Attempt to check IP via provider
-
-		if err != nil { // Check for errors
-			fmt.Println(err.Error()) // Log error
-		} else {
-			defer resp.Body.Close() // Close connection
-
-			ip, _ := ioutil.ReadAll(resp.Body) // Read address
-
-			stringVal := string(ip[:]) // Fetch string value
-
-			if len(*buffer) == 0 { // Double check IP not already determined
-				*buffer = append(*buffer, strings.TrimSpace(stringVal)) // Set ip
-
-				finished <- true // Set finished
-			}
-		}
-	}
+	return cert // Return read certificates
 }
 
 func publicKey(privateKey interface{}) interface{} {
@@ -448,14 +484,14 @@ func publicKey(privateKey interface{}) interface{} {
 	}
 }
 
-func getNonNilInStringSlice(slice []string) string {
+func getNonNilInStringSlice(slice []string) (string, error) {
 	for _, entry := range slice { // Iterate through entries
 		if entry != "" { // Check for non-nil entry
-			return entry // Return valid entry
+			return entry, nil // Return valid entry
 		}
 	}
 
-	return "" // Couldn't find valid address, return nil
+	return "", fmt.Errorf("couldn't find non-nil element in slice %v", slice) // Couldn't find valid address, return error
 }
 
 /*
