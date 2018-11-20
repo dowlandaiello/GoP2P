@@ -1,6 +1,6 @@
 # GoP2P
 
-A simple, streamlined, shard-based P2P networking stack built in Go.
+A streamlined shard-based P2P networking stack built in Go.
 
 [![Author](https://img.shields.io/badge/made%20by-Mitsuko%20Megumi-purple.svg?style=flat-round)](https://github.com/mitsukomegumi)
 [![Project](https://img.shields.io/badge/project-GoP2P-blue.svg?style=flat-round)](https://github.com/mitsukomegumi/gop2p)
