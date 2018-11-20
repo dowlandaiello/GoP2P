@@ -127,4 +127,5 @@ func startNode() {
 
 /* TODO:
 - Fix readme (or lack thereof)
+- Connection protocol buffer message support
 */
