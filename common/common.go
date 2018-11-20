@@ -37,6 +37,9 @@ const (
 
 	// ConnectionDelimiter - GoP2P standard connection delimiter
 	ConnectionDelimiter = byte('\f')
+
+	// ProtobufPrefix - GoP2P standard protobuf message prefix
+	ProtobufPrefix = "[isProtobuf: true]"
 )
 
 var (
@@ -425,7 +428,7 @@ func generateTLSCert(privateKey *ecdsa.PrivateKey, namePrefix string) error {
 
 	serialNumberLimit := new(big.Int).Lsh(big.NewInt(1), 128)     // Init limit
 	serialNumber, err := rand.Int(rand.Reader, serialNumberLimit) // Init serial number
-	
+
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
