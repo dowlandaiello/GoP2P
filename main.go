@@ -59,7 +59,7 @@ func main() {
 
 	if *terminalFlag { // Check for terminal
 		*rpcAddrFlag = strings.Split(*rpcAddrFlag, ":")[0] // Remove port
-
+    
 		cli.NewTerminal(uint(*rpcPortFlag), *rpcAddrFlag) // Initialize terminal
 	}
 

@@ -425,6 +425,10 @@ func generateTLSCert(privateKey *ecdsa.PrivateKey, namePrefix string) error {
 
 	serialNumberLimit := new(big.Int).Lsh(big.NewInt(1), 128)     // Init limit
 	serialNumber, err := rand.Int(rand.Reader, serialNumberLimit) // Init serial number
+	
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
 
 	template := x509.Certificate{ // Init template
 		SerialNumber: serialNumber, // Generate w/serial number
