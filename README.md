@@ -10,3 +10,7 @@ A streamlined shard-based P2P networking stack built in Go.
 [![CircleCI](https://circleci.com/gh/mitsukomegumi/GoP2P.svg?style=svg)](https://circleci.com/gh/mitsukomegumi/GoP2P)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mitsukomegumi/gop2p)](https://goreportcard.com/report/github.com/mitsukomegumi/gop2p)
 [![codecov](https://codecov.io/gh/mitsukomegumi/GoP2P/branch/master/graph/badge.svg)](https://codecov.io/gh/mitsukomegumi/GoP2P)
+
+## Dependencies
+
+All critical dependencies have been included in .vendor/. As of now, protoc (compile .proto files) is the only GoP2P dependency not shipped in .vendor or .vendor-new. Fortunately, protoc is only necessary for the proper use of GoP2P in the case that .proto.go files need to be compiled on runtime. In production environments where users cannot be prompted to install protoc, it is recommended that the necessary .proto.go files are compiled and provided by the developers of software using GoP2P before runtime.

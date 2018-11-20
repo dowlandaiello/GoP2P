@@ -4,6 +4,8 @@
         "Vals",
         "codecov",
         "pepe",
+        "proto",
+        "protoc",
         "tatsushid"
     ]
 }
