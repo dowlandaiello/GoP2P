@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/mitsukomegumi/GoP2P/common"
-	databaseProto "github.com/mitsukomegumi/GoP2P/rpc/proto/database"
+	databaseProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/database"
 	"github.com/mitsukomegumi/GoP2P/types/database"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"

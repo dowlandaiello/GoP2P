@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/mitsukomegumi/GoP2P/common"
-	handlerProto "github.com/mitsukomegumi/GoP2P/rpc/proto/handler"
+	handlerProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/handler"
 	"github.com/mitsukomegumi/GoP2P/types/handler"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )

@@ -17,7 +17,7 @@ func TestWriteToMemory(t *testing.T) {
 	}
 
 	if err == nil {
-		db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10, "test") // Create new database with bootstrap node, and acceptable timeout
+		db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestnetID, 10, "test") // Create new database with bootstrap node, and acceptable timeout
 
 		if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
 			t.Errorf(err.Error()) // Fail with errors
@@ -47,7 +47,7 @@ func TestReadFromMemory(t *testing.T) {
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	} else {
-		db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestNetID, 10, "test") // Create new database with bootstrap node, and acceptable timeout
+		db, err := NewDatabase(node, "GoP2P_TestNet", common.GoP2PTestnetID, 10, "test") // Create new database with bootstrap node, and acceptable timeout
 
 		if err != nil && !strings.Contains(err.Error(), "socket") { // Check for errors
 			t.Errorf(err.Error()) // Fail with errors

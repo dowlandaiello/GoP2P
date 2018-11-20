@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/mitsukomegumi/GoP2P/common"
-	shardProto "github.com/mitsukomegumi/GoP2P/rpc/proto/shard"
+	shardProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/shard"
 	"github.com/mitsukomegumi/GoP2P/types/database"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"

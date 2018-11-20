@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/mitsukomegumi/GoP2P/common"
-	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
+	nodeProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/node"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 	"github.com/mitsukomegumi/GoP2P/upnp"
 )

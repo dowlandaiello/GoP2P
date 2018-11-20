@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 
 	"github.com/mitsukomegumi/GoP2P/common"
-	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
+	environmentProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/environment"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
