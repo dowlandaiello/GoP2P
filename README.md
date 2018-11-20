@@ -6,7 +6,6 @@ A simple, streamlined, shard-based P2P networking stack built in Go.
 [![Project](https://img.shields.io/badge/project-GoP2P-blue.svg?style=flat-round)](https://github.com/mitsukomegumi/gop2p)
 [![GoDoc](https://godoc.org/github.com/mitsukomegumi/gop2p?status.svg)](https://godoc.org/github.com/mitsukomegumi/gop2p)
 [![Author](https://godoc.org/github.com/mitsukomegumi/gop2p?status.svg)](https://godoc.org/github.com/mitsukomegumi/gop2p)
-[![Powered By](https://img.shields.io/badge/Powered%20By-Twirp-Purple.svg)](https://shields.io/)
 [![Build Status](https://travis-ci.com/mitsukomegumi/GoP2P.svg?branch=master)](https://travis-ci.com/mitsukomegumi/GoP2P)
 [![CircleCI](https://circleci.com/gh/mitsukomegumi/GoP2P.svg?style=svg)](https://circleci.com/gh/mitsukomegumi/GoP2P)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mitsukomegumi/gop2p)](https://goreportcard.com/report/github.com/mitsukomegumi/gop2p)
