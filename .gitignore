@@ -2,7 +2,7 @@
 *.gob
 test.json
 testSubsharding.json
-test.goP2PGuide
+test.proto.goP2PGuide
 
 # VSCode preferences
 .vscode/
