@@ -128,4 +128,5 @@ func startNode() {
 /* TODO:
 - Fix readme (or lack thereof)
 - Connection protocol buffer message support
+- Remove all instances of currentDir+filename for simply filename
 */
