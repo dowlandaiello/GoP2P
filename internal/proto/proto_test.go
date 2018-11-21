@@ -35,7 +35,26 @@ func TestNewProtobufMessage(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	marshaledVal, err := json.Marshal(*protoMessage) // Marshal message
+	marshaledVal, err := json.MarshalIndent(*protoMessage, "", "  ") // Marshal message
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf(string(marshaledVal)) // Log success
+}
+
+// TestNewProtobufGuide - test functionality of protobufGuide initializer
+func TestNewProtobufGuide(t *testing.T) {
+	protoGuide, err := NewProtobufGuide("test.proto", "test") // Init guide
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	marshaledVal, err := json.MarshalIndent(*protoGuide, "", "  ") // Marshal guide
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
