@@ -138,6 +138,13 @@ func (shard *Shard) LogShard() error {
 	return nil // No error occurred, return nil
 }
 
+// String - convert shard to string
+func (shard *Shard) String() string {
+	marshaledVal, _ := json.MarshalIndent(*shard, "", "  ") // Marshal shard
+
+	return string(marshaledVal) // No error occurred, return nil
+}
+
 // CalculateQuadraticExponent - returns exponential value of exponent to exponent exponent times
 func CalculateQuadraticExponent(exponent float64) float64 {
 	val := float64(exponent) // Init buffer

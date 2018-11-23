@@ -63,3 +63,7 @@ func TestNewProtobufGuide(t *testing.T) {
 
 	t.Logf(string(marshaledVal)) // Log success
 }
+
+/* BEGIN INTERNAL METHODS */
+
+/* END INTERNAL METHODS */
