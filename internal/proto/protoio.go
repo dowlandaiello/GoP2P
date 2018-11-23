@@ -10,6 +10,11 @@ import (
 
 /* BEGIN EXPORTED METHODS */
 
+// ToBytes - common.SerializeToBytes() protobufMessage wrapper
+func (protoMessage *ProtobufMessage) ToBytes() ([]byte, error) {
+	return common.SerializeToBytes(*protoMessage) // Serialize
+}
+
 // ReadGuideFromMemory - read protobufGuide from memory
 func ReadGuideFromMemory(path string) (*ProtobufGuide, error) {
 	protoGuide := &ProtobufGuide{} // Init guide buffer
