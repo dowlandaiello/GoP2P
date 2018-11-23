@@ -51,7 +51,7 @@ func TestStartProtobufHandler(t *testing.T) {
 		t.Logf(err.Error()) // Log found error
 	}
 
-	ln, err := node.StartListener(3000) // Start listener
+	ln, err := node.StartListener(3001) // Start listener
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
