@@ -45,6 +45,51 @@ func TestToBytes(t *testing.T) {
 	t.Logf(string(data)) // Log success
 }
 
+// TestFromBytes - test functionality of FromBytes() method
+func TestFromBytes(t *testing.T) {
+	_, err := NewProtobufGuide("test.proto", "test", testHandler) // Init guide
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	test := &Test{ // Init test struct
+		Test:  "test",
+		Test2: "test2",
+	}
+
+	data, err := proto.Marshal(test) // Marshal
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	protoMessage, err := NewProtobufMessage("test.proto", data) // Init message
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	data, err = protoMessage.ToBytes() // Marshal to bytes
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	message, err := FromBytes(data) // Decode message
+
+	if err != nil { // Check for errors
+		t.Errorf(err.Error()) // Log found error
+		t.FailNow()           // Panic
+	}
+
+	t.Logf(message.String()) // Log success
+}
+
 // TestReadGuideFromMemory - test functionality of ReadGuideFromMemory() method
 func TestReadGuideFromMemory(t *testing.T) {
 	protoGuide, err := NewProtobufGuide("test.proto", "test", testHandler) // Init guide

@@ -30,6 +30,13 @@ func FromBytes(b []byte) (*ProtobufMessage, error) {
 	return &object, nil // No error occurred, return read value
 }
 
+// String - convert message to string
+func (protoMessage *ProtobufMessage) String() string {
+	marshaledVal, _ := json.MarshalIndent(*protoMessage, "", "  ") // Marshal message
+
+	return string(marshaledVal) // Return result
+}
+
 // ReadGuideFromMemory - read protobufGuide from memory
 func ReadGuideFromMemory(path string) (*ProtobufGuide, error) {
 	protoGuide := &ProtobufGuide{} // Init guide buffer
