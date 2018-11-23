@@ -68,13 +68,7 @@ func NewProtobufGuide(protofilePath string, protoID string) (*ProtobufGuide, err
 
 // register - write protobufGuide to memory for later use, generate necessary go support files
 func (protoGuide *ProtobufGuide) register(protofilePath string, protoID string) error {
-	err := protoGuide.WriteToMemory(fmt.Sprintf("%s.goP2PGuide", protofilePath)) // Write to memory at given path
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	err = generateProto(protofilePath) // Generate proto
+	err := generateProto(protofilePath) // Generate proto
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -89,6 +83,12 @@ func (protoGuide *ProtobufGuide) register(protofilePath string, protoID string) 
 	}
 
 	(*protoGuide).GoGuide = readSupportfile // Set support file
+
+	err = protoGuide.WriteToMemory(fmt.Sprintf("%s.goP2PGuide", protofilePath)) // Write to memory at given path
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
 
 	return nil // No error occurred, return nil
 }
