@@ -1,7 +1,9 @@
 package proto
 
 import (
+	"bytes"
 	"encoding/gob"
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -13,6 +15,19 @@ import (
 // ToBytes - common.SerializeToBytes() protobufMessage wrapper
 func (protoMessage *ProtobufMessage) ToBytes() ([]byte, error) {
 	return common.SerializeToBytes(*protoMessage) // Serialize
+}
+
+// FromBytes - attempt to decode byte array to protobufMessage
+func FromBytes(b []byte) (*ProtobufMessage, error) {
+	object := ProtobufMessage{} // Create empty instance
+
+	err := json.NewDecoder(bytes.NewReader(b)).Decode(&object) // Attempt to read
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return &object, nil // No error occurred, return read value
 }
 
 // ReadGuideFromMemory - read protobufGuide from memory

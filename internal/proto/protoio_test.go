@@ -9,7 +9,7 @@ import (
 
 // TestToBytes - test functionality of ToBytes() method
 func TestToBytes(t *testing.T) {
-	_, err := NewProtobufGuide("test.proto", "test") // Init guide
+	_, err := NewProtobufGuide("test.proto", "test", testHandler) // Init guide
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -47,7 +47,7 @@ func TestToBytes(t *testing.T) {
 
 // TestReadGuideFromMemory - test functionality of ReadGuideFromMemory() method
 func TestReadGuideFromMemory(t *testing.T) {
-	protoGuide, err := NewProtobufGuide("test.proto", "test") // Init guide
+	protoGuide, err := NewProtobufGuide("test.proto", "test", testHandler) // Init guide
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -80,7 +80,7 @@ func TestReadGuideFromMemory(t *testing.T) {
 
 // TestWriteGuideToMemory - test functionality of WriteGuideToMemory() function
 func TestWriteGuideToMemory(t *testing.T) {
-	protoGuide, err := NewProtobufGuide("test.proto", "test") // Init guide
+	protoGuide, err := NewProtobufGuide("test.proto", "test", testHandler) // Init guide
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error

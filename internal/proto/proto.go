@@ -20,6 +20,8 @@ type ProtobufGuide struct {
 
 	ProtoGuide []byte // ProtoGuide - serialized proto file, used for reading of protobuf message
 	GoGuide    []byte // GoGuide - serialized golang support file, used for reading of protobuf message
+
+	Handler func(message []byte) error // Handler - handler to run on received protobufMessage
 }
 
 /* BEGIN EXPORTED METHODS */
@@ -41,7 +43,7 @@ func NewProtobufMessage(guidePath string, data []byte) (*ProtobufMessage, error)
 }
 
 // NewProtobufGuide - initialize and register protobuf message guide
-func NewProtobufGuide(protofilePath string, protoID string) (*ProtobufGuide, error) {
+func NewProtobufGuide(protofilePath string, protoID string, handler func(message []byte) error) (*ProtobufGuide, error) {
 	readProtofile, err := ioutil.ReadFile(protofilePath) // Read protofile
 
 	if err != nil { // Check for errors
