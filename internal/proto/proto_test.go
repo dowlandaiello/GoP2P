@@ -9,7 +9,7 @@ import (
 
 // TestNewProtobufMessage - test functionality of NewProtobufMessage() method
 func TestNewProtobufMessage(t *testing.T) {
-	_, err := NewProtobufGuide("test.proto", "test", testHandler) // Init guide
+	_, err := NewProtobufGuide("test.proto", "test") // Init guide
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -47,7 +47,7 @@ func TestNewProtobufMessage(t *testing.T) {
 
 // TestNewProtobufGuide - test functionality of protobufGuide initializer
 func TestNewProtobufGuide(t *testing.T) {
-	protoGuide, err := NewProtobufGuide("test.proto", "test", testHandler) // Init guide
+	protoGuide, err := NewProtobufGuide("test.proto", "test") // Init guide
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -65,9 +65,5 @@ func TestNewProtobufGuide(t *testing.T) {
 }
 
 /* BEGIN INTERNAL METHODS */
-
-func testHandler(message []byte) error {
-	return nil // No error occurred, return nil
-}
 
 /* END INTERNAL METHODS */

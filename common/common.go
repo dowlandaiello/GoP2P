@@ -39,7 +39,7 @@ const (
 	ConnectionDelimiter = byte('\f')
 
 	// ProtobufPrefix - GoP2P standard protobuf message prefix
-	ProtobufPrefix = "[isProtobuf: true]"
+	ProtobufPrefix = "ProtoID"
 )
 
 var (

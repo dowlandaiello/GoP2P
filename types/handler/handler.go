@@ -34,6 +34,21 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 	}
 }
 
+// StartProtobufHandler - attempt to accept and handle protobuf message requests
+func StartProtobufHandler(handler func(message []byte) error, protoID string, ln *net.Listener) error {
+	if protoID == "" || reflect.ValueOf(ln).IsNil() || reflect.ValueOf(handler).IsNil() { // Check for nil parameters
+		return errors.New("invalid parameters") // Return error
+	}
+
+	for {
+		conn, err := (*ln).Accept() // Accept connection
+
+		if err == nil { // Check for errors
+			go handleProtobufConnection(conn, handler, protoID)
+		}
+	}
+}
+
 /* END EXPORTED METHODS */
 
 /* BEGIN INTERNAL METHODS */
@@ -49,7 +64,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 	if strings.Contains(string(data), "messagetype") { // Check for network message
 		return handleLogNetworkMessage(data) // Handle network message
 	} else if strings.Contains(string(data), common.ProtobufPrefix) { // Check for protobuf message
-		return handleProtobufMessage(data) // Handle protobuf message
+		return nil // Handled in protobuf server
 	}
 
 	if len(data) < 100 { // Check for safe length
@@ -180,21 +195,25 @@ func handleLogNetworkMessage(b []byte) error {
 	return nil // No error occurred, return nil
 }
 
-// handleProtobufMessage - handle received protobuf message
-func handleProtobufMessage(b []byte) error {
-	protoMessage, err := proto.FromBytes(b) // Decode message from bytes
+// handleProtobufConnection - handle received protobuf message
+func handleProtobufConnection(conn net.Conn, handler func(message []byte) error, protoID string) error {
+	data, err := common.ReadConnectionWaitAsyncNoTLS(conn) // Read entire connection
 
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
 
-	err = protoMessage.Guide.Handler(protoMessage.Message) // Run handler
+	protoMessage, err := proto.FromBytes(data) // Decode message from bytes
 
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
 
-	return nil // No error occurred, return nil
+	if protoMessage.Guide.ProtoID == protoID { // Check for match
+		return handler(data) // Run handler
+	}
+
+	return errors.New("couldn't find matching protoID") // Couldn't find matching protoID
 }
 
 // handleNetworkMessage - handle received network message
