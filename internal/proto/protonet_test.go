@@ -34,7 +34,7 @@ func TestSendToAddress(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	err = protoMessage.SendToAddress("127.0.0.1:443") // Send message
+	err = protoMessage.SendToAddress("1.1.1.1:443") // Send message
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -70,7 +70,7 @@ func TestSendToAddressResult(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	result, err := protoMessage.SendToAddressResult("127.0.0.1:443") // Send message
+	result, err := protoMessage.SendToAddressResult("1.1.1.1:443") // Send message
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -108,7 +108,7 @@ func TestSendToShard(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	err = protoMessage.SendToShard("127.0.0.1::127.0.0.1", 443) // Send message
+	err = protoMessage.SendToShard("1.1.1.1::1.1.1.1", 443) // Send message
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -144,7 +144,7 @@ func TestSendToShardResult(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	result, err := protoMessage.SendToShardResult("127.0.0.1::127.0.0.1", 443) // Send message
+	result, err := protoMessage.SendToShardResult("1.1.1.1::1.1.1.1", 443) // Send message
 
 	if err != nil { // Check for errors
 		t.Errorf(err.Error()) // Log found error
