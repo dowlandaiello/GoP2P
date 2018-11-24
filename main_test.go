@@ -17,7 +17,7 @@ func TestMain(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	node, err := node.NewNode("1.1.1.1", false) // Init node
+	node, err := node.NewNode("127.0.0.1", false) // Init node
 
 	if err != nil && !strings.Contains(err.Error(), "not permitted") { // Check for errors
 		t.Errorf(err.Error()) // Log found error
@@ -50,7 +50,7 @@ func TestStartNode(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	node, err := node.NewNode("1.1.1.1", false) // Init node
+	node, err := node.NewNode("127.0.0.1", false) // Init node
 
 	if err != nil && !strings.Contains(err.Error(), "not permitted") { // Check for errors
 		t.Errorf(err.Error()) // Log found error

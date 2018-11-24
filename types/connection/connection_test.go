@@ -111,7 +111,7 @@ func generateConnectionWithCommand() (*Connection, error) {
 func generateEvents() *[]Event {
 	events := []Event{} // Initialize container array
 
-	node, _ := node.NewNode("1.1.1.1", true) // Attempt to create new node
+	node, _ := node.NewNode("127.0.0.1", true) // Attempt to create new node
 
 	resolutionValue := []byte("test")                                // Initialize resolution value
 	resolution, _ := NewResolution(resolutionValue, resolutionValue) // Create resolution
@@ -128,7 +128,7 @@ func generateEvents() *[]Event {
 func generateEventsWithCommand() *[]Event {
 	events := []Event{} // Initialize container array
 
-	node, _ := node.NewNode("1.1.1.1", true) // Attempt to create new node
+	node, _ := node.NewNode("127.0.0.1", true) // Attempt to create new node
 
 	modifierValue := "test"                                                                               // Set value for command
 	command, _ := command.NewCommand("NewVariable", command.NewModifierSet("string", modifierValue, nil)) // Attempt to initialize new command
