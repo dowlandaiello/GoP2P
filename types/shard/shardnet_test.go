@@ -76,6 +76,8 @@ func TestSendBytesShardResult(t *testing.T) {
 		}
 
 		t.Logf("result: %s", result) // Log result
+
+		// TODO: fix unit tests
 	}
 }
 
