@@ -130,4 +130,5 @@ func startNode() {
 - Connection protocol buffer message support
 - Remove all instances of currentDir+filename for simply filename
 - Add -v flag
+- Fix protonet unit tests
 */
