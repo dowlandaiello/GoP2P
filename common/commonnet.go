@@ -72,7 +72,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 }
 
 // SendBytesAsync - attempt to send specified bytes to given address in an asynchronous manner
-func SendBytesAsync(b []byte, address string, finished []bool) error {
+func SendBytesAsync(b []byte, address string, finished *[]bool) error {
 	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
 
 	if err != nil { // Check for errors
@@ -91,7 +91,7 @@ func SendBytesAsync(b []byte, address string, finished []bool) error {
 		return err // Return found error
 	}
 
-	finished = append(finished, true) // Append finished
+	*finished = append(*finished, true) // Append finished
 
 	if finished == nil { // Check for nil
 		return errors.New("nil buffer") // Return found error
@@ -126,7 +126,7 @@ func SendBytesAsyncRoutine(b []byte, address string, finished chan bool) error {
 }
 
 // SendBytesResultBufferAsync - attempt to send specified bytes to given address in an asynchronous fashion, reading the result into a given buffer
-func SendBytesResultBufferAsync(b []byte, buffer [][]byte, address string, finished chan []bool) error {
+func SendBytesResultBufferAsync(b []byte, buffer *[][]byte, address string) error {
 	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
 
 	if err != nil { // Check for errors
@@ -151,13 +151,11 @@ func SendBytesResultBufferAsync(b []byte, buffer [][]byte, address string, finis
 		return err // Return found error
 	}
 
-	buffer = append(buffer, result) // Append result
+	*buffer = append(*buffer, result) // Append result
 
 	if buffer == nil { // Check for nil buffer
 		return errors.New("nil buffer") // Return found error
 	}
-
-	finished <- append(<-finished, true) // Set finished
 
 	return nil // No error occurred, return nil
 }

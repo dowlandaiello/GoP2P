@@ -191,13 +191,9 @@ func TestCalculateQuadraticExponent(t *testing.T) {
 */
 
 func newNodeSafe() (*node.Node, error) {
-	ip, err := common.GetExtIPAddrWithoutUPnP() // Fetch IP address
+	ip := "1.1.1.1" // Cloudflare IP
 
-	if err != nil { // Check for errors
-		return &node.Node{}, err // Return found error
-	}
-
-	environment, _ := environment.NewEnvironment() // Create new environment
+	environment, err := environment.NewEnvironment() // Create new environment
 
 	if err != nil { // Check for errors
 		return &node.Node{}, err // Return found error

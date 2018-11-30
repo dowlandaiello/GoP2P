@@ -76,6 +76,10 @@ func GetCommonByteDifference(b [][]byte) ([]byte, error) {
 		return []byte{}, errors.New("nil input") // Return found error
 	}
 
+	if len(b) == 1 { // Check for single array
+		return b[0], nil // Return single result
+	}
+
 	differences := []int{} // Init diff buffer
 
 	lowest := 100    // Init lowest buffer
