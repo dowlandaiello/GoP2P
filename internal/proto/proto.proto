@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package proto;
+
+service Proto {
+    rpc NewProtobufMessage(GeneralRequest) returns (GeneralResponse) {} // Initialize protobuf message
+    rpc NewProtobufGuide(GeneralRequest) returns (GeneralResponse) {} // Initialize and register protobuf message guide
+    rpc ToBytes(GeneralRequest) returns (GeneralResponse) {} // Common.SerializeToBytes() protobufMessage wrapper
+    rpc FromBytes(GeneralRequest) returns (GeneralResponse) {} // Attempt to decode byte array to protobufMessage
+    rpc String(GeneralRequest) returns (GeneralResponse) {} // Convert message to string
+    rpc ReadGuideFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read protobufGuide from memory
+    rpc WriteToMemory(GeneralRequest) returns (GeneralResponse) {} // Read protobufGuide from memory
+    rpc SendToAddress(GeneralRequest) returns (GeneralResponse) {} // Common.SendBytes() wrapper
+    rpc SendToAddressResult(GeneralRequest) returns (GeneralResponse) {} // Common.SendBytesResult() wrapper
+    rpc SendToShard(GeneralRequest) returns (GeneralResponse) {} // Shard.SendBytesShard() wrapper
+    rpc SendToShardResult(GeneralRequest) returns (GeneralResponse) {} // Shard.SendBytesShardResult() wrapper
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+
+}
+
+/* END RESPONSES */
