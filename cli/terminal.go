@@ -19,6 +19,7 @@ import (
 	environmentProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/environment"
 	handlerProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/handler"
 	nodeProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/node"
+	protoProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/proto"
 	shardProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/shard"
 	upnpProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/upnp"
 )
@@ -76,6 +77,7 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 	databaseClient := databaseProto.NewDatabaseProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})          // Init database client
 	commonClient := commonProto.NewCommonProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                // Init common client
 	shardClient := shardProto.NewShardProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init shard client
+	protoClient := protoProto.NewProtoProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init proto client
 
 	switch receiver {
 	case "node":
@@ -116,6 +118,12 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 		}
 	case "shard":
 		err := handleShard(&shardClient, methodname, params) // Handle shard
+
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
+	case "proto":
+		err := handleProto(&protoClient, methodname, params) // Handle proto
 
 		if err != nil { // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
@@ -470,6 +478,41 @@ func handleShard(shardClient *shardProto.Shard, methodname string, params []stri
 	result := reflect.ValueOf(*shardClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 	response := result[0].Interface().(*shardProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		fmt.Println(result[1].Interface().(error).Error()) // Log error
+	} else {
+		fmt.Println(response.Message) // Log response
+	}
+
+	return nil // No error occurred, return nil
+}
+
+func handleProto(protoClient *protoProto.Proto, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "NewProtobufGuide":
+		if len(params) != 2 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires string, string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&protoProto.GeneralRequest{ProtoID: params[0], Path: params[1]})) // Append params
+	case "ReadGuideFromMemory", "WriteToMemory":
+		if len(params) != 1 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&protoProto.GeneralRequest{Path: params[0]})) // Append params
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: NewProtobufGuide(), ReadGuideFromMemory(), WriteToMemory()") // Return error
+	}
+
+	result := reflect.ValueOf(*protoClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*protoProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
 		fmt.Println(result[1].Interface().(error).Error()) // Log error
