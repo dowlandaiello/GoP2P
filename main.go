@@ -20,7 +20,7 @@ import (
 	environmentProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/environment"
 	handlerProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/handler"
 	nodeProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/node"
-	protoProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/proto"
+	protoProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/protobuf"
 	shardProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/shard"
 	upnpProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/upnp"
 	protoServer "github.com/mitsukomegumi/GoP2P/internal/rpc/protobuf"

@@ -7,7 +7,7 @@ import (
 
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/internal/proto"
-	protoProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/proto"
+	protoProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/protobuf"
 )
 
 // Server - GoP2P RPC Server

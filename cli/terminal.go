@@ -19,7 +19,7 @@ import (
 	environmentProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/environment"
 	handlerProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/handler"
 	nodeProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/node"
-	protoProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/proto"
+	protoProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/protobuf"
 	shardProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/shard"
 	upnpProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/upnp"
 )
@@ -162,10 +162,10 @@ func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) 
 	response := result[0].Interface().(*nodeProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -193,10 +193,10 @@ func handleHandler(handlerClient *handlerProto.Handler, methodname string, param
 	response := result[0].Interface().(*handlerProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -251,10 +251,10 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 	response := result[0].Interface().(*environmentProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -288,10 +288,10 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 	response := result[0].Interface().(*upnpProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -360,10 +360,10 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 	response := result[0].Interface().(*databaseProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -415,10 +415,10 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 	response := result[0].Interface().(*commonProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -480,10 +480,10 @@ func handleShard(shardClient *shardProto.Shard, methodname string, params []stri
 	response := result[0].Interface().(*shardProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -515,10 +515,10 @@ func handleProto(protoClient *protoProto.Proto, methodname string, params []stri
 	response := result[0].Interface().(*protoProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
