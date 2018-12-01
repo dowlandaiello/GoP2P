@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 
 	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/internal/proto"
@@ -27,7 +28,7 @@ func (server *Server) NewProtobufGuide(ctx context.Context, req *protoProto.Gene
 		return &protoProto.GeneralResponse{}, err // Return found error
 	}
 
-	err = guide.WriteToMemory(currentDir) // Write to memory at working directory
+	err = guide.WriteToMemory(currentDir + filepath.FromSlash(fmt.Sprintf("/%s.proto.goP2PGuide", req.ProtoID))) // Write to memory at working directory
 
 	if err != nil { // Check for errors
 		return &protoProto.GeneralResponse{}, err // Return found error
