@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package proto;
+package protobuf;
 
 service Proto {
     rpc NewProtobufGuide(GeneralRequest) returns (GeneralResponse) {} // Initialize and register protobuf message guide
