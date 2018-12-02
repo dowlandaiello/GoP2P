@@ -32,11 +32,14 @@ const (
 	// NodeAvailableRep - global definition for reputation value of node availability
 	NodeAvailableRep = 10
 
-	// GoP2PTestNetID - GoP2P testing network identifier
-	GoP2PTestNetID = 4519161392015
+	// GoP2PTestnetID - GoP2P testing network identifier
+	GoP2PTestnetID = 4519161392015
 
 	// ConnectionDelimiter - GoP2P standard connection delimiter
 	ConnectionDelimiter = byte('\f')
+
+	// ProtobufPrefix - GoP2P standard protobuf message prefix
+	ProtobufPrefix = "ProtoID"
 )
 
 var (
@@ -71,6 +74,10 @@ func DelaySeconds(seconds uint) bool {
 func GetCommonByteDifference(b [][]byte) ([]byte, error) {
 	if len(b) == 0 { // Check for nil input
 		return []byte{}, errors.New("nil input") // Return found error
+	}
+
+	if len(b) == 1 { // Check for single array
+		return b[0], nil // Return single result
 	}
 
 	differences := []int{} // Init diff buffer
@@ -425,7 +432,7 @@ func generateTLSCert(privateKey *ecdsa.PrivateKey, namePrefix string) error {
 
 	serialNumberLimit := new(big.Int).Lsh(big.NewInt(1), 128)     // Init limit
 	serialNumber, err := rand.Int(rand.Reader, serialNumberLimit) // Init serial number
-	
+
 	if err != nil { // Check for errors
 		return err // Return found error
 	}

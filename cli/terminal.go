@@ -14,13 +14,14 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/mitsukomegumi/GoP2P/common"
-	commonProto "github.com/mitsukomegumi/GoP2P/rpc/proto/common"
-	databaseProto "github.com/mitsukomegumi/GoP2P/rpc/proto/database"
-	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
-	handlerProto "github.com/mitsukomegumi/GoP2P/rpc/proto/handler"
-	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
-	shardProto "github.com/mitsukomegumi/GoP2P/rpc/proto/shard"
-	upnpProto "github.com/mitsukomegumi/GoP2P/rpc/proto/upnp"
+	commonProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/common"
+	databaseProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/database"
+	environmentProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/environment"
+	handlerProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/handler"
+	nodeProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/node"
+	protoProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/protobuf"
+	shardProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/shard"
+	upnpProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/upnp"
 )
 
 // Terminal - absctract container holding set of variable with values (runtime only)
@@ -76,6 +77,7 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 	databaseClient := databaseProto.NewDatabaseProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})          // Init database client
 	commonClient := commonProto.NewCommonProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                // Init common client
 	shardClient := shardProto.NewShardProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init shard client
+	protoClient := protoProto.NewProtoProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init proto client
 
 	switch receiver {
 	case "node":
@@ -120,6 +122,12 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 		if err != nil { // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
+	case "proto":
+		err := handleProto(&protoClient, methodname, params) // Handle proto
+
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
 	}
 }
 
@@ -154,10 +162,10 @@ func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) 
 	response := result[0].Interface().(*nodeProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -185,10 +193,10 @@ func handleHandler(handlerClient *handlerProto.Handler, methodname string, param
 	response := result[0].Interface().(*handlerProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -243,10 +251,10 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 	response := result[0].Interface().(*environmentProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -280,10 +288,10 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 	response := result[0].Interface().(*upnpProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -352,10 +360,10 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 	response := result[0].Interface().(*databaseProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -407,10 +415,10 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 	response := result[0].Interface().(*commonProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -432,7 +440,7 @@ func handleShard(shardClient *shardProto.Shard, methodname string, params []stri
 			return errors.New("invalid parameters (requires string, []string)") // Return error
 		}
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Addresses: params[1:len(params)]})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Addresses: params[1:]})) // Append params
 	case "Shard":
 		if len(params) != 3 { // Check for invalid parameters length
 			return errors.New("invalid parameters (requires string, string, uint32)") // Return error
@@ -456,13 +464,13 @@ func handleShard(shardClient *shardProto.Shard, methodname string, params []stri
 
 		port, _ := strconv.Atoi(params[1]) // Fetch int val
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{Address: params[0], Port: uint32(port), Bytes: []byte(strings.Join(params[2:len(params)], " "))})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{Address: params[0], Port: uint32(port), Bytes: []byte(strings.Join(params[2:], " "))})) // Append params
 	case "QueryForAddress":
 		if len(params) < 3 { // Check for invalid parameters length
 			return errors.New("invalid parameters (require string, string, string)") // Return error
 		}
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Addresses: params[1:len(params)]})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&shardProto.GeneralRequest{NetworkName: params[0], Addresses: params[1:]})) // Append params
 	default:
 		return errors.New("illegal method: " + methodname + ", available methods: NewShard(), NewShardWithNodes(), Shard(), QueryForAddress(), LogShard(), CalculateQuadraticExponent(), SendBytesShardResult(), SendBytesShard()") // Return error
 	}
@@ -472,10 +480,45 @@ func handleShard(shardClient *shardProto.Shard, methodname string, params []stri
 	response := result[0].Interface().(*shardProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		fmt.Println(result[1].Interface().(error).Error()) // Log error
-	} else {
-		fmt.Println(response.Message) // Log response
+		return result[1].Interface().(error) // Return error
 	}
+
+	fmt.Println(response.Message) // Log response
+
+	return nil // No error occurred, return nil
+}
+
+func handleProto(protoClient *protoProto.Proto, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "NewProtobufGuide":
+		if len(params) != 2 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires string, string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&protoProto.GeneralRequest{ProtoID: params[0], Path: params[1]})) // Append params
+	case "ReadGuideFromMemory", "WriteToMemory":
+		if len(params) != 1 { // Check for invalid parameters length
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&protoProto.GeneralRequest{Path: params[0]})) // Append params
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: NewProtobufGuide(), ReadGuideFromMemory(), WriteToMemory()") // Return error
+	}
+
+	result := reflect.ValueOf(*protoClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*protoProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		return result[1].Interface().(error) // Return error
+	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }

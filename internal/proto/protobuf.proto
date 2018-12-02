@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package protobuf;
+
+service Proto {
+    rpc NewProtobufGuide(GeneralRequest) returns (GeneralResponse) {} // Initialize and register protobuf message guide
+    rpc ReadGuideFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read protobufGuide from memory
+    rpc WriteToMemory(GeneralRequest) returns (GeneralResponse) {} // Read protobufGuide from memory
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    string path = 1;
+    string protoID = 2;
+    bytes data = 3;
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1;
+}
+
+/* END RESPONSES */

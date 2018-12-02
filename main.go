@@ -10,20 +10,22 @@ import (
 	"github.com/fatih/color"
 	"github.com/mitsukomegumi/GoP2P/cli"
 	"github.com/mitsukomegumi/GoP2P/common"
-	commonServer "github.com/mitsukomegumi/GoP2P/rpc/common"
-	"github.com/mitsukomegumi/GoP2P/rpc/database"
-	"github.com/mitsukomegumi/GoP2P/rpc/environment"
-	handlerServer "github.com/mitsukomegumi/GoP2P/rpc/handler"
-	nodeServer "github.com/mitsukomegumi/GoP2P/rpc/node"
-	commonProto "github.com/mitsukomegumi/GoP2P/rpc/proto/common"
-	databaseProto "github.com/mitsukomegumi/GoP2P/rpc/proto/database"
-	environmentProto "github.com/mitsukomegumi/GoP2P/rpc/proto/environment"
-	handlerProto "github.com/mitsukomegumi/GoP2P/rpc/proto/handler"
-	nodeProto "github.com/mitsukomegumi/GoP2P/rpc/proto/node"
-	shardProto "github.com/mitsukomegumi/GoP2P/rpc/proto/shard"
-	upnpProto "github.com/mitsukomegumi/GoP2P/rpc/proto/upnp"
-	shardServer "github.com/mitsukomegumi/GoP2P/rpc/shard"
-	upnpServer "github.com/mitsukomegumi/GoP2P/rpc/upnp"
+	commonServer "github.com/mitsukomegumi/GoP2P/internal/rpc/common"
+	"github.com/mitsukomegumi/GoP2P/internal/rpc/database"
+	"github.com/mitsukomegumi/GoP2P/internal/rpc/environment"
+	handlerServer "github.com/mitsukomegumi/GoP2P/internal/rpc/handler"
+	nodeServer "github.com/mitsukomegumi/GoP2P/internal/rpc/node"
+	commonProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/common"
+	databaseProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/database"
+	environmentProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/environment"
+	handlerProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/handler"
+	nodeProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/node"
+	protoProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/protobuf"
+	shardProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/shard"
+	upnpProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/upnp"
+	protoServer "github.com/mitsukomegumi/GoP2P/internal/rpc/protobuf"
+	shardServer "github.com/mitsukomegumi/GoP2P/internal/rpc/shard"
+	upnpServer "github.com/mitsukomegumi/GoP2P/internal/rpc/upnp"
 	"github.com/mitsukomegumi/GoP2P/types/handler"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 	"github.com/mitsukomegumi/GoP2P/upnp"
@@ -84,6 +86,7 @@ func startRPCServer() {
 	databaseHandler := databaseProto.NewDatabaseServer(&database.Server{}, nil)             // Init handler
 	commonHandler := commonProto.NewCommonServer(&commonServer.Server{}, nil)               // Init handler
 	shardHandler := shardProto.NewShardServer(&shardServer.Server{}, nil)                   // Init handler
+	protoHandler := protoProto.NewProtoServer(&protoServer.Server{}, nil)                   // Init handler
 
 	mux := http.NewServeMux() // Init mux
 
@@ -94,6 +97,7 @@ func startRPCServer() {
 	mux.Handle(databaseProto.DatabasePathPrefix, databaseHandler)          // Start mux database handler
 	mux.Handle(commonProto.CommonPathPrefix, commonHandler)                // Start mux common handler
 	mux.Handle(shardProto.ShardPathPrefix, shardHandler)                   // Start mux shard handler
+	mux.Handle(protoProto.ProtoPathPrefix, protoHandler)                   // Start mux proto handler
 
 	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "gop2pTermCert.pem", "gop2pTermKey.pem", mux) // Start server
 }
@@ -128,4 +132,7 @@ func startNode() {
 /* TODO:
 - Fix readme (or lack thereof)
 - Connection protocol buffer message support
+- Remove all instances of currentDir+filename for simply filename
+- Add -v flag (silence fmt.Println)
+- Fix protonet unit tests
 */

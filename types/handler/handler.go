@@ -10,11 +10,14 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/mitsukomegumi/GoP2P/internal/proto"
 	"github.com/mitsukomegumi/GoP2P/types/connection"
 	"github.com/mitsukomegumi/GoP2P/types/database"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
 )
+
+/* BEGIN EXPORTED METHODS */
 
 // StartHandler - attempt to accept and handle requests on given listener
 func StartHandler(node *node.Node, ln *net.Listener) error {
@@ -31,6 +34,25 @@ func StartHandler(node *node.Node, ln *net.Listener) error {
 	}
 }
 
+// StartProtobufHandler - attempt to accept and handle protobuf message requests
+func StartProtobufHandler(handler func(message []byte) error, protoID string, ln *net.Listener) error {
+	if protoID == "" || reflect.ValueOf(ln).IsNil() || reflect.ValueOf(handler).IsNil() { // Check for nil parameters
+		return errors.New("invalid parameters") // Return error
+	}
+
+	for {
+		conn, err := (*ln).Accept() // Accept connection
+
+		if err == nil { // Check for errors
+			go handleProtobufConnection(conn, handler, protoID)
+		}
+	}
+}
+
+/* END EXPORTED METHODS */
+
+/* BEGIN INTERNAL METHODS */
+
 // handleConnection - attempt to fetch connection metadata, handle it respectively (stack or singular)
 func handleConnection(node *node.Node, conn net.Conn) error {
 	data, err := common.ReadConnectionWaitAsyncNoTLS(conn) // Read entire connection
@@ -41,6 +63,8 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 
 	if strings.Contains(string(data), "messagetype") { // Check for network message
 		return handleLogNetworkMessage(data) // Handle network message
+	} else if strings.Contains(string(data), common.ProtobufPrefix) { // Check for protobuf message
+		return nil // Handled in protobuf server
 	}
 
 	if len(data) < 100 { // Check for safe length
@@ -169,6 +193,27 @@ func handleLogNetworkMessage(b []byte) error {
 	}
 
 	return nil // No error occurred, return nil
+}
+
+// handleProtobufConnection - handle received protobuf message
+func handleProtobufConnection(conn net.Conn, handler func(message []byte) error, protoID string) error {
+	data, err := common.ReadConnectionWaitAsyncNoTLS(conn) // Read entire connection
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	protoMessage, err := proto.FromBytes(data) // Decode message from bytes
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	if protoMessage.Guide.ProtoID == protoID { // Check for match
+		return handler(data) // Run handler
+	}
+
+	return errors.New("couldn't find matching protoID") // Couldn't find matching protoID
 }
 
 // handleNetworkMessage - handle received network message
@@ -321,3 +366,5 @@ func refreshNode() (*node.Node, error) {
 
 	return readNode, nil // Return found node
 }
+
+/* END INTERNAL METHODS */

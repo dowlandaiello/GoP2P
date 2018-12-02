@@ -391,6 +391,13 @@ func (db *NodeDatabase) LogDatabase() error {
 	return nil // No error occurred, return nil
 }
 
+// String - convert shard to string
+func (db *NodeDatabase) String() string {
+	marshaledVal, _ := json.MarshalIndent(*db, "", "  ") // Marshal database
+
+	return string(marshaledVal) // No error occurred, return nil
+}
+
 /*
 	END EXPORTED METHODS
 */

@@ -1,0 +1,8 @@
+syntax = "proto3"; // Specify syntax version
+
+package proto; // Specify package
+
+message Test {
+    string test = 1; // Test
+    string test2 = 2; // Test2
+}

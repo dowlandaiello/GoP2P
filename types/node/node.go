@@ -78,6 +78,13 @@ func (node *Node) LogNode() error {
 	return nil // No error occurred, return nil
 }
 
+// String - convert node to string
+func (node *Node) String() string {
+	marshaledVal, _ := json.MarshalIndent(*node, "", "  ") // Marshal node
+
+	return string(marshaledVal) // No error occurred, return nil
+}
+
 // WriteToMemory - create serialized instance of specified environment in specified path (string)
 func (node *Node) WriteToMemory(path string) error {
 	os.Remove(path + filepath.FromSlash("/node.gob")) // Overwrite

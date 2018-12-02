@@ -1,1 +1,0 @@
-protoc --proto_path=$GOPATH/src:../../types/handler --twirp_out=. --go_out=. ../../types/handler/handler.proto
