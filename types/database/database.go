@@ -386,7 +386,7 @@ func (db *NodeDatabase) LogDatabase() error {
 		return err // Return found error
 	}
 
-	fmt.Println("\n" + string(marshaledVal)) // Log marshaled val
+	common.Println("\n" + string(marshaledVal)) // Log marshaled val
 
 	return nil // No error occurred, return nil
 }

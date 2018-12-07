@@ -68,9 +68,9 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 	}
 
 	if len(data) < 100 { // Check for safe length
-		fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), fmt.Sprintf("%s", string(data))) // Log connection
+		common.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), fmt.Sprintf("%s", string(data))) // Log connection
 	} else {
-		fmt.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), fmt.Sprintf("%s... }", string(data)[0:100])) // Log connection
+		common.Printf("\n-- CONNECTION -- incoming connection from address: %s with data %s", conn.RemoteAddr().String(), fmt.Sprintf("%s... }", string(data)[0:100])) // Log connection
 	}
 
 	readConnection, err := connection.FromBytes(data) // Attempt to decode data
@@ -79,7 +79,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
-	fmt.Println("\n\n-- CONNECTION " + conn.RemoteAddr().String() + " -- attempted to read " + strconv.Itoa(len(data)) + " bytes of data.") // Log read connection
+	common.Println("\n\n-- CONNECTION " + conn.RemoteAddr().String() + " -- attempted to read " + strconv.Itoa(len(data)) + " bytes of data.") // Log read connection
 
 	if len(readConnection.ConnectionStack) == 0 { // Check if event stack exists
 		val, isMessage, err := handleSingular(node, readConnection) // Handle singular event
@@ -97,7 +97,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		if isMessage == true {
 			handleLogNetworkMessage(val) // Handle network message
 		} else {
-			fmt.Println("\n-- CONNECTION " + conn.RemoteAddr().String() + " -- responding with data " + common.SafeSlice(serializedResponse) + "...") // Log response
+			common.Println("\n-- CONNECTION " + conn.RemoteAddr().String() + " -- responding with data " + common.SafeSlice(serializedResponse) + "...") // Log response
 		}
 
 		conn.Write(serializedResponse) // Write success
@@ -119,7 +119,7 @@ func handleConnection(node *node.Node, conn net.Conn) error {
 		return err // Return found error
 	}
 
-	fmt.Println("\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- responding with data " + common.SafeSlice(serializedResponse) + "...") // Log response
+	common.Println("\n-- CONNECTION " + readConnection.InitializationNode.Address + " -- responding with data " + common.SafeSlice(serializedResponse) + "...") // Log response
 
 	_, err = conn.Write(serializedResponse) // Write success
 
@@ -181,7 +181,7 @@ func handleLogNetworkMessage(b []byte) error {
 
 	switch message.Priority { // Account for different message priorities
 	case 0: // Check for normal message
-		fmt.Printf("\n== Network Message (%s) From Network %s == %s", message.Type, message.Network, message.Message) // Log response
+		common.Printf("\n== Network Message (%s) From Network %s == %s", message.Type, message.Network, message.Message) // Log response
 	case 1: // Check for critical message
 		red.Printf("\n== CRITICAL NETWORK MESSAGE (%s) FROM NETWORK %s == %s", strings.ToUpper(message.Type), message.Network, message.Message) // Log response
 	case 2: // Check for warning message
@@ -189,7 +189,7 @@ func handleLogNetworkMessage(b []byte) error {
 	case 3: // Check for update/info message
 		cyan.Printf("\n== Network Message (%s) From Network %s == %s", message.Type, message.Network, message.Message) // Log response
 	default: // Check for any other priority
-		fmt.Printf("\n== Network Message (%s) From Network %s == %s", message.Type, message.Network, message.Message) // Log response
+		common.Printf("\n== Network Message (%s) From Network %s == %s", message.Type, message.Network, message.Message) // Log response
 	}
 
 	return nil // No error occurred, return nil

@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net"
 	"os"
 	"path/filepath"
@@ -73,7 +72,7 @@ func (node *Node) LogNode() error {
 		return err // Return found error
 	}
 
-	fmt.Println("\n" + string(marshaledVal)) // Log marshaled val
+	common.Println("\n" + string(marshaledVal)) // Log marshaled val
 
 	return nil // No error occurred, return nil
 }

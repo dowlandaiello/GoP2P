@@ -3,7 +3,6 @@ package environment
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"reflect"
 	"strings"
 
@@ -118,7 +117,7 @@ func (environment *Environment) LogEnvironment() error {
 		return err // Return found error
 	}
 
-	fmt.Println("\n" + string(marshaledVal)) // Log marshaled val
+	common.Println("\n" + string(marshaledVal)) // Log marshaled val
 
 	return nil // No error occurred, return nil
 }

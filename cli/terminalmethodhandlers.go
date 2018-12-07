@@ -1,21 +1,19 @@
 package cli
 
 import (
-	"fmt"
-
 	"github.com/mitsukomegumi/GoP2P/common"
 )
 
 // handleQueryTypeCommandTerminal - handle execution of handleQueryTypeTerminal method (wrapper)
 func (term *Terminal) handleQueryTypeCommandTerminal(queryType string) {
-	fmt.Println("querying type " + queryType) // Log begin
+	common.Println("querying type " + queryType) // Log begin
 
 	output, err := term.handleQueryTypeTerminal(queryType) // Attempt to query for type
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 

@@ -21,77 +21,77 @@ import (
 
 // handleAttachEnvironmentCommand - attempt to read environment at current working directory
 func (term *Terminal) handleAttachEnvironmentCommand() {
-	fmt.Println("attempting to attach") // Log begin
+	common.Println("attempting to attach") // Log begin
 
 	output, err := term.handleAttachEnvironment() // Attempt to read env
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
 // handleNewEnvironmentCommand - handle execution of handleNewEnvironment method (wrapper)
 func (term *Terminal) handleNewEnvironmentCommand() {
-	fmt.Println("attempting to initialize new environment") // Log begin
+	common.Println("attempting to initialize new environment") // Log begin
 
 	output, err := term.handleNewEnvironment() // Attempt to init new environment
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
 func (term *Terminal) handleNewVariableCommand(variableType string, variableDir string, variableData string, replaceExisting bool) {
-	fmt.Println("attempting to add new variable") // Log begin
+	common.Println("attempting to add new variable") // Log begin
 
 	output, err := term.handleNewVariable(variableType, variableDir, variableData, replaceExisting) // Execute command
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
 func (term *Terminal) handleWriteToMemoryCommand() {
-	fmt.Println("attempting to environment to memory") // Log begin
+	common.Println("attempting to environment to memory") // Log begin
 
 	output, err := term.handleWriteToMemory() // Attempt to write env
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
 // handleQueryTypeCommand - handle execution of handleQueryType method (wrapper)
 func (term *Terminal) handleQueryTypeCommand(queryType string) {
-	fmt.Println("querying type " + queryType) // Log begin
+	common.Println("querying type " + queryType) // Log begin
 
 	output, err := term.handleQueryType(queryType) // Attempt to query for type
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
 // handleQueryValueCommand - handle execution of handleQueryValue method (wrapper)
 func (term *Terminal) handleQueryValueCommand(queryValue string) {
-	fmt.Println("querying value " + queryValue) // Log begin
+	common.Println("querying value " + queryValue) // Log begin
 
 	output, err := term.handleQueryValue(queryValue) // Attempt to query for value
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
@@ -314,16 +314,16 @@ func handleNilVarParams() (string, string, string, bool) {
 	var variableData string    // Init buffer
 	var replaceExisting string // Init buffer
 
-	fmt.Print("\nvariable type: ")
+	common.Print("\nvariable type: ")
 	fmt.Scanln(&variableType)
 
-	fmt.Print("\nvariable data directory (optional): ")
+	common.Print("\nvariable data directory (optional): ")
 	fmt.Scanln(&variableDir)
 
-	fmt.Print("\nvariable data (optional): ")
+	common.Print("\nvariable data (optional): ")
 	fmt.Scanln(&variableData)
 
-	fmt.Print("\nreplace existing directory: ")
+	common.Print("\nreplace existing directory: ")
 	fmt.Scanln(&replaceExisting)
 
 	boolVal, _ := strconv.ParseBool(replaceExisting)

@@ -2,7 +2,6 @@ package connection
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -95,7 +94,7 @@ func (connection *Connection) AttemptVariable() (*environment.Variable, error) {
 
 // attempt - attempt connection
 func (connection *Connection) attempt() ([]byte, error) {
-	fmt.Println("-- CONNECTION -- attempting connection to peer with address " + connection.DestinationNode.Address) // Log connection
+	common.Println("-- CONNECTION -- attempting connection to peer with address " + connection.DestinationNode.Address) // Log connection
 
 	serializedConnection, err := common.SerializeToBytes(*connection) // Serialize connection
 

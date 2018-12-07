@@ -38,10 +38,13 @@ var (
 	noColorFlag    = flag.Bool("no-color", false, "disables GoP2P terminal colored output")                                                                           // Init color flag
 	forwardRPCFlag = flag.Bool("forward-rpc", false, "enables forwarding of GoP2P RPC terminal ports")                                                                // Init forward RPC flag
 	rpcAddrFlag    = flag.String("rpc-address", fmt.Sprintf("localhost:%s", strconv.Itoa(*rpcPortFlag)), "connects to remote RPC terminal (default: localhost:8080)") // Init remote rpc addr flag
+	silentMode     = flag.Bool("s", false, "launches gop2p in silent mode (silences prints)")                                                                         // Init silent flag
 )
 
 func main() {
 	flag.Parse() // Parse flags
+
+	common.Silent = *silentMode // Set silent
 
 	if !*upnpFlag { // Check for UPnP
 		if *forwardRPCFlag {
@@ -131,8 +134,6 @@ func startNode() {
 
 /* TODO:
 - Fix readme (or lack thereof)
-- Connection protocol buffer message support
-- Remove all instances of currentDir+filename for simply filename
-- Add -v flag (silence fmt.Println)
+- Add -v flag (silence common.Println)
 - Fix protonet unit tests
 */

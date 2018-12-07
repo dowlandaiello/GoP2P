@@ -2,7 +2,6 @@ package cli
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -32,35 +31,35 @@ func (term *Terminal) handleNewNodeCommand() {
 	s.Stop() // Stop indicator
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
 // handleAttachNodeCommand - attempt to read node at current working directory
 func (term *Terminal) handleAttachNodeCommand() {
-	fmt.Println("attempting to attach") // Log begin
+	common.Println("attempting to attach") // Log begin
 
 	output, err := term.handleAttachNode() // Attempt to read node
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
 // handleStartHandlerCommand - attempt to start handler on attached node
 func (term *Terminal) handleStartHandlerCommand(port int) {
-	fmt.Println("attempting to start handler") // Log begin
+	common.Println("attempting to start handler") // Log begin
 
 	output, err := term.handleStartHandler(port) // Attempt to start handler
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
@@ -90,7 +89,7 @@ func (term *Terminal) handleNewNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	fmt.Println("\nattempting to write node to memory")
+	common.Println("\nattempting to write node to memory")
 
 	err = node.WriteToMemory(currentDir) // Write to mem
 
@@ -98,8 +97,8 @@ func (term *Terminal) handleNewNode() (string, error) {
 		return "", err // Return found error
 	}
 
-	fmt.Println("\nSuccess: wrote nodedatabase to environment memory")
-	fmt.Println("Success: wrote node to memory")
+	common.Println("\nSuccess: wrote nodedatabase to environment memory")
+	common.Println("Success: wrote node to memory")
 
 	term.AddVariable("", db, "NodeDatabase")               // Add new database
 	term.AddVariable("", *node, "Node")                    // Add new node
@@ -154,7 +153,7 @@ func (term *Terminal) handleStartHandler(port int) (string, error) {
 	err := upnp.ForwardPort(3000) // Attempt to forward port
 
 	if err != nil {
-		fmt.Println(err.Error())
+		common.Println(err.Error())
 	}
 
 	ln, err := foundNode.StartListener(port) // Attempt to start handler

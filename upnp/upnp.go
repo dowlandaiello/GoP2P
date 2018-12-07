@@ -1,12 +1,12 @@
 package upnp
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 
 	upnp "github.com/NebulousLabs/go-upnp"
 	"github.com/briandowns/spinner"
+	"github.com/mitsukomegumi/GoP2P/common"
 )
 
 /*
@@ -60,7 +60,7 @@ func ForwardPort(portNumber uint) error { // Returns error if forward failed
 
 	s.Stop() // Stop loading indicator
 
-	fmt.Println("\nfound gateway") // Log found gateway
+	common.Println("\nfound gateway") // Log found gateway
 
 	s.Suffix = " attempting to forward port" // Add log message
 
@@ -75,7 +75,7 @@ func ForwardPort(portNumber uint) error { // Returns error if forward failed
 
 	s.Stop() // Stop loading indicator
 
-	fmt.Println("\nsuccessfully forwarded port " + strconv.Itoa(int(portNumber))) // Log success
+	common.Println("\nsuccessfully forwarded port " + strconv.Itoa(int(portNumber))) // Log success
 
 	return nil // No error occurred, return nil
 }

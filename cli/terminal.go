@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 	"reflect"
@@ -45,7 +44,7 @@ func NewTerminal(rpcPort uint, rpcAddress string) error {
 	}
 
 	for {
-		fmt.Print("\n> ") // Print prompt
+		common.Print("\n> ") // Print prompt
 
 		reader.Scan() // Scan
 
@@ -59,7 +58,7 @@ func NewTerminal(rpcPort uint, rpcAddress string) error {
 			receiver, methodname, params, err := common.ParseStringMethodCall(input) // Attempt to parse as method call
 
 			if err != nil { // Check for errors
-				fmt.Println(err.Error()) // Log found error
+				common.Println(err.Error()) // Log found error
 
 				continue
 			}
@@ -84,49 +83,49 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 		err := handleNode(&nodeClient, methodname, params) // Handle node
 
 		if err != nil { // Check for errors
-			fmt.Println("\n" + err.Error()) // Log found error
+			common.Println("\n" + err.Error()) // Log found error
 		}
 	case "handler":
 		err := handleHandler(&handlerClient, methodname, params) // Handle handler
 
 		if err != nil { // Check for errors
-			fmt.Println("\n" + err.Error()) // Log found error
+			common.Println("\n" + err.Error()) // Log found error
 		}
 	case "environment":
 		err := handleEnvironment(&environmentClient, methodname, params) // Handle environment
 
 		if err != nil { // Check for errors
-			fmt.Println("\n" + err.Error()) // Log found error
+			common.Println("\n" + err.Error()) // Log found error
 		}
 	case "upnp":
 		err := handleUpnp(&upnpClient, methodname, params) // Handle upnp
 
 		if err != nil { // Check for errors
-			fmt.Println("\n" + err.Error()) // Log found error
+			common.Println("\n" + err.Error()) // Log found error
 		}
 	case "database":
 		err := handleDatabase(&databaseClient, methodname, params) // Handle database
 
 		if err != nil { // Check for errors
-			fmt.Println("\n" + err.Error()) // Log found error
+			common.Println("\n" + err.Error()) // Log found error
 		}
 	case "common":
 		err := handleCommon(&commonClient, methodname, params) // Handle common
 
 		if err != nil { // Check for errors
-			fmt.Println("\n" + err.Error()) // Log found error
+			common.Println("\n" + err.Error()) // Log found error
 		}
 	case "shard":
 		err := handleShard(&shardClient, methodname, params) // Handle shard
 
 		if err != nil { // Check for errors
-			fmt.Println("\n" + err.Error()) // Log found error
+			common.Println("\n" + err.Error()) // Log found error
 		}
 	case "proto":
 		err := handleProto(&protoClient, methodname, params) // Handle proto
 
 		if err != nil { // Check for errors
-			fmt.Println("\n" + err.Error()) // Log found error
+			common.Println("\n" + err.Error()) // Log found error
 		}
 	}
 }
@@ -165,7 +164,7 @@ func handleNode(nodeClient *nodeProto.Node, methodname string, params []string) 
 		return result[1].Interface().(error) // Return error
 	}
 
-	fmt.Println(response.Message) // Log response
+	common.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -196,7 +195,7 @@ func handleHandler(handlerClient *handlerProto.Handler, methodname string, param
 		return result[1].Interface().(error) // Return error
 	}
 
-	fmt.Println(response.Message) // Log response
+	common.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -254,7 +253,7 @@ func handleEnvironment(environmentClient *environmentProto.Environment, methodna
 		return result[1].Interface().(error) // Return error
 	}
 
-	fmt.Println(response.Message) // Log response
+	common.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -291,7 +290,7 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 		return result[1].Interface().(error) // Return error
 	}
 
-	fmt.Println(response.Message) // Log response
+	common.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -363,7 +362,7 @@ func handleDatabase(databaseClient *databaseProto.Database, methodname string, p
 		return result[1].Interface().(error) // Return error
 	}
 
-	fmt.Println(response.Message) // Log response
+	common.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -418,7 +417,7 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 		return result[1].Interface().(error) // Return error
 	}
 
-	fmt.Println(response.Message) // Log response
+	common.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -483,7 +482,7 @@ func handleShard(shardClient *shardProto.Shard, methodname string, params []stri
 		return result[1].Interface().(error) // Return error
 	}
 
-	fmt.Println(response.Message) // Log response
+	common.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -518,7 +517,7 @@ func handleProto(protoClient *protoProto.Proto, methodname string, params []stri
 		return result[1].Interface().(error) // Return error
 	}
 
-	fmt.Println(response.Message) // Log response
+	common.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }

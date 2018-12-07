@@ -2,7 +2,6 @@ package cli
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 
 	"github.com/mitsukomegumi/GoP2P/common"
@@ -12,79 +11,79 @@ import (
 
 // handleNewDatabaseCommand - handle execution of handleNewDatabase method (wrapper)
 func (term *Terminal) handleNewDatabaseCommand() {
-	fmt.Println("attempting to initialize new NodeDatabase") // Log begin
+	common.Println("attempting to initialize new NodeDatabase") // Log begin
 
 	output, err := term.handleNewDatabase() // Attempt to init new db
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
 // handleAddNodeCommand - handle execution of handleAddNode method (wrapper)
 func (term *Terminal) handleAddNodeCommand(address string) {
-	fmt.Println("attempting to add node " + address + " to database") // Log begin
+	common.Println("attempting to add node " + address + " to database") // Log begin
 
 	output, err := term.handleAddNode(address) // Attempt to append
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
 // handleRemoveNodeCommand - handle execution of handleRemoveNode method (wrapper)
 func (term *Terminal) handleRemoveNodeCommand(address string) {
-	fmt.Println("attempting to remove node " + address + " from database") // Log begin
+	common.Println("attempting to remove node " + address + " from database") // Log begin
 
 	output, err := term.handleRemoveNode(address) // Attempt to remove
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
 // handleAttachDatabaseCommand - handle execution of handleAttachDatabase method (wrapper)
 func (term *Terminal) handleAttachDatabaseCommand() {
-	fmt.Println("attempting to attach to NodeDatabase") // Log begin
+	common.Println("attempting to attach to NodeDatabase") // Log begin
 
 	output, err := term.handleAttachDatabase() // Attempt to attach to db
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
 // handleWriteDatabaseToMemoryCommand - handle execution of handleWritDatabaseToMemory method (wrapper)
 func (term *Terminal) handleWriteDatabaseToMemoryCommand() {
-	fmt.Println("attempting to write database to memory") // Log begin
+	common.Println("attempting to write database to memory") // Log begin
 
 	output, err := term.handleWriteDatabaseToMemory() // Attempt to write db
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
 // handleQueryForAddressCommand - handle execution of handleQueryForAddress method (wrapper)
 func (term *Terminal) handleQueryForAddressCommand(address string) {
-	fmt.Println("attempting to query for address " + address + " in nodedatabase") // Log begin
+	common.Println("attempting to query for address " + address + " in nodedatabase") // Log begin
 
 	output, err := term.handleQueryForAddress(address) // Query
 
 	if err != nil {
-		fmt.Println("Error: " + err.Error())
+		common.Println("Error: " + err.Error())
 	} else {
-		fmt.Println(output)
+		common.Println(output)
 	}
 }
 

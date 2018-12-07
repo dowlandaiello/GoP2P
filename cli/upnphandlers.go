@@ -1,9 +1,9 @@
 package cli
 
 import (
-	"fmt"
 	"strconv"
 
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/upnp"
 )
 
@@ -12,14 +12,14 @@ import (
 */
 
 func (term *Terminal) handleForwardPortCommand(command string, portNumber int) {
-	fmt.Println("attempting to forward port " + strconv.Itoa(portNumber)) // Log begin
+	common.Println("attempting to forward port " + strconv.Itoa(portNumber)) // Log begin
 
 	output, err := term.handleForwardPort(command, portNumber) // Attempt to forward port
 
 	if err != nil { // Check for errors
-		fmt.Println(err.Error()) // log found error
+		common.Println(err.Error()) // log found error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 
@@ -39,14 +39,14 @@ func (term *Terminal) handleForwardPort(command string, portNumber int) (string,
 }
 
 func (term *Terminal) handleRemoveForwardPortCommand(command string, portNumber int) {
-	fmt.Println("attempting remove forwarding on port " + strconv.Itoa(portNumber)) // Log begin
+	common.Println("attempting remove forwarding on port " + strconv.Itoa(portNumber)) // Log begin
 
 	output, err := term.handleRemoveForwardPort(command, portNumber) // Attempt to remove port forwarding
 
 	if err != nil { // Check for errors
-		fmt.Println(err.Error()) // log found error
+		common.Println(err.Error()) // log found error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 

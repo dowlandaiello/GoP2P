@@ -1,8 +1,7 @@
 package cli
 
 import (
-	"fmt"
-
+	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/connection"
 	"github.com/mitsukomegumi/GoP2P/types/database"
 	"github.com/mitsukomegumi/GoP2P/types/node"
@@ -10,14 +9,14 @@ import (
 
 // handleNewConnectionCommand - handle execution of handleNewConnection method
 func (term *Terminal) handleNewConnectionCommand(address string, port int) {
-	fmt.Println("attempting to initialize and attempt connection with address " + address) // Log begin
+	common.Println("attempting to initialize and attempt connection with address " + address) // Log begin
 
 	output, err := term.handleNewConnection(address, port) // Attempt to init, attempt
 
 	if err != nil { // Check for errors
-		fmt.Println("Error: " + err.Error()) // Log error
+		common.Println("Error: " + err.Error()) // Log error
 	} else {
-		fmt.Println(output) // Log success
+		common.Println(output) // Log success
 	}
 }
 

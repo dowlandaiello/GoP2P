@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 
@@ -70,7 +69,7 @@ func TestStartProtobufHandler(t *testing.T) {
 
 // testHandler - test handler
 func testHandler(b []byte) error {
-	fmt.Println(string(b)) // Log input
+	common.Println(string(b)) // Log input
 
 	return nil // No error occurred
 }

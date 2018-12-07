@@ -51,11 +51,35 @@ var (
 		Certificates:       []tls.Certificate{getTLSCerts("GoP2PGeneral")},
 		InsecureSkipVerify: true,
 		ServerName:         "localhost"}
+
+	// Silent - silence common.Println calls
+	Silent = false
 )
 
 /*
 	BEGIN EXPORTED METHODS:
 */
+
+// Println - print
+func Println(i interface{}) {
+	if !Silent { // Check verbose mode
+		fmt.Println(i) // Print
+	}
+}
+
+// Print - print
+func Print(i interface{}) {
+	if !Silent { // Check verbose mode
+		fmt.Print(i) // Print
+	}
+}
+
+// Printf - print
+func Printf(format string, i ...interface{}) {
+	if !Silent {
+		fmt.Printf(format, i...) // Print
+	}
+}
 
 // DelaySeconds - wait until duration passed, return true once duration completed
 func DelaySeconds(seconds uint) bool {
@@ -226,8 +250,8 @@ func CheckAddress(address string) error {
 	p.AddIPAddr(ipAddress) // Add address to pinger
 
 	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) { // On correct address
-		fmt.Printf("IP Addr: %s receive, RTT: %v\n", addr.String(), rtt) // Print address meta
-		fmt.Printf("IP %s tested successfully \n", addr.String())        // Print address meta
+		Printf("IP Addr: %s receive, RTT: %v\n", addr.String(), rtt) // Print address meta
+		Printf("IP %s tested successfully \n", addr.String())        // Print address meta
 	}
 	p.OnIdle = func() { // On address timeout
 		err = errors.New("Timed out with IP " + ipAddress.String() + "\n") // Assign meta to error

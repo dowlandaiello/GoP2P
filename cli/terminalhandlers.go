@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/mitsukomegumi/GoP2P/common"
 )
 
 // HandleCommand - attempt to handle specified command
@@ -154,7 +156,7 @@ func (term *Terminal) handleConnection(command string) {
 func handleZeroPort() int {
 	var input string // Init buffer
 
-	fmt.Print("\nport: ")
+	common.Print("\nport: ")
 	fmt.Scanln(&input)
 
 	intVal, _ := strconv.Atoi(input) // Convert to int
