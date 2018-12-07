@@ -10,5 +10,5 @@ func TestNewCommand(t *testing.T) {
 		t.Errorf(err.Error()) // Log found error
 	}
 
-	t.Logf("found command %s", command) // Log success
+	t.Log(command) // Log success
 }

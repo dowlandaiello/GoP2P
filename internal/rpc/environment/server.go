@@ -216,7 +216,7 @@ func (server *Server) WriteToMemory(ctx context.Context, req *environmentProto.G
 		return &environmentProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nWrote environment %s to path %s", env, req.Path)}, nil // No error occurred, return output
+	return &environmentProto.GeneralResponse{Message: fmt.Sprintf("\nWrote environment %p to path %s", env, req.Path)}, nil // No error occurred, return output
 }
 
 // ReadFromMemory - environment.ReadEnvironmentFromMemory RPC handler
