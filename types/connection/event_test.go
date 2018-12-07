@@ -1,10 +1,10 @@
 package connection
 
 import (
+	"io"
 	"strings"
 	"testing"
 
-	"github.com/mitsukomegumi/GoP2P/common"
 	"github.com/mitsukomegumi/GoP2P/types/command"
 	"github.com/mitsukomegumi/GoP2P/types/environment"
 	"github.com/mitsukomegumi/GoP2P/types/node"
@@ -65,7 +65,7 @@ func TestAttemptEvent(t *testing.T) {
 
 	_, err = event.Attempt() // Attempt event
 
-	if err != nil && !strings.Contains(err.Error(), "socket") && !strings.Contains(err.Error(), "timed out") && !strings.Contains(err.Error(), "connection refused") { // Check for errors
+	if err != nil && !strings.Contains(err.Error(), "socket") && !strings.Contains(err.Error(), "timed out") && !strings.Contains(err.Error(), "connection refused") && err != io.EOF { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	} else if err != nil && strings.Contains(err.Error(), "socket") {
@@ -78,13 +78,9 @@ func TestAttemptEvent(t *testing.T) {
 }
 
 func newNodeSafe() (*node.Node, error) {
-	ip, err := common.GetExtIPAddrWithoutUPnP() // Fetch IP address
+	ip := "1.1.1.1" // Set IP address
 
-	if err != nil { // Check for errors
-		return &node.Node{}, err // Return found error
-	}
-
-	environment, _ := environment.NewEnvironment() // Create new environment
+	environment, err := environment.NewEnvironment() // Create new environment
 
 	if err != nil { // Check for errors
 		return &node.Node{}, err // Return found error

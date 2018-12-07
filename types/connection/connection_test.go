@@ -1,6 +1,7 @@
 package connection
 
 import (
+	"io"
 	"strings"
 	"testing"
 
@@ -35,7 +36,7 @@ func TestAttemptConnection(t *testing.T) {
 
 	_, err = connection.Attempt() // Attempt connection
 
-	if err != nil && !strings.Contains(err.Error(), "socket") && !strings.Contains(err.Error(), "connection refused") && !strings.Contains(err.Error(), "timed out") { // Check for errors
+	if err != nil && !strings.Contains(err.Error(), "socket") && !strings.Contains(err.Error(), "connection refused") && !strings.Contains(err.Error(), "timed out") && err != io.EOF { // Check for errors
 		t.Errorf(err.Error()) // Log found error
 		t.FailNow()           // Panic
 	} else if err != nil && strings.Contains(err.Error(), "socket") {
