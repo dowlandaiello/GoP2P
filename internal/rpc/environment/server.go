@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/mitsukomegumi/GoP2P/common"
-	environmentProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/environment"
-	"github.com/mitsukomegumi/GoP2P/types/environment"
-	"github.com/mitsukomegumi/GoP2P/types/node"
+	"github.com/dowlandaiello/GoP2P/common"
+	environmentProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/environment"
+	"github.com/dowlandaiello/GoP2P/types/environment"
+	"github.com/dowlandaiello/GoP2P/types/node"
 )
 
 // Server - GoP2P RPC server

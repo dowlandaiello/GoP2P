@@ -6,7 +6,7 @@ import (
 
 	upnp "github.com/NebulousLabs/go-upnp"
 	"github.com/briandowns/spinner"
-	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/common"
 )
 
 /*

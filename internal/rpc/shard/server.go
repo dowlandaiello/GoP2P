@@ -7,12 +7,12 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/mitsukomegumi/GoP2P/common"
-	shardProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/shard"
-	"github.com/mitsukomegumi/GoP2P/types/database"
-	"github.com/mitsukomegumi/GoP2P/types/environment"
-	"github.com/mitsukomegumi/GoP2P/types/node"
-	"github.com/mitsukomegumi/GoP2P/types/shard"
+	"github.com/dowlandaiello/GoP2P/common"
+	shardProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/shard"
+	"github.com/dowlandaiello/GoP2P/types/database"
+	"github.com/dowlandaiello/GoP2P/types/environment"
+	"github.com/dowlandaiello/GoP2P/types/node"
+	"github.com/dowlandaiello/GoP2P/types/shard"
 )
 
 // Server - GoP2P RPC server

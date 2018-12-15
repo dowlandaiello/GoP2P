@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 
-	"github.com/mitsukomegumi/GoP2P/common"
-	"github.com/mitsukomegumi/GoP2P/types/environment"
+	"github.com/dowlandaiello/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/types/environment"
 )
 
 // WriteToMemory - create serialized instance of specified NodeDatabase in specified path (string)

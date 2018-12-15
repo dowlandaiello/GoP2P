@@ -3,8 +3,8 @@ package cli
 import (
 	"strconv"
 
-	"github.com/mitsukomegumi/GoP2P/common"
-	"github.com/mitsukomegumi/GoP2P/upnp"
+	"github.com/dowlandaiello/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/upnp"
 )
 
 /*

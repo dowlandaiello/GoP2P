@@ -1,8 +1,8 @@
 package cli
 
 import (
-	"github.com/mitsukomegumi/GoP2P/common"
-	"github.com/mitsukomegumi/GoP2P/types/node"
+	"github.com/dowlandaiello/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/types/node"
 )
 
 // NewNode - simple wrapper for initializing a new node

@@ -6,8 +6,8 @@ import (
 	"math"
 	"time"
 
-	"github.com/mitsukomegumi/GoP2P/common"
-	"github.com/mitsukomegumi/GoP2P/types/node"
+	"github.com/dowlandaiello/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/types/node"
 )
 
 // Shard - container holding shard metadata

@@ -12,15 +12,15 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/mitsukomegumi/GoP2P/common"
-	commonProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/common"
-	databaseProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/database"
-	environmentProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/environment"
-	handlerProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/handler"
-	nodeProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/node"
-	protoProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/protobuf"
-	shardProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/shard"
-	upnpProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/upnp"
+	"github.com/dowlandaiello/GoP2P/common"
+	commonProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/common"
+	databaseProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/database"
+	environmentProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/environment"
+	handlerProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/handler"
+	nodeProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/node"
+	protoProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/protobuf"
+	shardProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/shard"
+	upnpProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/upnp"
 )
 
 // Terminal - absctract container holding set of variable with values (runtime only)

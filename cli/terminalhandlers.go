@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/common"
 )
 
 // HandleCommand - attempt to handle specified command

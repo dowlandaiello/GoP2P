@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/common"
 )
 
 /* BEGIN EXPORTED METHODS */

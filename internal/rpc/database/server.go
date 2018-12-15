@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/mitsukomegumi/GoP2P/common"
-	databaseProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/database"
-	"github.com/mitsukomegumi/GoP2P/types/database"
-	"github.com/mitsukomegumi/GoP2P/types/environment"
-	"github.com/mitsukomegumi/GoP2P/types/node"
+	"github.com/dowlandaiello/GoP2P/common"
+	databaseProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/database"
+	"github.com/dowlandaiello/GoP2P/types/database"
+	"github.com/dowlandaiello/GoP2P/types/environment"
+	"github.com/dowlandaiello/GoP2P/types/node"
 )
 
 // Server - GoP2P RPC server

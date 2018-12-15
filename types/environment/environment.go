@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/common"
 )
 
 // Environment - abstract container holding variables, configurations of a certain node

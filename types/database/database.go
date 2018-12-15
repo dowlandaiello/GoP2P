@@ -7,12 +7,12 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/mitsukomegumi/GoP2P/common"
-	"github.com/mitsukomegumi/GoP2P/types/command"
-	"github.com/mitsukomegumi/GoP2P/types/connection"
-	"github.com/mitsukomegumi/GoP2P/types/environment"
-	"github.com/mitsukomegumi/GoP2P/types/node"
-	"github.com/mitsukomegumi/GoP2P/types/shard"
+	"github.com/dowlandaiello/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/types/command"
+	"github.com/dowlandaiello/GoP2P/types/connection"
+	"github.com/dowlandaiello/GoP2P/types/environment"
+	"github.com/dowlandaiello/GoP2P/types/node"
+	"github.com/dowlandaiello/GoP2P/types/shard"
 )
 
 // NodeDatabase - database containing list of node addresses, as well as bootstrap addresses

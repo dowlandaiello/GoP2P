@@ -3,7 +3,7 @@ package environment
 import (
 	"testing"
 
-	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/common"
 )
 
 // TestWriteToMemory - test functionality of WriteToMemory() method

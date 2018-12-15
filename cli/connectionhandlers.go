@@ -1,10 +1,10 @@
 package cli
 
 import (
-	"github.com/mitsukomegumi/GoP2P/common"
-	"github.com/mitsukomegumi/GoP2P/types/connection"
-	"github.com/mitsukomegumi/GoP2P/types/database"
-	"github.com/mitsukomegumi/GoP2P/types/node"
+	"github.com/dowlandaiello/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/types/connection"
+	"github.com/dowlandaiello/GoP2P/types/database"
+	"github.com/dowlandaiello/GoP2P/types/node"
 )
 
 // handleNewConnectionCommand - handle execution of handleNewConnection method

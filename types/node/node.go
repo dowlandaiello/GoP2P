@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/mitsukomegumi/GoP2P/common"
-	"github.com/mitsukomegumi/GoP2P/types/environment"
+	"github.com/dowlandaiello/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/types/environment"
 )
 
 // Node - abstract struct containing metadata for a node

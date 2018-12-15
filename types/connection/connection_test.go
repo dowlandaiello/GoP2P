@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mitsukomegumi/GoP2P/types/command"
-	"github.com/mitsukomegumi/GoP2P/types/node"
+	"github.com/dowlandaiello/GoP2P/types/command"
+	"github.com/dowlandaiello/GoP2P/types/node"
 )
 
 // TestNewConnection - test functionality of connection initialization function

@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strconv"
 
-	upnpProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/upnp"
-	"github.com/mitsukomegumi/GoP2P/upnp"
+	upnpProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/upnp"
+	"github.com/dowlandaiello/GoP2P/upnp"
 )
 
 // Server - GOP2P RPC server

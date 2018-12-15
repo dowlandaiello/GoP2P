@@ -4,7 +4,7 @@ import (
 	"errors"
 	"reflect"
 
-	"github.com/mitsukomegumi/GoP2P/types/environment"
+	"github.com/dowlandaiello/GoP2P/types/environment"
 )
 
 // Command - absctract container holding command values

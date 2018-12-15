@@ -3,7 +3,7 @@ package connection
 import (
 	"testing"
 
-	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/common"
 )
 
 func TestResponseFromBytes(t *testing.T) {

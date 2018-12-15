@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mitsukomegumi/GoP2P/common"
-	"github.com/mitsukomegumi/GoP2P/types/node"
+	"github.com/dowlandaiello/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/types/node"
 )
 
 // TestMain - test functionality of main() method

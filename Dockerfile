@@ -2,7 +2,7 @@
 FROM iron/go:dev
 
 WORKDIR /app
-ENV SRC_DIR=/go/src/github.com/mitsukomegumi/GoP2P/
+ENV SRC_DIR=/go/src/github.com/dowlandaiello/GoP2P/
 # Add the source code:
 ADD . $SRC_DIR
 # Build it:

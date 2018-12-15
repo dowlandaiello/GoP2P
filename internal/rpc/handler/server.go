@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/mitsukomegumi/GoP2P/common"
-	handlerProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/handler"
-	"github.com/mitsukomegumi/GoP2P/types/handler"
-	"github.com/mitsukomegumi/GoP2P/types/node"
+	"github.com/dowlandaiello/GoP2P/common"
+	handlerProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/handler"
+	"github.com/dowlandaiello/GoP2P/types/handler"
+	"github.com/dowlandaiello/GoP2P/types/node"
 )
 
 // Server - GoP2P RPC server

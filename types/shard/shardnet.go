@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/common"
 )
 
 // SendBytesShardResult - attempt to send specified bytes to given shard address, returning result

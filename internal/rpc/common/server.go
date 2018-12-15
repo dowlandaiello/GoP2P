@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/mitsukomegumi/GoP2P/common"
-	commonProto "github.com/mitsukomegumi/GoP2P/internal/rpc/proto/common"
+	"github.com/dowlandaiello/GoP2P/common"
+	commonProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/common"
 )
 
 // Server - GoP2P RPC server

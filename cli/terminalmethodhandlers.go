@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/mitsukomegumi/GoP2P/common"
+	"github.com/dowlandaiello/GoP2P/common"
 )
 
 // handleQueryTypeCommandTerminal - handle execution of handleQueryTypeTerminal method (wrapper)
