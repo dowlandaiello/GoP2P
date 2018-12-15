@@ -2,7 +2,7 @@
 
 A streamlined shard-based P2P networking stack built in Go.
 
-[![Author](https://img.shields.io/badge/made%20by-Mitsuko%20Megumi-purple.svg?style=flat-round)](https://github.com/mitsukomegumi)
+[![Author](https://img.shields.io/badge/made%20by-Dowland%20Aiello-purple.svg?style=flat-round)](https://github.com/dowlandaiello)
 [![Project](https://img.shields.io/badge/project-GoP2P-blue.svg?style=flat-round)](https://github.com/dowlandaiello/gop2p)
 [![GoDoc](https://godoc.org/github.com/dowlandaiello/gop2p?status.svg)](https://godoc.org/github.com/dowlandaiello/gop2p)
 [![Author](https://godoc.org/github.com/dowlandaiello/gop2p?status.svg)](https://godoc.org/github.com/dowlandaiello/gop2p)
