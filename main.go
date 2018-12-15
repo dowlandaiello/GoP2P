@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/dowlandaiello/GoP2P/cli"
 	"github.com/dowlandaiello/GoP2P/common"
 	commonServer "github.com/dowlandaiello/GoP2P/internal/rpc/common"
@@ -29,6 +28,7 @@ import (
 	"github.com/dowlandaiello/GoP2P/types/handler"
 	"github.com/dowlandaiello/GoP2P/types/node"
 	"github.com/dowlandaiello/GoP2P/upnp"
+	"github.com/fatih/color"
 )
 
 var (

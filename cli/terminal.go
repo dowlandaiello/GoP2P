@@ -11,7 +11,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/dowlandaiello/GoP2P/common"
 	commonProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/common"
 	databaseProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/database"
@@ -21,6 +20,7 @@ import (
 	protoProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/protobuf"
 	shardProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/shard"
 	upnpProto "github.com/dowlandaiello/GoP2P/internal/rpc/proto/upnp"
+	"github.com/fatih/color"
 )
 
 // Terminal - absctract container holding set of variable with values (runtime only)

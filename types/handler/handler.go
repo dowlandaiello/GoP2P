@@ -8,13 +8,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/dowlandaiello/GoP2P/common"
 	"github.com/dowlandaiello/GoP2P/internal/proto"
 	"github.com/dowlandaiello/GoP2P/types/connection"
 	"github.com/dowlandaiello/GoP2P/types/database"
 	"github.com/dowlandaiello/GoP2P/types/environment"
 	"github.com/dowlandaiello/GoP2P/types/node"
+	"github.com/fatih/color"
 )
 
 /* BEGIN EXPORTED METHODS */
