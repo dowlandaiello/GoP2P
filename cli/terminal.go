@@ -116,17 +116,9 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 			common.Println("\n" + err.Error()) // Log found error
 		}
 	case "shard":
-		err := handleShard(&shardClient, methodname, params) // Handle shard
-
-		if err != nil { // Check for errors
-			common.Println("\n" + err.Error()) // Log found error
-		}
+		handleShard(&shardClient, methodname, params) // Handle shard
 	case "proto":
-		err := handleProto(&protoClient, methodname, params) // Handle proto
-
-		if err != nil { // Check for errors
-			common.Println("\n" + err.Error()) // Log found error
-		}
+		handleProto(&protoClient, methodname, params) // Handle proto
 	}
 }
 
@@ -479,10 +471,10 @@ func handleShard(shardClient *shardProto.Shard, methodname string, params []stri
 	response := result[0].Interface().(*shardProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		return result[1].Interface().(error) // Return error
+		common.Println(result[1].Interface().(error)) // Log
+	} else {
+		common.Println(response.Message) // Log response
 	}
-
-	common.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
@@ -514,10 +506,10 @@ func handleProto(protoClient *protoProto.Proto, methodname string, params []stri
 	response := result[0].Interface().(*protoProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
-		return result[1].Interface().(error) // Return error
+		common.Println(result[1].Interface().(error)) // Log
+	} else {
+		common.Println(response.Message) // Log response
 	}
-
-	common.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
