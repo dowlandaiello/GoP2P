@@ -40,6 +40,29 @@ func SendBytes(b []byte, address string) error {
 	return nil // No error occurred, return nil
 }
 
+// SendBytesNoTLS - send bytes to address without TLS
+func SendBytesNoTLS(b []byte, address string) error {
+	connection, err := net.Dial("tcp", address) // Connect to given address
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	_, err = connection.Write(b) // Write data to connection
+
+	if err != nil { // Check for errors
+		return err // Return found errors
+	}
+
+	err = connection.Close() // Close connection
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
+}
+
 // SendBytesResult - attempt to send specified bytes to given address, returning result
 func SendBytesResult(b []byte, address string) ([]byte, error) {
 	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
