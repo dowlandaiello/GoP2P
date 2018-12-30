@@ -247,7 +247,7 @@ func ReadConnectionWaitAsync(conn *tls.Conn) ([]byte, error) {
 	data := make(chan []byte) // Init buffer
 	err := make(chan error)   // Init error buffer
 
-	conn.SetReadDeadline(time.Now().Add(2 * time.Second)) // Set read deadline
+	conn.SetReadDeadline(time.Now().Add(4 * time.Second)) // Set read deadline
 
 	go func(data chan []byte, err chan error) {
 		reads := 0 // Init reads buffer
@@ -269,7 +269,7 @@ func ReadConnectionWaitAsync(conn *tls.Conn) ([]byte, error) {
 		}
 	}(data, err)
 
-	ticker := time.Tick(3 * time.Second) // Init ticker
+	ticker := time.Tick(5 * time.Second) // Init ticker
 
 	for { // Continuously read from connection
 		select {
