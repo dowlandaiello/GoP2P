@@ -65,7 +65,9 @@ func SendBytesNoTLS(b []byte, address string) error {
 
 // SendBytesResult - attempt to send specified bytes to given address, returning result
 func SendBytesResult(b []byte, address string) ([]byte, error) {
-	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
+	d := net.Dialer{Timeout: 15 * time.Second} // Init dialer with timeout
+
+	connection, err := tls.DialWithDialer(&d, "tcp", address, GeneralTLSConfig) // Connect to given address
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
