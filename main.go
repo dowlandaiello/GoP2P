@@ -69,9 +69,6 @@ func main() {
 	}
 
 	startNode() // Attempt to start GoP2P in node mode
-
-	go common.Forever() // Prevent main from closing
-	select {}           // Prevent main from closing
 }
 
 // startRPCServer - start RPC server
